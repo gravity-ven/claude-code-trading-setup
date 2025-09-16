@@ -1,0 +1,20 @@
+{
+  "installMethod": "unknown",
+  "autoUpdates": true,
+  "userID": "a0c4ef0cb4a9d8744682aab9fab3886e155eaa51819c6d121711ef302abfab88",
+  "firstStartTime": "2025-09-15T00:57:55.369Z",
+  "projects": {
+    "C:\\Users\\Quantum": {
+      "allowedTools": [],
+      "history": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false
+    }
+  }
+}

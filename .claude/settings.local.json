@@ -1,31 +1,122 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
-      "Bash(dir:*)",
-      "WebSearch",
-      "Bash(cat:*)",
-      "Bash(python:*)",
-      "Bash(/c/Python313/python:*)",
-      "Bash(curl:*)",
-      "Bash(taskkill:*)",
-      "Bash(node:*)",
-      "Bash(npx serve:*)",
-      "Bash(sed:*)",
-      "Bash(where:*)",
-      "Bash(wezterm:*)",
-      "Bash(alacritty:*)",
-      "Bash(timeout:*)",
-      "Bash(\"C:\\Program Files\\Git\\usr\\bin\\bash.exe\" -l -c \"echo ''Git Bash test''; exit\")",
-      "Bash(\"/c/Program Files/WezTerm/wezterm.exe\" start --skip-config)",
-      "Bash(\"/c/Program Files/WezTerm/wezterm.exe\" -n start)",
-      "Bash(WEZTERM_LOG=debug wezterm start)",
-      "Bash(export WEZTERM_LOG=debug)",
-      "Bash(git init:*)",
-      "Bash(git config:*)",
-      "Bash(git add:*)",
-      "Bash(export GIT_DIR=/c/Users/Quantum/.git)"
+      "Bash(setx:*)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "disableBypassPermissionsMode": false
+  },
+  "agentAutoTrigger": {
+    "enabled": true,
+    "proactiveMode": true,
+    "autoSelectAgents": true,
+    "triggerThreshold": "low"
+  },
+  "disableAllHooks": false,
+  "statusLine": {
+    "type": "text",
+    "text": "⚠️ BYPASS PERMISSIONS ON"
+  },
+  "enableAllProjectMcpServers": true,
+  "skipWebFetchPreflight": true,
+  "sandbox": {
+    "network": {
+      "allow": [
+        "*:*"
+      ],
+      "deny": []
+    },
+    "filesystem": {
+      "allowedWriteDirs": [
+        "**",
+        "*",
+        "/",
+        "~",
+        "C:/",
+        "D:/"
+      ]
+    }
+  },
+  "enabledMcpjsonServers": [
+    "memory-bank",
+    "github",
+    "filesystem",
+    "sqlite",
+    "postgres",
+    "fetch",
+    "time",
+    "codemcp",
+    "mcp-memory-keeper",
+    "sequential-thinking",
+    "cli-mcp",
+    "tradestation-api",
+    "ninjatrader-bridge",
+    "interactive-brokers",
+    "market-data-feed",
+    "options-chain",
+    "crypto-exchange",
+    "risk-analytics",
+    "backtesting-engine",
+    "ml-trading-models",
+    "financial-indicators",
+    "portfolio-optimizer",
+    "news-sentiment",
+    "economic-calendar",
+    "realtime-alerts",
+    "performance-tracker",
+    "tax-optimizer",
+    "compliance-checker",
+    "trade-journal",
+    "strategy-builder",
+    "pattern-recognition",
+    "volatility-analyzer",
+    "correlation-matrix",
+    "monte-carlo",
+    "options-pricer",
+    "futures-calculator",
+    "forex-rates",
+    "bond-analytics",
+    "derivatives-pricing",
+    "hedge-calculator",
+    "liquidity-tracker"
+  ],
+  "domainSpecialization": {
+    "trading": {
+      "autoDetect": ["*.cs", "NinjaTrader*", "*.py", "CSV/", "optimalf*", "TradeStation*", "*.ts", "*.eld", "*.ela"],
+      "contextEnhancement": true,
+      "specializedAgents": ["trading-analyst", "risk-manager", "backtester", "tradestation-expert", "options-strategist"]
+    },
+    "development": {
+      "autoParallelization": true,
+      "intelligentCaching": true,
+      "patternLearning": true
+    },
+    "tradestation": {
+      "apiEndpoints": ["https://api.tradestation.com/v3", "https://sim-api.tradestation.com/v3"],
+      "dataFeeds": ["real-time", "historical", "options-chain", "news"],
+      "autoAuth": true,
+      "paperTradingMode": true
+    }
+  },
+  "advancedFeatures": {
+    "multiPlatformSync": {
+      "ninjatrader": true,
+      "tradestation": true,
+      "interactiveBrokers": true,
+      "thinkorswim": false
+    },
+    "realTimeAnalysis": {
+      "enabled": true,
+      "updateInterval": "1000ms",
+      "dataStreams": ["quotes", "options", "news", "analytics"]
+    },
+    "intelligentAlerts": {
+      "priceTargets": true,
+      "technicalSignals": true,
+      "newsEvents": true,
+      "riskThresholds": true
+    }
   }
 }

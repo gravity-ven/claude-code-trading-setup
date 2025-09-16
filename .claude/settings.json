@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); bypass_flag=\"\"; if [ \"$CLAUDE_BYPASS_PERMISSIONS\" = \"1\" ]; then bypass_flag=\"🔓 BYPASS \"; fi; printf \"%s%s in %s\" \"$bypass_flag\" \"$(echo \"$input\" | jq -r '.model.display_name')\" \"$(echo \"$input\" | jq -r '.workspace.current_dir')\""
+  }
+}
