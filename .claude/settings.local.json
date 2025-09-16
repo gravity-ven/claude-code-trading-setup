@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "WebSearch",
+      "Bash(cat:*)",
+      "Bash(python:*)",
+      "Bash(/c/Python313/python:*)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(node:*)",
+      "Bash(npx serve:*)",
+      "Bash(sed:*)",
+      "Bash(where:*)",
+      "Bash(wezterm:*)",
+      "Bash(alacritty:*)",
+      "Bash(timeout:*)",
+      "Bash(\"C:\\Program Files\\Git\\usr\\bin\\bash.exe\" -l -c \"echo ''Git Bash test''; exit\")",
+      "Bash(\"/c/Program Files/WezTerm/wezterm.exe\" start --skip-config)",
+      "Bash(\"/c/Program Files/WezTerm/wezterm.exe\" -n start)",
+      "Bash(WEZTERM_LOG=debug wezterm start)",
+      "Bash(export WEZTERM_LOG=debug)",
+      "Bash(git init:*)",
+      "Bash(git config:*)",
+      "Bash(git add:*)",
+      "Bash(export GIT_DIR=/c/Users/Quantum/.git)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
