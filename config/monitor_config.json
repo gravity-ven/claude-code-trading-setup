@@ -1,0 +1,31 @@
+{
+  "monitor_trading_hours": true,
+  "alert_thresholds": {
+    "cpu_usage": 80,
+    "memory_usage": 85,
+    "disk_usage": 90,
+    "response_time_ms": 5000
+  },
+  "check_intervals": {
+    "system_health": 300,
+    "trading_systems": 60,
+    "dashboard_update": 900
+  },
+  "notifications": {
+    "email": false,
+    "slack": false,
+    "console": true
+  },
+  "monitored_systems": [
+    "trading-algorithms",
+    "order-management",
+    "risk-management", 
+    "data-feeds"
+  ],
+  "scheduling": {
+    "enabled": true,
+    "default_interval": 300,
+    "trading_hours_only": true,
+    "weekends": "disabled"
+  }
+}

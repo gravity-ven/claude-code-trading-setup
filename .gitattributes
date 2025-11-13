@@ -1,0 +1,14 @@
+# Default text files
+*.md text
+*.py text
+*.json text
+*.yml text
+*.yaml text
+*.txt text
+*.log text
+
+# Exclude very large files (shouldn't be in QA monitor repo)
+*.dat filter=lfs diff=lfs merge=lfs -text
+*.scid filter=lfs diff=lfs merge=lfs -text
+*.bin filter=lfs diff=lfs merge=lfs -text
+*.exe filter=lfs diff=lfs merge=lfs -text
