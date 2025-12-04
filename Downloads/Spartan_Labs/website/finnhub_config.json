@@ -1,0 +1,96 @@
+{
+  "api": {
+    "base_url": "https://finnhub.io/api/v1",
+    "api_key": "YOUR_FINNHUB_API_KEY_HERE",
+    "endpoints": {
+      "quote": "/quote",
+      "profile": "/stock/profile2",
+      "metrics": "/stock/metric",
+      "financials": "/stock/financials-reported",
+      "candles": "/stock/candle"
+    }
+  },
+  "rate_limiting": {
+    "free_tier": {
+      "calls_per_minute": 60,
+      "calls_per_month": 100000,
+      "delay_between_calls_ms": 1050
+    },
+    "premium_tier": {
+      "calls_per_minute": 300,
+      "calls_per_month": 1000000,
+      "delay_between_calls_ms": 210
+    },
+    "current_tier": "free_tier"
+  },
+  "data_types": {
+    "quote": {
+      "enabled": true,
+      "priority": 1,
+      "fields": ["c", "h", "l", "o", "pc", "t"],
+      "description": "Current price, high, low, open, previous close, timestamp"
+    },
+    "profile": {
+      "enabled": true,
+      "priority": 2,
+      "fields": ["name", "marketCapitalization", "shareOutstanding", "currency", "exchange"],
+      "description": "Company profile information"
+    },
+    "metrics": {
+      "enabled": false,
+      "priority": 3,
+      "fields": ["metric", "series"],
+      "description": "Financial metrics and KPIs"
+    },
+    "financials": {
+      "enabled": false,
+      "priority": 4,
+      "description": "As-reported financial statements"
+    }
+  },
+  "update_schedule": {
+    "daily_update_time": "18:00",
+    "timezone": "America/New_York",
+    "market_hours_only": false,
+    "weekend_updates": false,
+    "retry_failed_after_hours": 2
+  },
+  "data_storage": {
+    "base_path": "./data",
+    "quote_data_path": "./data/quotes",
+    "profile_data_path": "./data/profiles",
+    "cache_path": "./data/cache",
+    "log_path": "./logs",
+    "max_file_size_mb": 100,
+    "compression_enabled": true,
+    "backup_enabled": true,
+    "backup_retention_days": 30
+  },
+  "cache_settings": {
+    "quote_expiration_hours": 24,
+    "profile_expiration_days": 7,
+    "metrics_expiration_days": 30,
+    "max_cache_size_mb": 1000,
+    "auto_cleanup": true
+  },
+  "batch_processing": {
+    "batch_size": 100,
+    "parallel_batches": 5,
+    "max_retries": 3,
+    "retry_delay_seconds": 5,
+    "progress_report_interval": 1000
+  },
+  "error_handling": {
+    "log_errors": true,
+    "notify_on_error": false,
+    "notification_email": "",
+    "continue_on_error": true,
+    "max_consecutive_errors": 50
+  },
+  "performance": {
+    "use_connection_pooling": true,
+    "timeout_seconds": 30,
+    "verify_ssl": true,
+    "user_agent": "Spartan-Research-Station/1.0"
+  }
+}

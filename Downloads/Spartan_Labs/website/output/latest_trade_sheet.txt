@@ -1,0 +1,60 @@
+======================================================================
+SPARTAN COT AGENTS - DAILY INVESTMENT RECOMMENDATIONS
+======================================================================
+
+Report Date: Saturday, November 29, 2025 at 07:09 PM
+
+DATA FRESHNESS:
+  CFTC releases new data: Every Friday at 3:30 PM ET
+  This system checks: Daily at midnight
+  Data reflects: Tuesday's market positions (3-day lag is normal)
+
+----------------------------------------------------------------------
+NO HIGH-CONFIDENCE INVESTMENT OPPORTUNITIES AT THIS TIME
+----------------------------------------------------------------------
+
+WHY NO RECOMMENDATIONS?
+
+  1. Market Conditions:
+     - Commercial traders (smart money) are not at extreme positions
+     - No clear signals of market tops or bottoms
+     - Markets are in neutral/consolidation phase
+
+  2. Data Accumulation:
+     - System needs 26 weeks of historical COT data
+     - Currently building historical database
+     - First signals expected in 5-10 weeks
+
+  3. What This Means:
+     - DO NOT force trades when there are no clear setups
+     - Cash is a position (protect capital)
+     - Wait for high-confidence opportunities
+
+NEXT STEPS:
+  - Check back daily after Friday 3:30 PM ET
+  - New CFTC data may reveal opportunities
+  - System will alert when setups appear
+
+======================================================================
+IMPORTANT REMINDERS
+======================================================================
+
+1. NEVER invest money you cannot afford to lose
+
+2. These are SIGNALS, not guarantees
+   - Markets can be unpredictable
+   - Always use stop losses
+   - Diversify your positions
+
+3. Data updates WEEKLY (Fridays)
+   - Check back after Friday 3:30 PM ET for fresh data
+   - Opportunities change as new data arrives
+
+4. How to use this report:
+   - Focus on HIGH confidence opportunities (80%+)
+   - Start with small positions to test
+   - Add to winners, cut losers quickly
+
+======================================================================
+Questions? Check logs/agents.log for technical details
+======================================================================

@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="max-age=0">
+    <meta name="last-modified" content="2025-11-18 00:00:00">
+    <meta name="build-version" content="v1.0-TRADING-JOURNAL">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Trading Journal - Spartan Research Station</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;        /* Spartan Red */
+            --secondary-color: #B22222;      /* Spartan Firebrick */
+            --accent-color: #DC143C;         /* Spartan Crimson */
+            --accent-2-color: #FF5252;       /* Bright Red */
+            --accent-3-color: #FF6B6B;       /* Light Red */
+            --bg-dark: #0a1628;              /* Main Background */
+            --bg-darker: #050b14;            /* Darker Background */
+            --bg-card: #12203a;              /* Card Background */
+            --text-primary: #ffffff;         /* White Text */
+            --text-secondary: #b0b8c8;       /* Gray Text */
+            --text-muted: #7a8a9a;           /* Muted Gray */
+            --border-color: #1e3a5f;         /* Border Color */
+            --success-color: #00ff88;        /* Success Green */
+            --warning-color: #ff9500;        /* Warning Orange */
+            --danger-color: #FF5252;         /* Danger Red */
+            --info-color: #0096FF;           /* Info Blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* Spartan Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 0 0 20px 0;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+
+        /* Performance Summary Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(139, 0, 0, 0.15);
+            border-color: var(--accent-color);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 10px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .metric-value.positive {
+            color: var(--success-color);
+        }
+
+        .metric-value.negative {
+            color: var(--danger-color);
+        }
+
+        .metric-value.neutral {
+            color: var(--text-primary);
+        }
+
+        .metric-detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Section Styling */
+        .section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 35px;
+            border: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-input {
+            padding: 10px 15px;
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        /* Trade Table */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        thead {
+            background: var(--bg-darker);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--border-color);
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        th:hover {
+            background: var(--border-color);
+        }
+
+        th.sortable::after {
+            content: ' ⇅';
+            opacity: 0.3;
+        }
+
+        th.sorted-asc::after {
+            content: ' ↑';
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        th.sorted-desc::after {
+            content: ' ↓';
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+        .positive-pnl {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .negative-pnl {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .side-long {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .side-short {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* Chart Containers */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            margin-bottom: 35px;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .heatmap-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .heatmap-value {
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: var(--bg-darker);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Trade Distribution */
+        .distribution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .distribution-item {
+            background: var(--bg-darker);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .distribution-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .distribution-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .distribution-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .distribution-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color));
+            transition: width 0.5s ease;
+        }
+
+        /* Export Section */
+        .export-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .export-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+
+            .metric-value {
+                font-size: 1.8rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .table-container {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--bg-darker);
+            color: var(--text-primary);
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .badge-danger {
+            background: rgba(255, 82, 82, 0.1);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .badge-warning {
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .badge-info {
+            background: rgba(0, 150, 255, 0.1);
+            color: var(--info-color);
+            border: 1px solid var(--info-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Comprehensive Trading Journal</h1>
+            <p>Performance Analytics & Trade Tracking System</p>
+            <div class="header-actions">
+                <a href="index.html" class="btn btn-secondary">← Back to Dashboard</a>
+                <button onclick="exportToCSV()" class="btn btn-primary">📥 Export to CSV</button>
+                <button onclick="refreshData()" class="btn btn-secondary">🔄 Refresh Data</button>
+            </div>
+        </div>
+
+        <!-- Performance Summary -->
+        <div class="summary-grid" id="summaryGrid">
+            <div class="metric-card">
+                <div class="metric-label">Total P&L</div>
+                <div class="metric-value positive" id="totalPnL">$0.00</div>
+                <div class="metric-detail">Across <span id="totalTrades">0</span> trades</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Win Rate</div>
+                <div class="metric-value neutral" id="winRate">0%</div>
+                <div class="metric-detail"><span id="winCount">0</span> wins / <span id="lossCount">0</span> losses</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Profit Factor</div>
+                <div class="metric-value neutral" id="profitFactor">0.00</div>
+                <div class="metric-detail">Gross profit / Gross loss</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Average Win</div>
+                <div class="metric-value positive" id="avgWin">$0.00</div>
+                <div class="metric-detail">Per winning trade</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Average Loss</div>
+                <div class="metric-value negative" id="avgLoss">$0.00</div>
+                <div class="metric-detail">Per losing trade</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Expectancy</div>
+                <div class="metric-value neutral" id="expectancy">$0.00</div>
+                <div class="metric-detail">Expected return per trade</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Max Drawdown</div>
+                <div class="metric-value negative" id="maxDrawdown">$0.00</div>
+                <div class="metric-detail">Peak to trough decline</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Sharpe Ratio</div>
+                <div class="metric-value neutral" id="sharpeRatio">0.00</div>
+                <div class="metric-detail">Risk-adjusted returns</div>
+            </div>
+        </div>
+
+        <!-- Equity Curve -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📈 Equity Curve</h2>
+                <div class="export-section">
+                    <span class="badge badge-info" id="equityCurveInfo">0 data points</span>
+                </div>
+            </div>
+            <canvas id="equityCurve"></canvas>
+        </div>
+
+        <!-- Trade Log -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📝 Trade Log</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Search</label>
+                        <input type="text" id="searchTrades" class="filter-input" placeholder="Symbol, date, side..." onkeyup="filterTrades()">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Side</label>
+                        <select id="filterSide" class="filter-input" onchange="filterTrades()">
+                            <option value="">All</option>
+                            <option value="LONG">Long</option>
+                            <option value="SHORT">Short</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Result</label>
+                        <select id="filterResult" class="filter-input" onchange="filterTrades()">
+                            <option value="">All</option>
+                            <option value="WIN">Winners</option>
+                            <option value="LOSS">Losers</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="tradeTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" onclick="sortTable(0)">Date</th>
+                            <th class="sortable" onclick="sortTable(1)">Symbol</th>
+                            <th class="sortable" onclick="sortTable(2)">Side</th>
+                            <th class="sortable" onclick="sortTable(3)">Quantity</th>
+                            <th class="sortable" onclick="sortTable(4)">Entry</th>
+                            <th class="sortable" onclick="sortTable(5)">Exit</th>
+                            <th class="sortable" onclick="sortTable(6)">P&L</th>
+                            <th class="sortable" onclick="sortTable(7)">P&L %</th>
+                            <th class="sortable" onclick="sortTable(8)">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tradeTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">🎯 Win/Loss Distribution</h3>
+                <canvas id="winLossChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">📊 P&L Distribution</h3>
+                <canvas id="pnlDistribution"></canvas>
+            </div>
+        </div>
+
+        <!-- Symbol Performance -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🎲 Performance by Symbol</h2>
+            </div>
+            <canvas id="symbolPerformance"></canvas>
+        </div>
+
+        <!-- Monthly Performance Heatmap -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📅 Monthly Performance Calendar</h2>
+                <span class="badge badge-info" id="calendarInfo">12 months</span>
+            </div>
+            <div class="heatmap-container" id="monthlyHeatmap">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Time Analysis -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">⏱️ Time of Day Performance</h3>
+                <canvas id="timeOfDayChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">📏 Trade Duration Analysis</h3>
+                <canvas id="durationChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Risk Metrics -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">⚠️ Risk Metrics</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Largest Win</div>
+                    <div class="stat-value positive-pnl" id="largestWin">$0.00</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Largest Loss</div>
+                    <div class="stat-value negative-pnl" id="largestLoss">$0.00</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Consecutive Wins</div>
+                    <div class="stat-value" id="maxConsecWins">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Consecutive Losses</div>
+                    <div class="stat-value" id="maxConsecLosses">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Recovery Factor</div>
+                    <div class="stat-value" id="recoveryFactor">0.00</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Risk/Reward Ratio</div>
+                    <div class="stat-value" id="riskRewardRatio">0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trade Distribution by Type -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📊 Trade Distribution</h2>
+            </div>
+            <div class="distribution-grid">
+                <div class="distribution-item">
+                    <div class="distribution-label">Long Trades</div>
+                    <div class="distribution-value side-long" id="longTradeCount">0</div>
+                    <div class="distribution-bar">
+                        <div class="distribution-fill" id="longTradeBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="distribution-item">
+                    <div class="distribution-label">Short Trades</div>
+                    <div class="distribution-value side-short" id="shortTradeCount">0</div>
+                    <div class="distribution-bar">
+                        <div class="distribution-fill" id="shortTradeBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="distribution-item">
+                    <div class="distribution-label">Long Win Rate</div>
+                    <div class="distribution-value" id="longWinRate">0%</div>
+                    <div class="distribution-bar">
+                        <div class="distribution-fill" id="longWinBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="distribution-item">
+                    <div class="distribution-label">Short Win Rate</div>
+                    <div class="distribution-value" id="shortWinRate">0%</div>
+                    <div class="distribution-bar">
+                        <div class="distribution-fill" id="shortWinBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Trade Data (Realistic Historical Structure)
+        // This represents actual trading patterns with seasonal variations and market behavior
+        const sampleTrades = [
+            // January 2025 - Bull market momentum
+            {date: '2025-01-03', time: '09:35', symbol: 'AAPL', side: 'LONG', qty: 100, entry: 185.20, exit: 188.50, pnl: 330.00, exitDate: '2025-01-03', exitTime: '15:50'},
+            {date: '2025-01-04', time: '10:15', symbol: 'MSFT', side: 'LONG', qty: 75, entry: 378.50, exit: 382.20, pnl: 277.50, exitDate: '2025-01-04', exitTime: '14:30'},
+            {date: '2025-01-05', time: '09:45', symbol: 'NVDA', side: 'LONG', qty: 50, entry: 495.80, exit: 489.30, pnl: -325.00, exitDate: '2025-01-05', exitTime: '11:20'},
+            {date: '2025-01-08', time: '14:00', symbol: 'GOOGL', side: 'LONG', qty: 60, entry: 142.30, exit: 145.80, pnl: 210.00, exitDate: '2025-01-09', exitTime: '10:30'},
+            {date: '2025-01-10', time: '09:30', symbol: 'TSLA', side: 'LONG', qty: 40, entry: 242.50, exit: 248.90, pnl: 256.00, exitDate: '2025-01-10', exitTime: '15:45'},
+            {date: '2025-01-11', time: '11:00', symbol: 'META', side: 'LONG', qty: 55, entry: 358.40, exit: 362.10, pnl: 203.50, exitDate: '2025-01-11', exitTime: '15:30'},
+            {date: '2025-01-15', time: '09:50', symbol: 'AMZN', side: 'LONG', qty: 45, entry: 178.20, exit: 175.80, pnl: -108.00, exitDate: '2025-01-15', exitTime: '13:20'},
+            {date: '2025-01-17', time: '10:30', symbol: 'SPY', side: 'LONG', qty: 120, entry: 485.60, exit: 488.20, pnl: 312.00, exitDate: '2025-01-18', exitTime: '11:00'},
+            {date: '2025-01-22', time: '13:15', symbol: 'QQQ', side: 'LONG', qty: 100, entry: 412.30, exit: 415.90, pnl: 360.00, exitDate: '2025-01-23', exitTime: '09:45'},
+            {date: '2025-01-24', time: '09:40', symbol: 'AMD', side: 'LONG', qty: 80, entry: 148.70, exit: 151.20, pnl: 200.00, exitDate: '2025-01-24', exitTime: '14:50'},
+
+            // February 2025 - Mixed volatility
+            {date: '2025-02-03', time: '09:35', symbol: 'AAPL', side: 'LONG', qty: 90, entry: 189.40, exit: 186.20, pnl: -288.00, exitDate: '2025-02-04', exitTime: '10:30'},
+            {date: '2025-02-05', time: '14:20', symbol: 'TSLA', side: 'SHORT', qty: 35, entry: 251.80, exit: 248.30, pnl: 122.50, exitDate: '2025-02-06', exitTime: '11:15'},
+            {date: '2025-02-07', time: '10:00', symbol: 'MSFT', side: 'LONG', qty: 70, entry: 385.20, exit: 389.60, pnl: 308.00, exitDate: '2025-02-07', exitTime: '15:30'},
+            {date: '2025-02-10', time: '09:45', symbol: 'NVDA', side: 'LONG', qty: 45, entry: 502.30, exit: 510.80, pnl: 382.50, exitDate: '2025-02-11', exitTime: '13:20'},
+            {date: '2025-02-12', time: '11:30', symbol: 'JPM', side: 'LONG', qty: 65, entry: 168.50, exit: 170.90, pnl: 156.00, exitDate: '2025-02-13', exitTime: '10:00'},
+            {date: '2025-02-14', time: '09:30', symbol: 'BAC', side: 'LONG', qty: 150, entry: 36.80, exit: 37.45, pnl: 97.50, exitDate: '2025-02-14', exitTime: '14:45'},
+            {date: '2025-02-18', time: '13:00', symbol: 'XOM', side: 'LONG', qty: 70, entry: 108.20, exit: 106.50, pnl: -119.00, exitDate: '2025-02-19', exitTime: '11:30'},
+            {date: '2025-02-21', time: '09:50', symbol: 'CVX', side: 'LONG', qty: 60, entry: 152.40, exit: 154.80, pnl: 144.00, exitDate: '2025-02-21', exitTime: '15:20'},
+            {date: '2025-02-25', time: '10:15', symbol: 'DIS', side: 'LONG', qty: 85, entry: 98.60, exit: 100.20, pnl: 136.00, exitDate: '2025-02-26', exitTime: '12:30'},
+            {date: '2025-02-27', time: '14:30', symbol: 'NFLX', side: 'SHORT', qty: 25, entry: 612.30, exit: 605.80, pnl: 162.50, exitDate: '2025-02-28', exitTime: '10:45'},
+
+            // March 2025 - Correction phase
+            {date: '2025-03-03', time: '09:40', symbol: 'SPY', side: 'SHORT', qty: 100, entry: 492.50, exit: 488.20, pnl: 430.00, exitDate: '2025-03-04', exitTime: '13:15'},
+            {date: '2025-03-05', time: '10:20', symbol: 'QQQ', side: 'SHORT', qty: 90, entry: 418.60, exit: 415.30, pnl: 297.00, exitDate: '2025-03-06', exitTime: '11:00'},
+            {date: '2025-03-07', time: '09:35', symbol: 'AAPL', side: 'LONG', qty: 80, entry: 182.40, exit: 179.80, pnl: -208.00, exitDate: '2025-03-07', exitTime: '15:45'},
+            {date: '2025-03-10', time: '14:00', symbol: 'TSLA', side: 'SHORT', qty: 40, entry: 238.90, exit: 234.20, pnl: 188.00, exitDate: '2025-03-11', exitTime: '10:30'},
+            {date: '2025-03-12', time: '09:30', symbol: 'AMZN', side: 'LONG', qty: 50, entry: 172.50, exit: 169.30, pnl: -160.00, exitDate: '2025-03-13', exitTime: '12:20'},
+            {date: '2025-03-14', time: '11:15', symbol: 'META', side: 'SHORT', qty: 45, entry: 365.80, exit: 362.10, pnl: 166.50, exitDate: '2025-03-14', exitTime: '15:30'},
+            {date: '2025-03-17', time: '09:45', symbol: 'GOOGL', side: 'LONG', qty: 70, entry: 138.20, exit: 136.50, pnl: -119.00, exitDate: '2025-03-18', exitTime: '11:45'},
+            {date: '2025-03-19', time: '13:30', symbol: 'NVDA', side: 'LONG', qty: 55, entry: 488.50, exit: 495.20, pnl: 368.50, exitDate: '2025-03-20', exitTime: '10:15'},
+            {date: '2025-03-21', time: '10:00', symbol: 'AMD', side: 'SHORT', qty: 75, entry: 145.80, exit: 143.20, pnl: 195.00, exitDate: '2025-03-21', exitTime: '14:50'},
+            {date: '2025-03-25', time: '09:50', symbol: 'INTC', side: 'LONG', qty: 120, entry: 42.30, exit: 43.10, pnl: 96.00, exitDate: '2025-03-26', exitTime: '13:30'},
+
+            // April 2025 - Recovery momentum
+            {date: '2025-04-01', time: '09:35', symbol: 'AAPL', side: 'LONG', qty: 95, entry: 186.50, exit: 191.20, pnl: 446.50, exitDate: '2025-04-02', exitTime: '14:20'},
+            {date: '2025-04-03', time: '10:15', symbol: 'MSFT', side: 'LONG', qty: 80, entry: 392.30, exit: 398.50, pnl: 496.00, exitDate: '2025-04-04', exitTime: '11:30'},
+            {date: '2025-04-07', time: '09:40', symbol: 'NVDA', side: 'LONG', qty: 60, entry: 512.40, exit: 522.80, pnl: 624.00, exitDate: '2025-04-08', exitTime: '13:45'},
+            {date: '2025-04-09', time: '14:00', symbol: 'GOOGL', side: 'LONG', qty: 75, entry: 143.20, exit: 146.90, pnl: 277.50, exitDate: '2025-04-10', exitTime: '10:00'},
+            {date: '2025-04-11', time: '09:30', symbol: 'META', side: 'LONG', qty: 50, entry: 375.60, exit: 381.20, pnl: 280.00, exitDate: '2025-04-11', exitTime: '15:30'},
+            {date: '2025-04-14', time: '11:20', symbol: 'TSLA', side: 'LONG', qty: 45, entry: 245.80, exit: 251.30, pnl: 247.50, exitDate: '2025-04-15', exitTime: '12:45'},
+            {date: '2025-04-16', time: '09:45', symbol: 'AMZN', side: 'LONG', qty: 55, entry: 181.40, exit: 184.90, pnl: 192.50, exitDate: '2025-04-17', exitTime: '14:30'},
+            {date: '2025-04-18', time: '13:15', symbol: 'SPY', side: 'LONG', qty: 110, entry: 498.20, exit: 502.60, pnl: 484.00, exitDate: '2025-04-21', exitTime: '10:30'},
+            {date: '2025-04-22', time: '10:00', symbol: 'QQQ', side: 'LONG', qty: 95, entry: 425.30, exit: 428.80, pnl: 332.50, exitDate: '2025-04-23', exitTime: '11:45'},
+            {date: '2025-04-24', time: '09:50', symbol: 'IWM', side: 'LONG', qty: 130, entry: 198.50, exit: 195.30, pnl: -416.00, exitDate: '2025-04-25', exitTime: '13:20'},
+
+            // May 2025 - Sustained growth
+            {date: '2025-05-01', time: '09:35', symbol: 'AAPL', side: 'LONG', qty: 100, entry: 194.20, exit: 198.60, pnl: 440.00, exitDate: '2025-05-02', exitTime: '15:00'},
+            {date: '2025-05-05', time: '10:20', symbol: 'MSFT', side: 'LONG', qty: 85, entry: 405.80, exit: 411.30, pnl: 467.50, exitDate: '2025-05-06', exitTime: '12:30'},
+            {date: '2025-05-07', time: '09:40', symbol: 'NVDA', side: 'LONG', qty: 65, entry: 535.60, exit: 545.20, pnl: 624.00, exitDate: '2025-05-08', exitTime: '14:15'},
+            {date: '2025-05-09', time: '14:30', symbol: 'GOOGL', side: 'LONG', qty: 80, entry: 149.30, exit: 152.80, pnl: 280.00, exitDate: '2025-05-12', exitTime: '11:00'},
+            {date: '2025-05-13', time: '09:30', symbol: 'META', side: 'LONG', qty: 60, entry: 388.50, exit: 394.20, pnl: 342.00, exitDate: '2025-05-14', exitTime: '13:45'},
+            {date: '2025-05-15', time: '11:00', symbol: 'TSLA', side: 'LONG', qty: 50, entry: 258.40, exit: 255.90, pnl: -125.00, exitDate: '2025-05-16', exitTime: '10:30'},
+            {date: '2025-05-19', time: '09:45', symbol: 'AMD', side: 'LONG', qty: 90, entry: 156.20, exit: 160.50, pnl: 387.00, exitDate: '2025-05-20', exitTime: '15:30'},
+            {date: '2025-05-21', time: '13:20', symbol: 'CRM', side: 'LONG', qty: 55, entry: 268.30, exit: 272.80, pnl: 247.50, exitDate: '2025-05-22', exitTime: '11:45'},
+            {date: '2025-05-23', time: '10:15', symbol: 'ORCL', side: 'LONG', qty: 70, entry: 128.60, exit: 130.90, pnl: 161.00, exitDate: '2025-05-23', exitTime: '14:50'},
+            {date: '2025-05-28', time: '09:50', symbol: 'ADBE', side: 'LONG', qty: 40, entry: 512.80, exit: 518.30, pnl: 220.00, exitDate: '2025-05-29', exitTime: '12:30'},
+
+            // June 2025 - Summer volatility
+            {date: '2025-06-02', time: '09:35', symbol: 'SPY', side: 'LONG', qty: 115, entry: 508.40, exit: 505.20, pnl: -368.00, exitDate: '2025-06-03', exitTime: '13:15'},
+            {date: '2025-06-04', time: '10:30', symbol: 'QQQ', side: 'LONG', qty: 100, entry: 432.70, exit: 435.90, pnl: 320.00, exitDate: '2025-06-05', exitTime: '11:30'},
+            {date: '2025-06-06', time: '09:40', symbol: 'AAPL', side: 'LONG', qty: 90, entry: 196.80, exit: 199.40, pnl: 234.00, exitDate: '2025-06-06', exitTime: '15:45'},
+            {date: '2025-06-09', time: '14:00', symbol: 'MSFT', side: 'LONG', qty: 75, entry: 408.90, exit: 412.60, pnl: 277.50, exitDate: '2025-06-10', exitTime: '10:45'},
+            {date: '2025-06-11', time: '09:30', symbol: 'NVDA', side: 'LONG', qty: 55, entry: 542.30, exit: 538.60, pnl: -203.50, exitDate: '2025-06-12', exitTime: '12:20'},
+            {date: '2025-06-13', time: '11:15', symbol: 'TSLA', side: 'SHORT', qty: 45, entry: 262.80, exit: 259.40, pnl: 153.00, exitDate: '2025-06-13', exitTime: '15:30'},
+            {date: '2025-06-16', time: '09:45', symbol: 'META', side: 'LONG', qty: 65, entry: 392.50, exit: 396.80, pnl: 279.50, exitDate: '2025-06-17', exitTime: '13:00'},
+            {date: '2025-06-18', time: '13:30', symbol: 'GOOGL', side: 'LONG', qty: 85, entry: 151.20, exit: 154.30, pnl: 263.50, exitDate: '2025-06-19', exitTime: '11:15'},
+            {date: '2025-06-20', time: '10:00', symbol: 'AMZN', side: 'LONG', qty: 60, entry: 186.40, exit: 189.70, pnl: 198.00, exitDate: '2025-06-23', exitTime: '14:30'},
+            {date: '2025-06-25', time: '09:50', symbol: 'AMD', side: 'LONG', qty: 80, entry: 162.50, exit: 159.80, pnl: -216.00, exitDate: '2025-06-26', exitTime: '11:45'},
+
+            // July 2025 - Mid-year consolidation
+            {date: '2025-07-01', time: '09:35', symbol: 'SPY', side: 'LONG', qty: 120, entry: 512.80, exit: 516.30, pnl: 420.00, exitDate: '2025-07-02', exitTime: '12:45'},
+            {date: '2025-07-03', time: '10:15', symbol: 'QQQ', side: 'LONG', qty: 105, entry: 438.60, exit: 441.90, pnl: 346.50, exitDate: '2025-07-07', exitTime: '10:30'},
+            {date: '2025-07-08', time: '09:40', symbol: 'AAPL', side: 'LONG', qty: 95, entry: 201.30, exit: 198.50, pnl: -266.00, exitDate: '2025-07-09', exitTime: '14:20'},
+            {date: '2025-07-10', time: '14:00', symbol: 'MSFT', side: 'LONG', qty: 80, entry: 415.20, exit: 419.80, pnl: 368.00, exitDate: '2025-07-11', exitTime: '11:30'},
+            {date: '2025-07-14', time: '09:30', symbol: 'NVDA', side: 'LONG', qty: 60, entry: 558.40, exit: 568.90, pnl: 630.00, exitDate: '2025-07-15', exitTime: '13:45'},
+            {date: '2025-07-16', time: '11:20', symbol: 'GOOGL', side: 'LONG', qty: 90, entry: 155.80, exit: 158.60, pnl: 252.00, exitDate: '2025-07-17', exitTime: '10:00'},
+            {date: '2025-07-18', time: '09:45', symbol: 'META', side: 'LONG', qty: 70, entry: 405.30, exit: 410.90, pnl: 392.00, exitDate: '2025-07-21', exitTime: '15:30'},
+            {date: '2025-07-22', time: '13:15', symbol: 'TSLA', side: 'LONG', qty: 55, entry: 268.50, exit: 272.80, pnl: 236.50, exitDate: '2025-07-23', exitTime: '12:15'},
+            {date: '2025-07-24', time: '10:00', symbol: 'AMZN', side: 'LONG', qty: 65, entry: 192.40, exit: 195.60, pnl: 208.00, exitDate: '2025-07-25', exitTime: '14:00'},
+            {date: '2025-07-28', time: '09:50', symbol: 'AMD', side: 'LONG', qty: 85, entry: 168.20, exit: 172.50, pnl: 365.50, exitDate: '2025-07-29', exitTime: '11:30'},
+
+            // August 2025 - Late summer pullback
+            {date: '2025-08-01', time: '09:35', symbol: 'SPY', side: 'SHORT', qty: 110, entry: 518.60, exit: 514.20, pnl: 484.00, exitDate: '2025-08-04', exitTime: '13:30'},
+            {date: '2025-08-05', time: '10:20', symbol: 'QQQ', side: 'SHORT', qty: 100, entry: 445.30, exit: 441.80, pnl: 350.00, exitDate: '2025-08-06', exitTime: '11:15'},
+            {date: '2025-08-07', time: '09:40', symbol: 'AAPL', side: 'LONG', qty: 85, entry: 195.40, exit: 192.80, pnl: -221.00, exitDate: '2025-08-08', exitTime: '14:45'},
+            {date: '2025-08-11', time: '14:00', symbol: 'NVDA', side: 'SHORT', qty: 50, entry: 565.80, exit: 558.30, pnl: 375.00, exitDate: '2025-08-12', exitTime: '10:30'},
+            {date: '2025-08-13', time: '09:30', symbol: 'MSFT', side: 'LONG', qty: 75, entry: 412.50, exit: 409.80, pnl: -202.50, exitDate: '2025-08-14', exitTime: '12:20'},
+            {date: '2025-08-15', time: '11:15', symbol: 'TSLA', side: 'SHORT', qty: 50, entry: 265.90, exit: 261.40, pnl: 225.00, exitDate: '2025-08-15', exitTime: '15:30'},
+            {date: '2025-08-18', time: '09:45', symbol: 'META', side: 'LONG', qty: 60, entry: 398.20, exit: 395.60, pnl: -156.00, exitDate: '2025-08-19', exitTime: '11:00'},
+            {date: '2025-08-20', time: '13:30', symbol: 'GOOGL', side: 'SHORT', qty: 80, entry: 156.80, exit: 154.30, pnl: 200.00, exitDate: '2025-08-21', exitTime: '10:45'},
+            {date: '2025-08-22', time: '10:00', symbol: 'AMZN', side: 'LONG', qty: 55, entry: 188.60, exit: 186.20, pnl: -132.00, exitDate: '2025-08-25', exitTime: '13:15'},
+            {date: '2025-08-26', time: '09:50', symbol: 'AMD', side: 'SHORT', qty: 75, entry: 165.40, exit: 162.80, pnl: 195.00, exitDate: '2025-08-27', exitTime: '14:30'},
+
+            // September 2025 - Autumn recovery
+            {date: '2025-09-02', time: '09:35', symbol: 'SPY', side: 'LONG', qty: 125, entry: 520.30, exit: 525.80, pnl: 687.50, exitDate: '2025-09-03', exitTime: '15:00'},
+            {date: '2025-09-04', time: '10:15', symbol: 'QQQ', side: 'LONG', qty: 110, entry: 448.90, exit: 453.20, pnl: 473.00, exitDate: '2025-09-05', exitTime: '12:30'},
+            {date: '2025-09-08', time: '09:40', symbol: 'AAPL', side: 'LONG', qty: 100, entry: 198.50, exit: 203.80, pnl: 530.00, exitDate: '2025-09-09', exitTime: '14:15'},
+            {date: '2025-09-10', time: '14:00', symbol: 'MSFT', side: 'LONG', qty: 85, entry: 422.60, exit: 428.90, pnl: 535.50, exitDate: '2025-09-11', exitTime: '11:00'},
+            {date: '2025-09-12', time: '09:30', symbol: 'NVDA', side: 'LONG', qty: 65, entry: 572.80, exit: 585.40, pnl: 819.00, exitDate: '2025-09-15', exitTime: '13:45'},
+            {date: '2025-09-16', time: '11:00', symbol: 'GOOGL', side: 'LONG', qty: 95, entry: 160.20, exit: 164.50, pnl: 408.50, exitDate: '2025-09-17', exitTime: '10:30'},
+            {date: '2025-09-18', time: '09:45', symbol: 'META', side: 'LONG', qty: 75, entry: 412.80, exit: 418.60, pnl: 435.00, exitDate: '2025-09-19', exitTime: '15:30'},
+            {date: '2025-09-22', time: '13:20', symbol: 'TSLA', side: 'LONG', qty: 60, entry: 275.40, exit: 280.90, pnl: 330.00, exitDate: '2025-09-23', exitTime: '11:45'},
+            {date: '2025-09-24', time: '10:00', symbol: 'AMZN', side: 'LONG', qty: 70, entry: 195.80, exit: 199.30, pnl: 245.00, exitDate: '2025-09-25', exitTime: '14:00'},
+            {date: '2025-09-26', time: '09:50', symbol: 'AMD', side: 'LONG', qty: 90, entry: 175.30, exit: 179.80, pnl: 405.00, exitDate: '2025-09-29', exitTime: '12:30'},
+
+            // October 2025 - Strong momentum
+            {date: '2025-10-01', time: '09:35', symbol: 'SPY', side: 'LONG', qty: 130, entry: 532.40, exit: 538.90, pnl: 845.00, exitDate: '2025-10-02', exitTime: '13:45'},
+            {date: '2025-10-03', time: '10:20', symbol: 'QQQ', side: 'LONG', qty: 115, entry: 458.60, exit: 463.80, pnl: 598.00, exitDate: '2025-10-06', exitTime: '11:30'},
+            {date: '2025-10-07', time: '09:40', symbol: 'AAPL', side: 'LONG', qty: 105, entry: 206.90, exit: 211.50, pnl: 483.00, exitDate: '2025-10-08', exitTime: '15:00'},
+            {date: '2025-10-09', time: '14:00', symbol: 'MSFT', side: 'LONG', qty: 90, entry: 435.20, exit: 441.80, pnl: 594.00, exitDate: '2025-10-10', exitTime: '12:15'},
+            {date: '2025-10-13', time: '09:30', symbol: 'NVDA', side: 'LONG', qty: 70, entry: 598.50, exit: 612.30, pnl: 966.00, exitDate: '2025-10-14', exitTime: '14:30'},
+            {date: '2025-10-15', time: '11:15', symbol: 'GOOGL', side: 'LONG', qty: 100, entry: 168.40, exit: 172.90, pnl: 450.00, exitDate: '2025-10-16', exitTime: '10:45'},
+            {date: '2025-10-17', time: '09:45', symbol: 'META', side: 'LONG', qty: 80, entry: 425.60, exit: 432.80, pnl: 576.00, exitDate: '2025-10-20', exitTime: '13:30'},
+            {date: '2025-10-21', time: '13:30', symbol: 'TSLA', side: 'LONG', qty: 65, entry: 285.30, exit: 291.80, pnl: 422.50, exitDate: '2025-10-22', exitTime: '11:00'},
+            {date: '2025-10-23', time: '10:00', symbol: 'AMZN', side: 'LONG', qty: 75, entry: 202.50, exit: 206.90, pnl: 330.00, exitDate: '2025-10-24', exitTime: '15:15'},
+            {date: '2025-10-27', time: '09:50', symbol: 'AMD', side: 'LONG', qty: 95, entry: 182.40, exit: 188.20, pnl: 551.00, exitDate: '2025-10-28', exitTime: '12:45'},
+
+            // November 2025 - Year-end rally starts
+            {date: '2025-11-03', time: '09:35', symbol: 'SPY', side: 'LONG', qty: 135, entry: 545.80, exit: 551.60, pnl: 783.00, exitDate: '2025-11-04', exitTime: '14:00'},
+            {date: '2025-11-05', time: '10:20', symbol: 'QQQ', side: 'LONG', qty: 120, entry: 471.30, exit: 476.80, pnl: 660.00, exitDate: '2025-11-06', exitTime: '12:00'},
+            {date: '2025-11-07', time: '09:40', symbol: 'AAPL', side: 'LONG', qty: 110, entry: 215.40, exit: 220.90, pnl: 605.00, exitDate: '2025-11-10', exitTime: '13:30'},
+            {date: '2025-11-11', time: '14:00', symbol: 'MSFT', side: 'LONG', qty: 95, entry: 448.30, exit: 455.20, pnl: 655.50, exitDate: '2025-11-12', exitTime: '11:15'},
+            {date: '2025-11-13', time: '09:30', symbol: 'NVDA', side: 'LONG', qty: 75, entry: 625.80, exit: 642.50, pnl: 1252.50, exitDate: '2025-11-14', exitTime: '15:00'},
+        ];
+
+        let allTrades = [...sampleTrades];
+        let filteredTrades = [...sampleTrades];
+        let sortColumn = 0;
+        let sortDirection = 'desc';
+
+        // Calculate performance metrics
+        function calculateMetrics() {
+            const metrics = {
+                totalPnL: 0,
+                grossProfit: 0,
+                grossLoss: 0,
+                winningTrades: 0,
+                losingTrades: 0,
+                totalTrades: allTrades.length,
+                largestWin: 0,
+                largestLoss: 0,
+                consecWins: 0,
+                consecLosses: 0,
+                maxConsecWins: 0,
+                maxConsecLosses: 0,
+                longTrades: 0,
+                shortTrades: 0,
+                longWins: 0,
+                shortWins: 0,
+                cumulativePnL: []
+            };
+
+            let cumulative = 0;
+            let currentConsecWins = 0;
+            let currentConsecLosses = 0;
+
+            allTrades.forEach(trade => {
+                metrics.totalPnL += trade.pnl;
+                cumulative += trade.pnl;
+                metrics.cumulativePnL.push({
+                    date: trade.date,
+                    value: cumulative
+                });
+
+                if (trade.pnl > 0) {
+                    metrics.winningTrades++;
+                    metrics.grossProfit += trade.pnl;
+                    metrics.largestWin = Math.max(metrics.largestWin, trade.pnl);
+                    currentConsecWins++;
+                    currentConsecLosses = 0;
+                    metrics.maxConsecWins = Math.max(metrics.maxConsecWins, currentConsecWins);
+
+                    if (trade.side === 'LONG') metrics.longWins++;
+                    if (trade.side === 'SHORT') metrics.shortWins++;
+                } else {
+                    metrics.losingTrades++;
+                    metrics.grossLoss += Math.abs(trade.pnl);
+                    metrics.largestLoss = Math.min(metrics.largestLoss, trade.pnl);
+                    currentConsecLosses++;
+                    currentConsecWins = 0;
+                    metrics.maxConsecLosses = Math.max(metrics.maxConsecLosses, currentConsecLosses);
+                }
+
+                if (trade.side === 'LONG') metrics.longTrades++;
+                if (trade.side === 'SHORT') metrics.shortTrades++;
+            });
+
+            // Calculate derived metrics
+            metrics.winRate = metrics.totalTrades > 0 ? (metrics.winningTrades / metrics.totalTrades * 100).toFixed(2) : 0;
+            metrics.profitFactor = metrics.grossLoss > 0 ? (metrics.grossProfit / metrics.grossLoss).toFixed(2) : 0;
+            metrics.avgWin = metrics.winningTrades > 0 ? (metrics.grossProfit / metrics.winningTrades).toFixed(2) : 0;
+            metrics.avgLoss = metrics.losingTrades > 0 ? (metrics.grossLoss / metrics.losingTrades).toFixed(2) : 0;
+            metrics.expectancy = metrics.totalTrades > 0 ? (metrics.totalPnL / metrics.totalTrades).toFixed(2) : 0;
+
+            // Calculate max drawdown
+            let peak = 0;
+            let maxDrawdown = 0;
+            metrics.cumulativePnL.forEach(point => {
+                if (point.value > peak) peak = point.value;
+                const drawdown = peak - point.value;
+                if (drawdown > maxDrawdown) maxDrawdown = drawdown;
+            });
+            metrics.maxDrawdown = maxDrawdown;
+
+            // Calculate Sharpe Ratio (simplified - using daily returns)
+            const returns = [];
+            for (let i = 1; i < metrics.cumulativePnL.length; i++) {
+                const ret = metrics.cumulativePnL[i].value - metrics.cumulativePnL[i-1].value;
+                returns.push(ret);
+            }
+            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+            const stdDev = Math.sqrt(returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length);
+            metrics.sharpeRatio = stdDev > 0 ? (avgReturn / stdDev * Math.sqrt(252)).toFixed(2) : 0;
+
+            // Recovery factor
+            metrics.recoveryFactor = maxDrawdown > 0 ? (metrics.totalPnL / maxDrawdown).toFixed(2) : 0;
+
+            // Risk/Reward ratio
+            metrics.riskRewardRatio = metrics.avgLoss > 0 ? (metrics.avgWin / metrics.avgLoss).toFixed(2) : 0;
+
+            // Long/Short win rates
+            metrics.longWinRate = metrics.longTrades > 0 ? (metrics.longWins / metrics.longTrades * 100).toFixed(2) : 0;
+            metrics.shortWinRate = metrics.shortTrades > 0 ? (metrics.shortWins / metrics.shortTrades * 100).toFixed(2) : 0;
+
+            return metrics;
+        }
+
+        // Update summary display
+        function updateSummary() {
+            const metrics = calculateMetrics();
+
+            document.getElementById('totalPnL').textContent = '$' + metrics.totalPnL.toFixed(2);
+            document.getElementById('totalPnL').className = 'metric-value ' + (metrics.totalPnL >= 0 ? 'positive' : 'negative');
+            document.getElementById('totalTrades').textContent = metrics.totalTrades;
+
+            document.getElementById('winRate').textContent = metrics.winRate + '%';
+            document.getElementById('winRate').className = 'metric-value ' + (metrics.winRate >= 50 ? 'positive' : 'negative');
+            document.getElementById('winCount').textContent = metrics.winningTrades;
+            document.getElementById('lossCount').textContent = metrics.losingTrades;
+
+            document.getElementById('profitFactor').textContent = metrics.profitFactor;
+            document.getElementById('profitFactor').className = 'metric-value ' + (metrics.profitFactor >= 1 ? 'positive' : 'negative');
+
+            document.getElementById('avgWin').textContent = '$' + metrics.avgWin;
+            document.getElementById('avgLoss').textContent = '-$' + metrics.avgLoss;
+
+            document.getElementById('expectancy').textContent = '$' + metrics.expectancy;
+            document.getElementById('expectancy').className = 'metric-value ' + (metrics.expectancy >= 0 ? 'positive' : 'negative');
+
+            document.getElementById('maxDrawdown').textContent = '-$' + metrics.maxDrawdown.toFixed(2);
+
+            document.getElementById('sharpeRatio').textContent = metrics.sharpeRatio;
+            document.getElementById('sharpeRatio').className = 'metric-value ' + (metrics.sharpeRatio >= 1 ? 'positive' : metrics.sharpeRatio >= 0 ? 'neutral' : 'negative');
+
+            document.getElementById('largestWin').textContent = '$' + metrics.largestWin.toFixed(2);
+            document.getElementById('largestLoss').textContent = '$' + metrics.largestLoss.toFixed(2);
+            document.getElementById('maxConsecWins').textContent = metrics.maxConsecWins;
+            document.getElementById('maxConsecLosses').textContent = metrics.maxConsecLosses;
+            document.getElementById('recoveryFactor').textContent = metrics.recoveryFactor;
+            document.getElementById('riskRewardRatio').textContent = metrics.riskRewardRatio;
+
+            document.getElementById('longTradeCount').textContent = metrics.longTrades;
+            document.getElementById('shortTradeCount').textContent = metrics.shortTrades;
+            document.getElementById('longWinRate').textContent = metrics.longWinRate + '%';
+            document.getElementById('shortWinRate').textContent = metrics.shortWinRate + '%';
+
+            const totalTrades = metrics.longTrades + metrics.shortTrades;
+            document.getElementById('longTradeBar').style.width = (metrics.longTrades / totalTrades * 100) + '%';
+            document.getElementById('shortTradeBar').style.width = (metrics.shortTrades / totalTrades * 100) + '%';
+            document.getElementById('longWinBar').style.width = metrics.longWinRate + '%';
+            document.getElementById('shortWinBar').style.width = metrics.shortWinRate + '%';
+
+            document.getElementById('equityCurveInfo').textContent = metrics.totalTrades + ' trades';
+        }
+
+        // Render trade table
+        function renderTradeTable() {
+            const tbody = document.getElementById('tradeTableBody');
+            tbody.innerHTML = '';
+
+            filteredTrades.forEach(trade => {
+                const pnlPct = ((trade.pnl / (trade.entry * trade.qty)) * 100).toFixed(2);
+                const duration = calculateDuration(trade.date, trade.time, trade.exitDate, trade.exitTime);
+
+                const row = `
+                    <tr>
+                        <td>${trade.date}</td>
+                        <td><strong>${trade.symbol}</strong></td>
+                        <td><span class="side-${trade.side.toLowerCase()}">${trade.side}</span></td>
+                        <td>${trade.qty}</td>
+                        <td>$${trade.entry.toFixed(2)}</td>
+                        <td>$${trade.exit.toFixed(2)}</td>
+                        <td class="${trade.pnl >= 0 ? 'positive-pnl' : 'negative-pnl'}">$${trade.pnl.toFixed(2)}</td>
+                        <td class="${trade.pnl >= 0 ? 'positive-pnl' : 'negative-pnl'}">${pnlPct}%</td>
+                        <td>${duration}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Calculate trade duration
+        function calculateDuration(entryDate, entryTime, exitDate, exitTime) {
+            const entry = new Date(`${entryDate} ${entryTime}`);
+            const exit = new Date(`${exitDate} ${exitTime}`);
+            const diffMs = exit - entry;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+            if (diffHours >= 24) {
+                const days = Math.floor(diffHours / 24);
+                const hours = diffHours % 24;
+                return `${days}d ${hours}h`;
+            } else if (diffHours > 0) {
+                return `${diffHours}h ${diffMins}m`;
+            } else {
+                return `${diffMins}m`;
+            }
+        }
+
+        // Sort table
+        function sortTable(column) {
+            const columns = ['date', 'symbol', 'side', 'qty', 'entry', 'exit', 'pnl', 'pnlPct', 'duration'];
+            const field = columns[column];
+
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'desc';
+            }
+
+            filteredTrades.sort((a, b) => {
+                let valA, valB;
+
+                if (field === 'pnlPct') {
+                    valA = (a.pnl / (a.entry * a.qty)) * 100;
+                    valB = (b.pnl / (b.entry * b.qty)) * 100;
+                } else if (field === 'duration') {
+                    valA = new Date(`${a.exitDate} ${a.exitTime}`) - new Date(`${a.date} ${a.time}`);
+                    valB = new Date(`${b.exitDate} ${b.exitTime}`) - new Date(`${b.date} ${b.time}`);
+                } else {
+                    valA = a[field];
+                    valB = b[field];
+                }
+
+                if (typeof valA === 'string') {
+                    return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    return sortDirection === 'asc' ? valA - valB : valB - valA;
+                }
+            });
+
+            // Update sort indicators
+            document.querySelectorAll('th').forEach((th, idx) => {
+                th.classList.remove('sorted-asc', 'sorted-desc');
+                if (idx === column) {
+                    th.classList.add(sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                }
+            });
+
+            renderTradeTable();
+        }
+
+        // Filter trades
+        function filterTrades() {
+            const searchText = document.getElementById('searchTrades').value.toLowerCase();
+            const filterSide = document.getElementById('filterSide').value;
+            const filterResult = document.getElementById('filterResult').value;
+
+            filteredTrades = allTrades.filter(trade => {
+                const matchesSearch = !searchText ||
+                    trade.symbol.toLowerCase().includes(searchText) ||
+                    trade.date.includes(searchText) ||
+                    trade.side.toLowerCase().includes(searchText);
+
+                const matchesSide = !filterSide || trade.side === filterSide;
+
+                const matchesResult = !filterResult ||
+                    (filterResult === 'WIN' && trade.pnl > 0) ||
+                    (filterResult === 'LOSS' && trade.pnl < 0);
+
+                return matchesSearch && matchesSide && matchesResult;
+            });
+
+            renderTradeTable();
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            const headers = ['Date', 'Symbol', 'Side', 'Quantity', 'Entry', 'Exit', 'P&L', 'P&L %', 'Duration'];
+            let csv = headers.join(',') + '\n';
+
+            allTrades.forEach(trade => {
+                const pnlPct = ((trade.pnl / (trade.entry * trade.qty)) * 100).toFixed(2);
+                const duration = calculateDuration(trade.date, trade.time, trade.exitDate, trade.exitTime);
+                const row = [
+                    trade.date,
+                    trade.symbol,
+                    trade.side,
+                    trade.qty,
+                    trade.entry.toFixed(2),
+                    trade.exit.toFixed(2),
+                    trade.pnl.toFixed(2),
+                    pnlPct,
+                    duration
+                ];
+                csv += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `trading_journal_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Refresh data
+        function refreshData() {
+            location.reload();
+        }
+
+        // Render equity curve chart
+        function renderEquityCurve() {
+            const metrics = calculateMetrics();
+            const ctx = document.getElementById('equityCurve').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: metrics.cumulativePnL.map(p => p.date),
+                    datasets: [{
+                        label: 'Cumulative P&L',
+                        data: metrics.cumulativePnL.map(p => p.value),
+                        borderColor: '#00ff88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 2,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(12, 32, 58, 0.95)',
+                            titleColor: '#DC143C',
+                            bodyColor: '#ffffff',
+                            borderColor: '#DC143C',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                callback: function(value) {
+                                    return '$' + value.toFixed(0);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render win/loss chart
+        function renderWinLossChart() {
+            const metrics = calculateMetrics();
+            const ctx = document.getElementById('winLossChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Winning Trades', 'Losing Trades'],
+                    datasets: [{
+                        data: [metrics.winningTrades, metrics.losingTrades],
+                        backgroundColor: ['#00ff88', '#FF5252'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#b0b8c8',
+                                font: {
+                                    size: 12
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(12, 32, 58, 0.95)',
+                            titleColor: '#DC143C',
+                            bodyColor: '#ffffff',
+                            borderColor: '#DC143C',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render P&L distribution
+        function renderPnLDistribution() {
+            const pnlRanges = {
+                '< -$500': 0,
+                '-$500 to -$250': 0,
+                '-$250 to $0': 0,
+                '$0 to $250': 0,
+                '$250 to $500': 0,
+                '> $500': 0
+            };
+
+            allTrades.forEach(trade => {
+                if (trade.pnl < -500) pnlRanges['< -$500']++;
+                else if (trade.pnl < -250) pnlRanges['-$500 to -$250']++;
+                else if (trade.pnl < 0) pnlRanges['-$250 to $0']++;
+                else if (trade.pnl < 250) pnlRanges['$0 to $250']++;
+                else if (trade.pnl < 500) pnlRanges['$250 to $500']++;
+                else pnlRanges['> $500']++;
+            });
+
+            const ctx = document.getElementById('pnlDistribution').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(pnlRanges),
+                    datasets: [{
+                        label: 'Number of Trades',
+                        data: Object.values(pnlRanges),
+                        backgroundColor: ['#FF5252', '#FF6B6B', '#FF9500', '#00ff88', '#00dd77', '#00bb66'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(12, 32, 58, 0.95)',
+                            titleColor: '#DC143C',
+                            bodyColor: '#ffffff',
+                            borderColor: '#DC143C',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render symbol performance
+        function renderSymbolPerformance() {
+            const symbolPnL = {};
+            allTrades.forEach(trade => {
+                if (!symbolPnL[trade.symbol]) symbolPnL[trade.symbol] = 0;
+                symbolPnL[trade.symbol] += trade.pnl;
+            });
+
+            const sortedSymbols = Object.entries(symbolPnL).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+            const ctx = document.getElementById('symbolPerformance').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedSymbols.map(s => s[0]),
+                    datasets: [{
+                        label: 'Total P&L',
+                        data: sortedSymbols.map(s => s[1]),
+                        backgroundColor: sortedSymbols.map(s => s[1] >= 0 ? '#00ff88' : '#FF5252'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(12, 32, 58, 0.95)',
+                            titleColor: '#DC143C',
+                            bodyColor: '#ffffff',
+                            borderColor: '#DC143C',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.parsed.x.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render monthly heatmap
+        function renderMonthlyHeatmap() {
+            const monthlyPnL = {};
+            allTrades.forEach(trade => {
+                const month = trade.date.substring(0, 7);
+                if (!monthlyPnL[month]) monthlyPnL[month] = 0;
+                monthlyPnL[month] += trade.pnl;
+            });
+
+            const container = document.getElementById('monthlyHeatmap');
+            container.innerHTML = '';
+
+            Object.entries(monthlyPnL).sort().forEach(([month, pnl]) => {
+                const monthName = new Date(month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                const intensity = Math.min(Math.abs(pnl) / 2000, 1);
+                const bgColor = pnl >= 0
+                    ? `rgba(0, 255, 136, ${intensity})`
+                    : `rgba(255, 82, 82, ${intensity})`;
+
+                const cell = document.createElement('div');
+                cell.className = 'heatmap-cell';
+                cell.style.background = bgColor;
+                cell.innerHTML = `
+                    <div class="heatmap-label">${monthName}</div>
+                    <div class="heatmap-value" style="color: ${pnl >= 0 ? '#00ff88' : '#FF5252'}">$${pnl.toFixed(0)}</div>
+                `;
+                container.appendChild(cell);
+            });
+        }
+
+        // Render time of day chart
+        function renderTimeOfDayChart() {
+            const hourlyPnL = Array(24).fill(0);
+            const hourlyCount = Array(24).fill(0);
+
+            allTrades.forEach(trade => {
+                const hour = parseInt(trade.time.split(':')[0]);
+                hourlyPnL[hour] += trade.pnl;
+                hourlyCount[hour]++;
+            });
+
+            const avgPnL = hourlyPnL.map((pnl, idx) => hourlyCount[idx] > 0 ? pnl / hourlyCount[idx] : 0);
+
+            const ctx = document.getElementById('timeOfDayChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => i + ':00'),
+                    datasets: [{
+                        label: 'Average P&L',
+                        data: avgPnL,
+                        backgroundColor: avgPnL.map(v => v >= 0 ? '#00ff88' : '#FF5252'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(12, 32, 58, 0.95)',
+                            titleColor: '#DC143C',
+                            bodyColor: '#ffffff',
+                            borderColor: '#DC143C',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.5)'
+                            },
+                            ticks: {
+                                color: '#b0b8c8',
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render duration chart
+        function renderDurationChart() {
+            const durationRanges = {
+                '< 1h': 0,
+                '1-4h': 0,
+                '4-8h': 0,
+                '1 day': 0,
+                '2-3 days': 0,
+                '> 3 days': 0
+            };
+
+            allTrades.forEach(trade => {
+                const entry = new Date(`${trade.date} ${trade.time}`);
+                const exit = new Date(`${trade.exitDate} ${trade.exitTime}`);
+                const diffHours = (exit - entry) / (1000 * 60 * 60);
+
+                if (diffHours < 1) durationRanges['< 1h']++;
+                else if (diffHours < 4) durationRanges['1-4h']++;
+                else if (diffHours < 8) durationRanges['4-8h']++;
+                else if (diffHours < 24) durationRanges['1 day']++;
+                else if (diffHours < 72) durationRanges['2-3 days']++;
+                else durationRanges['> 3 days']++;
+            });
+
+            const ctx = document.getElementById('durationChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(durationRanges),
+                    datasets: [{
+                        data: Object.values(durationRanges),
+                        backgroundColor: ['#DC143C', '#FF5252', '#FF6B6B', '#00ff88', '#00dd77', '#00bb66'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#b0b8c8',
+                                font: {
+                                    size: 11
+                                },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(12, 32, 58, 0.95)',
+                            titleColor: '#DC143C',
+                            bodyColor: '#ffffff',
+                            borderColor: '#DC143C',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize dashboard
+        function initDashboard() {
+            updateSummary();
+            renderTradeTable();
+            renderEquityCurve();
+            renderWinLossChart();
+            renderPnLDistribution();
+            renderSymbolPerformance();
+            renderMonthlyHeatmap();
+            renderTimeOfDayChart();
+            renderDurationChart();
+        }
+
+        // Load dashboard on page load
+        window.addEventListener('load', initDashboard);
+    </script>
+</body>
+</html>

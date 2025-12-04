@@ -1,0 +1,584 @@
+# ==============================================================================
+# SPARTAN RESEARCH STATION - Data Sources Configuration
+# ==============================================================================
+# Defines 50+ data sources with priorities, categories, and fallback chains
+# Database-First Architecture: Download → PostgreSQL → Never refetch
+# ==============================================================================
+
+# ==============================================================================
+# PRIMARY SOURCES (Highest Priority)
+# ==============================================================================
+
+primary_sources:
+  - id: polygon_stocks
+    name: Polygon.io Stocks
+    category: stocks
+    priority: 1
+    enabled: true
+    api_key_env: POLYGON_IO_API_KEY
+    rate_limit: unlimited  # Paid tier
+    symbols:
+      - SPY
+      - QQQ
+      - DIA
+      - IWM
+      - AAPL
+      - MSFT
+      - GOOGL
+      - AMZN
+      - TSLA
+      - NVDA
+
+  - id: polygon_forex
+    name: Polygon.io Forex
+    category: forex
+    priority: 1
+    enabled: true
+    api_key_env: POLYGON_IO_API_KEY
+    rate_limit: unlimited
+    symbols:
+      - EUR/USD
+      - GBP/USD
+      - USD/JPY
+      - USD/CHF
+      - AUD/USD
+      - USD/CAD
+
+  - id: polygon_crypto
+    name: Polygon.io Crypto
+    category: crypto
+    priority: 1
+    enabled: true
+    api_key_env: POLYGON_IO_API_KEY
+    rate_limit: unlimited
+    symbols:
+      - BTC
+      - ETH
+      - SOL
+      - BNB
+      - XRP
+      - ADA
+
+# ==============================================================================
+# FREE TIER - STOCKS (Fallback Chain)
+# ==============================================================================
+
+stocks_free:
+  - id: yahoo_stocks
+    name: Yahoo Finance Stocks
+    category: stocks
+    priority: 2
+    enabled: true
+    api_key_env: none  # No key required
+    rate_limit: unlimited
+    symbols:
+      - ^GSPC  # S&P 500
+      - ^IXIC  # NASDAQ
+      - ^DJI   # Dow Jones
+      - ^RUT   # Russell 2000
+      - ^VIX   # VIX
+      - SPY
+      - QQQ
+      - IWM
+      - TLT
+      - GLD
+
+  - id: alpha_vantage_stocks
+    name: Alpha Vantage
+    category: stocks
+    priority: 3
+    enabled: true
+    api_key_env: ALPHA_VANTAGE_API_KEY
+    rate_limit: 25/day  # Free tier
+    symbols:
+      - AAPL
+      - MSFT
+      - GOOGL
+      - AMZN
+      - TSLA
+
+  - id: twelve_data_stocks
+    name: Twelve Data
+    category: stocks
+    priority: 4
+    enabled: true
+    api_key_env: TWELVE_DATA_API_KEY
+    rate_limit: 800/day  # Free tier (8 req/min)
+    symbols:
+      - SPY
+      - QQQ
+      - DIA
+      - IWM
+      - VIX
+
+  - id: finnhub_stocks
+    name: Finnhub
+    category: stocks
+    priority: 5
+    enabled: true
+    api_key_env: FINNHUB_API_KEY
+    rate_limit: 60/min  # Free tier
+    symbols:
+      - AAPL
+      - MSFT
+      - TSLA
+      - NVDA
+      - META
+
+  - id: iex_cloud_stocks
+    name: IEX Cloud
+    category: stocks
+    priority: 6
+    enabled: true
+    api_key_env: IEX_CLOUD_API_KEY
+    rate_limit: varies  # Free tier
+    symbols:
+      - SPY
+      - QQQ
+      - AAPL
+      - MSFT
+
+  - id: tiingo_stocks
+    name: Tiingo
+    category: stocks
+    priority: 7
+    enabled: true
+    api_key_env: TIINGO_API_KEY
+    rate_limit: 50/hour  # Free tier
+    symbols:
+      - SPY
+      - QQQ
+      - VIX
+
+  - id: marketstack_stocks
+    name: Marketstack
+    category: stocks
+    priority: 8
+    enabled: true
+    api_key_env: MARKETSTACK_API_KEY
+    rate_limit: 100/month  # Free tier
+    symbols:
+      - AAPL
+      - MSFT
+
+  - id: fmp_stocks
+    name: Financial Modeling Prep
+    category: stocks
+    priority: 9
+    enabled: true
+    api_key_env: FINANCIAL_MODELING_PREP_API_KEY
+    rate_limit: 250/day  # Free tier
+    symbols:
+      - AAPL
+      - MSFT
+      - TSLA
+      - SPY
+      - QQQ
+
+# ==============================================================================
+# ECONOMIC DATA (Critical - FRED is Essential)
+# ==============================================================================
+
+economic:
+  - id: fred_api
+    name: FRED (Federal Reserve Economic Data)
+    category: economic
+    priority: 1
+    enabled: true
+    api_key_env: FRED_API_KEY
+    rate_limit: 120/min  # Very generous
+    series_ids:
+      # GDP & Growth
+      - GDP          # Gross Domestic Product
+      - GDPC1        # Real GDP
+      - GDPPOT       # Potential GDP
+
+      # Unemployment & Employment
+      - UNRATE       # Unemployment Rate
+      - PAYEMS       # Nonfarm Payrolls
+      - CIVPART      # Labor Force Participation
+
+      # Inflation
+      - CPIAUCSL     # Consumer Price Index
+      - PCEPI        # PCE Price Index
+      - CPILFESL     # Core CPI
+
+      # Interest Rates
+      - FEDFUNDS     # Federal Funds Rate
+      - DFF          # Effective Fed Funds Rate
+      - DGS2         # 2-Year Treasury
+      - DGS10        # 10-Year Treasury
+      - DGS30        # 30-Year Treasury
+      - T10Y2Y       # 10Y-2Y Spread
+
+      # Money Supply
+      - M1SL         # M1 Money Supply
+      - M2SL         # M2 Money Supply
+      - WALCL        # Fed Balance Sheet
+
+      # Housing
+      - CSUSHPISA    # Case-Shiller Home Price Index
+      - HOUST        # Housing Starts
+      - MORTGAGE30US # 30-Year Mortgage Rate
+
+      # Manufacturing & Business
+      - INDPRO       # Industrial Production
+      - IPMAN        # Manufacturing Index
+      - TCU          # Capacity Utilization
+      - UMCSENT      # Consumer Sentiment
+
+  - id: bls_api
+    name: Bureau of Labor Statistics
+    category: economic
+    priority: 2
+    enabled: true
+    api_key_env: BLS_API_KEY
+    rate_limit: 500/day  # Free tier
+    series_ids:
+      - LNS14000000  # Unemployment Rate
+      - CES0000000001  # Total Nonfarm Employment
+      - CUUR0000SA0  # CPI-U
+
+# ==============================================================================
+# FOREX DATA
+# ==============================================================================
+
+forex:
+  - id: yahoo_forex
+    name: Yahoo Finance Forex
+    category: forex
+    priority: 2
+    enabled: true
+    api_key_env: none
+    rate_limit: unlimited
+    symbols:
+      - EURUSD=X
+      - GBPUSD=X
+      - USDJPY=X
+      - USDCHF=X
+      - AUDUSD=X
+      - USDCAD=X
+      - NZDUSD=X
+      - EURGBP=X
+
+  - id: exchangerate_api
+    name: ExchangeRate-API
+    category: forex
+    priority: 3
+    enabled: true
+    api_key_env: EXCHANGERATE_API_KEY
+    rate_limit: 1500/month  # Free tier
+    base_currencies:
+      - USD
+      - EUR
+      - GBP
+
+  - id: fixer_io
+    name: Fixer.io
+    category: forex
+    priority: 4
+    enabled: true
+    api_key_env: FIXER_API_KEY
+    rate_limit: 100/month  # Free tier
+    base_currencies:
+      - EUR
+
+  - id: currencylayer
+    name: CurrencyLayer
+    category: forex
+    priority: 5
+    enabled: true
+    api_key_env: CURRENCYLAYER_API_KEY
+    rate_limit: 100/month  # Free tier
+    base_currencies:
+      - USD
+
+  - id: open_exchange_rates
+    name: Open Exchange Rates
+    category: forex
+    priority: 6
+    enabled: true
+    api_key_env: OPEN_EXCHANGE_RATES_API_KEY
+    rate_limit: 1000/month  # Free tier
+    base_currencies:
+      - USD
+
+# ==============================================================================
+# CRYPTO DATA
+# ==============================================================================
+
+crypto:
+  - id: yahoo_crypto
+    name: Yahoo Finance Crypto
+    category: crypto
+    priority: 2
+    enabled: true
+    api_key_env: none
+    rate_limit: unlimited
+    symbols:
+      - BTC-USD
+      - ETH-USD
+      - SOL-USD
+      - BNB-USD
+      - XRP-USD
+      - ADA-USD
+      - DOGE-USD
+      - DOT-USD
+      - MATIC-USD
+      - AVAX-USD
+
+  - id: cryptocompare
+    name: CryptoCompare
+    category: crypto
+    priority: 3
+    enabled: true
+    api_key_env: CRYPTOCOMPARE_API_KEY
+    rate_limit: 100000/month  # Free tier
+    symbols:
+      - BTC
+      - ETH
+      - SOL
+      - BNB
+      - XRP
+
+  - id: coingecko
+    name: CoinGecko
+    category: crypto
+    priority: 4
+    enabled: true
+    api_key_env: none  # No key required
+    rate_limit: 50/min  # Free tier
+    symbols:
+      - bitcoin
+      - ethereum
+      - solana
+      - binancecoin
+      - ripple
+      - cardano
+
+  - id: coincap
+    name: CoinCap
+    category: crypto
+    priority: 5
+    enabled: true
+    api_key_env: none  # No key required
+    rate_limit: 200/min  # Free tier
+    symbols:
+      - bitcoin
+      - ethereum
+      - solana
+      - binance-coin
+      - ripple
+
+  - id: nomics
+    name: Nomics
+    category: crypto
+    priority: 6
+    enabled: true
+    api_key_env: NOMICS_API_KEY
+    rate_limit: varies  # Free tier
+    symbols:
+      - BTC
+      - ETH
+      - SOL
+
+  - id: messari
+    name: Messari
+    category: crypto
+    priority: 7
+    enabled: true
+    api_key_env: MESSARI_API_KEY
+    rate_limit: varies  # Free tier
+    symbols:
+      - BTC
+      - ETH
+      - SOL
+
+# ==============================================================================
+# COMMODITIES DATA
+# ==============================================================================
+
+commodities:
+  - id: yahoo_commodities
+    name: Yahoo Finance Commodities
+    category: commodities
+    priority: 1
+    enabled: true
+    api_key_env: none
+    rate_limit: unlimited
+    symbols:
+      - GC=F   # Gold Futures
+      - SI=F   # Silver Futures
+      - CL=F   # Crude Oil WTI
+      - BZ=F   # Brent Crude
+      - NG=F   # Natural Gas
+      - HG=F   # Copper
+      - ZC=F   # Corn
+      - ZW=F   # Wheat
+      - ZS=F   # Soybeans
+
+  - id: eia_energy
+    name: EIA (Energy Information Administration)
+    category: commodities
+    priority: 2
+    enabled: true
+    api_key_env: EIA_API_KEY
+    rate_limit: unlimited  # Free
+    series_ids:
+      - PET.RWTC.D      # WTI Crude Oil Price
+      - PET.RBRTE.D     # Brent Crude Oil Price
+      - NG.RNGWHHD.D    # Natural Gas Price
+      - TOTAL.PAELEXM.M # Electricity Price
+
+  - id: usda_agriculture
+    name: USDA (Agricultural Data)
+    category: commodities
+    priority: 3
+    enabled: true
+    api_key_env: USDA_API_KEY
+    rate_limit: unlimited  # Free
+    commodities:
+      - corn
+      - wheat
+      - soybeans
+      - cattle
+      - hogs
+
+# ==============================================================================
+# NEWS & SENTIMENT
+# ==============================================================================
+
+news:
+  - id: newsapi
+    name: NewsAPI
+    category: news
+    priority: 1
+    enabled: true
+    api_key_env: NEWSAPI_KEY
+    rate_limit: 100/day  # Free tier
+    sources:
+      - bloomberg
+      - financial-times
+      - reuters
+      - wsj
+      - cnbc
+
+  - id: gnews
+    name: GNews
+    category: news
+    priority: 2
+    enabled: true
+    api_key_env: GNEWS_API_KEY
+    rate_limit: 100/day  # Free tier
+    topics:
+      - business
+      - finance
+      - economics
+
+# ==============================================================================
+# PREMIUM SOURCES (Optional)
+# ==============================================================================
+
+premium:
+  - id: bloomberg_terminal
+    name: Bloomberg Terminal API
+    category: premium
+    priority: 1
+    enabled: false  # Requires enterprise subscription
+    api_key_env: BLOOMBERG_API_KEY
+    rate_limit: unlimited
+
+  - id: refinitiv
+    name: Refinitiv/Thomson Reuters
+    category: premium
+    priority: 1
+    enabled: false  # Requires enterprise subscription
+    api_key_env: REFINITIV_API_KEY
+    rate_limit: unlimited
+
+# ==============================================================================
+# FALLBACK PRIORITY CHAINS
+# ==============================================================================
+
+fallback_chains:
+  stocks:
+    - polygon_stocks      # Priority 1
+    - yahoo_stocks        # Priority 2
+    - alpha_vantage_stocks  # Priority 3
+    - twelve_data_stocks   # Priority 4
+    - finnhub_stocks       # Priority 5
+    - iex_cloud_stocks     # Priority 6
+    - tiingo_stocks        # Priority 7
+    - marketstack_stocks   # Priority 8
+    - fmp_stocks           # Priority 9
+
+  forex:
+    - polygon_forex          # Priority 1
+    - yahoo_forex            # Priority 2
+    - exchangerate_api       # Priority 3
+    - fixer_io              # Priority 4
+    - currencylayer         # Priority 5
+    - open_exchange_rates   # Priority 6
+
+  crypto:
+    - polygon_crypto   # Priority 1
+    - yahoo_crypto     # Priority 2
+    - cryptocompare    # Priority 3
+    - coingecko        # Priority 4
+    - coincap          # Priority 5
+    - nomics           # Priority 6
+    - messari          # Priority 7
+
+  commodities:
+    - yahoo_commodities  # Priority 1
+    - eia_energy        # Priority 2
+    - usda_agriculture  # Priority 3
+
+  economic:
+    - fred_api  # Priority 1 (ESSENTIAL - 816,000+ series)
+    - bls_api   # Priority 2
+
+# ==============================================================================
+# SUCCESS THRESHOLD CONFIGURATION
+# ==============================================================================
+
+success_thresholds:
+  global_minimum: 90  # Overall success rate (%)
+
+  category_minimum:
+    stocks: 80       # At least 80% of stock sources
+    forex: 75        # At least 75% of forex sources
+    crypto: 70       # At least 70% of crypto sources
+    commodities: 70  # At least 70% of commodity sources
+    economic: 95     # At least 95% of economic sources (FRED is critical)
+    news: 50         # At least 50% of news sources
+
+  critical_sources:
+    - fred_api           # FRED is ESSENTIAL
+    - yahoo_stocks       # Yahoo is backup primary
+    - yahoo_forex        # Yahoo forex is reliable
+    - yahoo_commodities  # Yahoo commodities is reliable
+    - yahoo_crypto       # Yahoo crypto is reliable
+
+# ==============================================================================
+# REFRESH CONFIGURATION
+# ==============================================================================
+
+refresh_config:
+  interval_seconds: 3600  # 1 hour (as requested)
+
+  stagger_sources: true   # Stagger requests to avoid rate limits
+  stagger_delay_ms: 100   # 100ms between sources
+
+  retry_failed: true      # Retry failed sources
+  max_retries: 3
+  retry_delay_seconds: 5
+
+  parallel_workers: 10    # Concurrent download workers
+
+  alert_on_failure: true
+  alert_threshold: 80     # Alert if success rate < 80%
+
+# ==============================================================================
+# END OF CONFIGURATION
+# ==============================================================================

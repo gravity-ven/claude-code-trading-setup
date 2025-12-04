@@ -1,0 +1,1 @@
+/mnt/c/Users/Quantum/Desktop/Spartan_Shortcuts/START.sh

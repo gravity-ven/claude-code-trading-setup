@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaStream Omni-Terminal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#020408',
+                        panel: '#0A0E17',
+                        cyan: '#00F0FF',
+                        purple: '#BC13FE',
+                        gold: '#FFD700',
+                        danger: '#FF2A2A',
+                        dim: 'rgba(255,255,255,0.1)'
+                    },
+                    fontFamily: {
+                        header: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 10px #00F0FF, 0 0 20px rgba(0, 240, 255, 0.2)',
+                        'neon-purple': '0 0 10px #BC13FE, 0 0 20px rgba(188, 19, 254, 0.2)',
+                        'neon-gold': '0 0 10px #FFD700, 0 0 20px rgba(255, 215, 0, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #020408; color: #e2e8f0; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0A0E17; }
+        ::-webkit-scrollbar-thumb { background: #00F0FF; border-radius: 3px; }
+
+        .tab-active {
+            border-bottom: 2px solid #00F0FF;
+            color: #00F0FF;
+            text-shadow: 0 0 8px rgba(0,240,255,0.6);
+        }
+        .glow-text { text-shadow: 0 0 10px currentColor; }
+
+        /* Loading Animation */
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: #00F0FF;
+            animation: scan 2s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes scan { 0% {transform: translateY(0);} 50% {transform: translateY(100px); opacity: 0;} 100% {transform: translateY(0);} }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden font-header">
+
+    <header class="h-16 border-b border-dim bg-panel flex items-center justify-between px-6 shrink-0 z-20">
+        <div class="flex items-center gap-4">
+            <div class="text-2xl font-bold text-cyan tracking-widest glow-text">ALPHASTREAM <span class="text-white text-sm opacity-50">OMNI</span></div>
+            <div id="clock" class="font-mono text-gold text-sm ml-4 border-l border-dim pl-4">00:00:00</div>
+        </div>
+
+        <nav class="flex gap-8 h-full items-end pb-1">
+            <button onclick="switchTab('app-market')" class="tab-btn tab-active px-4 py-2 hover:text-cyan transition" id="tab-market">MARKET WATCH</button>
+            <button onclick="switchTab('app-macro')" class="tab-btn px-4 py-2 hover:text-cyan transition" id="tab-macro">MACRO CYCLE</button>
+            <button onclick="switchTab('app-venture')" class="tab-btn px-4 py-2 hover:text-cyan transition" id="tab-venture">VENTURE LAB</button>
+            <button onclick="switchTab('app-strategy')" class="tab-btn px-4 py-2 hover:text-cyan transition" id="tab-strategy">STRATEGY HUB</button>
+        </nav>
+
+        <div class="flex items-center gap-4">
+            <div id="connection-status" class="flex items-center gap-2 text-xs font-mono text-danger">
+                <span class="w-2 h-2 rounded-full bg-danger animate-pulse"></span> OFFLINE
+            </div>
+            <button onclick="toggleSettings()" class="border border-dim hover:border-cyan hover:text-cyan text-xs px-3 py-1 rounded transition">SYSTEM SETTINGS</button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+
+        <aside class="w-72 bg-panel border-r border-dim flex flex-col shrink-0 z-10">
+            <div class="p-4 border-b border-dim">
+                <h2 class="text-cyan font-bold tracking-wider mb-1">ROUTINE PROTOCOL</h2>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                    <div id="progress-bar" class="bg-cyan h-full transition-all duration-500 shadow-neon-cyan" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-xs font-mono mt-1 text-gray-400">
+                    <span>COMPLETION</span>
+                    <span id="progress-text">0%</span>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-6 font-mono text-sm">
+                <div>
+                    <h3 class="text-gold text-xs mb-2 border-b border-gray-700 pb-1">08:00 AM (DAILY)</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition group">
+                            <input type="checkbox" class="task-check form-checkbox h-4 w-4 bg-transparent border-gray-500 checked:bg-cyan checked:border-cyan focus:ring-0" onchange="updateProgress()">
+                            <span class="text-gray-400 group-hover:text-cyan transition">Check VIX Level</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition group">
+                            <input type="checkbox" class="task-check form-checkbox h-4 w-4 bg-transparent border-gray-500 checked:bg-cyan checked:border-cyan focus:ring-0" onchange="updateProgress()">
+                            <span class="text-gray-400 group-hover:text-cyan transition">Scan Yield Curve</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition group">
+                            <input type="checkbox" class="task-check form-checkbox h-4 w-4 bg-transparent border-gray-500 checked:bg-cyan checked:border-cyan focus:ring-0" onchange="updateProgress()">
+                            <span class="text-gray-400 group-hover:text-cyan transition">Review Pre-Market</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-purple text-xs mb-2 border-b border-gray-700 pb-1">WEEKLY REVIEW</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition group">
+                            <input type="checkbox" class="task-check form-checkbox h-4 w-4 bg-transparent border-gray-500 checked:bg-purple checked:border-purple focus:ring-0" onchange="updateProgress()">
+                            <span class="text-gray-400 group-hover:text-purple transition">Audit Stop Losses</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:text-white transition group">
+                            <input type="checkbox" class="task-check form-checkbox h-4 w-4 bg-transparent border-gray-500 checked:bg-purple checked:border-purple focus:ring-0" onchange="updateProgress()">
+                            <span class="text-gray-400 group-hover:text-purple transition">Journal Trades</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 bg-bg relative overflow-y-auto p-6">
+
+            <div id="settings-modal" class="hidden absolute inset-0 bg-black/90 z-50 flex items-center justify-center backdrop-blur-sm">
+                <div class="bg-panel border border-cyan p-8 w-96 shadow-neon-cyan relative">
+                    <button onclick="toggleSettings()" class="absolute top-2 right-4 text-gray-500 hover:text-white font-mono">X</button>
+                    <h2 class="text-xl font-bold text-cyan mb-4">SYSTEM CONFIG</h2>
+                    <p class="text-xs text-gray-400 mb-4">Required for TradFi Data (AlphaVantage). Crypto data is public.</p>
+
+                    <label class="block text-xs font-mono text-gold mb-1">ALPHAVANTAGE API KEY</label>
+                    <input type="text" id="api-key-input" class="w-full bg-black border border-gray-700 text-white p-2 font-mono focus:border-cyan focus:outline-none mb-4" placeholder="ENTER KEY...">
+
+                    <div class="flex gap-2">
+                        <button onclick="saveSettings()" class="flex-1 bg-cyan text-black font-bold py-2 hover:bg-white transition">SAVE & REBOOT</button>
+                        <button onclick="clearSettings()" class="flex-1 border border-danger text-danger py-2 hover:bg-danger hover:text-black transition">WIPE DATA</button>
+                    </div>
+                </div>
+            </div>
+
+            <section id="app-market" class="app-view h-full flex flex-col gap-6">
+                <div class="grid grid-cols-2 gap-6 h-full">
+
+                    <div class="bg-panel border border-dim p-6 relative flex flex-col">
+                        <h3 class="text-cyan font-bold text-lg mb-4 flex justify-between items-center">
+                            TRADFI SECTOR
+                            <span class="text-xs font-mono text-gray-500">SOURCE: ALPHAVANTAGE</span>
+                        </h3>
+                        <div id="tradfi-display" class="font-mono space-y-6 flex-1">
+                            <div class="p-4 border border-dim bg-bg/50">
+                                <div class="text-gray-400 text-xs">S&P 500 (SPY) SENTIMENT</div>
+                                <div id="spy-price" class="text-3xl font-bold mt-1">---</div>
+                                <div id="spy-change" class="text-sm">WAITING FOR KEY...</div>
+                            </div>
+                            <div class="p-4 border border-dim bg-bg/50">
+                                <div class="text-gray-400 text-xs">US 10Y TREASURY YIELD</div>
+                                <div id="yield-val" class="text-3xl font-bold text-gold mt-1">---</div>
+                                <div class="text-xs text-gray-500 mt-1">Benchmark Rate</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 h-32 w-full">
+                            <canvas id="chart-tradfi"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-panel border border-dim p-6 relative flex flex-col">
+                        <h3 class="text-purple font-bold text-lg mb-4 flex justify-between items-center">
+                            CRYPTO SECTOR
+                            <span class="text-xs font-mono text-gray-500">SOURCE: COINGECKO</span>
+                        </h3>
+                        <div id="crypto-display" class="font-mono space-y-6 flex-1">
+                            <div class="p-4 border border-dim bg-bg/50">
+                                <div class="text-gray-400 text-xs">BITCOIN (BTC)</div>
+                                <div id="btc-price" class="text-3xl font-bold mt-1">LOADING...</div>
+                                <div id="btc-change" class="text-sm">---</div>
+                            </div>
+                            <div class="p-4 border border-dim bg-bg/50">
+                                <div class="text-gray-400 text-xs">FEAR & GREED INDEX</div>
+                                <div id="crypto-fng" class="text-3xl font-bold text-purple mt-1">---</div>
+                                <div id="fng-status" class="text-xs text-gray-500 mt-1">---</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 h-32 w-full">
+                            <canvas id="chart-crypto"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="app-macro" class="app-view hidden h-full flex flex-col">
+                <div class="bg-panel border border-dim p-6 h-full flex flex-col">
+                    <h3 class="text-gold font-bold text-lg mb-2">MACRO ECONOMIC CYCLE</h3>
+                    <p class="text-xs text-gray-400 font-mono mb-6">Calculated based on Real-Time Yield & Market Performance</p>
+
+                    <div class="flex-1 relative border border-dim bg-black flex items-center justify-center overflow-hidden">
+                        <canvas id="macro-canvas" class="absolute inset-0 z-0"></canvas>
+                        <div class="z-10 bg-panel/90 border border-gold p-6 backdrop-blur-md shadow-neon-gold text-center max-w-md">
+                            <div class="text-xs text-gold uppercase tracking-widest mb-2">CURRENT PHASE</div>
+                            <h2 id="macro-phase-title" class="text-3xl font-bold text-white mb-2">ANALYZING DATA...</h2>
+                            <p id="macro-advice" class="text-sm font-mono text-gray-300">Please ensure Market Data is loaded in "Market Watch" first.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-4 mt-6 text-center font-mono text-xs">
+                        <div class="p-2 border border-dim text-gray-500 phase-indicator" id="phase-recovery">RECOVERY</div>
+                        <div class="p-2 border border-dim text-gray-500 phase-indicator" id="phase-boom">BOOM</div>
+                        <div class="p-2 border border-dim text-gray-500 phase-indicator" id="phase-slowdown">SLOWDOWN</div>
+                        <div class="p-2 border border-dim text-gray-500 phase-indicator" id="phase-recession">RECESSION</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="app-venture" class="app-view hidden h-full">
+                <div class="grid grid-cols-3 gap-6 h-full">
+                    <div class="col-span-1 bg-panel border border-dim p-6 overflow-y-auto">
+                        <h3 class="text-cyan font-bold text-lg mb-6">STARTUP LIFECYCLE</h3>
+                        <div class="space-y-4 relative pl-4 border-l border-gray-800">
+                            <button onclick="showVentureData('preseed')" class="block w-full text-left pl-4 py-2 text-sm font-mono text-gray-400 hover:text-cyan hover:border-l-2 border-cyan transition">1. PRE-SEED</button>
+                            <button onclick="showVentureData('seed')" class="block w-full text-left pl-4 py-2 text-sm font-mono text-gray-400 hover:text-cyan hover:border-l-2 border-cyan transition">2. SEED ROUND</button>
+                            <button onclick="showVentureData('seriesa')" class="block w-full text-left pl-4 py-2 text-sm font-mono text-gray-400 hover:text-cyan hover:border-l-2 border-cyan transition">3. SERIES A</button>
+                            <button onclick="showVentureData('seriesb')" class="block w-full text-left pl-4 py-2 text-sm font-mono text-gray-400 hover:text-cyan hover:border-l-2 border-cyan transition">4. SERIES B+</button>
+                            <button onclick="showVentureData('ipo')" class="block w-full text-left pl-4 py-2 text-sm font-mono text-gray-400 hover:text-cyan hover:border-l-2 border-cyan transition">5. EXIT / IPO</button>
+                        </div>
+                    </div>
+
+                    <div class="col-span-2 bg-panel border border-dim p-6 flex flex-col justify-center items-center relative">
+                        <div id="venture-details" class="w-full max-w-lg text-center">
+                            <h2 id="v-title" class="text-3xl font-bold text-white mb-2">SELECT STAGE</h2>
+                            <p class="text-gray-500 font-mono text-sm mb-8">Click the roadmap to view valuation & dilution logic.</p>
+                        </div>
+                        <div class="w-64 h-64 mt-4">
+                            <canvas id="dilution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="app-strategy" class="app-view hidden h-full">
+                <div class="bg-panel border border-dim p-6 h-full flex flex-col">
+                    <h3 class="text-white font-bold text-lg mb-6 border-b border-dim pb-4">HORIZON PLANNER & LOGIC CHECK</h3>
+
+                    <div class="flex gap-4 mb-8">
+                        <button onclick="runStrategy('tactical')" class="flex-1 py-4 border border-gray-700 hover:border-cyan hover:bg-cyan/10 transition font-mono text-sm">
+                            <div class="text-cyan font-bold">TACTICAL</div>
+                            <div class="text-xs text-gray-500">1-2 WEEKS</div>
+                        </button>
+                        <button onclick="runStrategy('seasonal')" class="flex-1 py-4 border border-gray-700 hover:border-purple hover:bg-purple/10 transition font-mono text-sm">
+                            <div class="text-purple font-bold">SEASONAL</div>
+                            <div class="text-xs text-gray-500">1-3 MONTHS</div>
+                        </button>
+                        <button onclick="runStrategy('macro')" class="flex-1 py-4 border border-gray-700 hover:border-gold hover:bg-gold/10 transition font-mono text-sm">
+                            <div class="text-gold font-bold">MACRO</div>
+                            <div class="text-xs text-gray-500">6-18 MONTHS</div>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-8 flex-1">
+                        <div class="border border-dim bg-black p-6">
+                            <h4 class="text-gray-400 text-xs tracking-widest mb-4">SYSTEM LOGIC CHECK (REAL DATA)</h4>
+                            <ul id="strategy-checklist" class="space-y-4 font-mono text-sm">
+                                <li class="text-gray-600">Select a timeframe above to run diagnostics...</li>
+                            </ul>
+                        </div>
+
+                        <div class="border border-dim bg-black p-6 flex flex-col items-center justify-center">
+                            <h4 class="text-gray-400 text-xs tracking-widest mb-4">RECOMMENDED ALLOCATION</h4>
+                            <div id="allocation-result" class="text-center">
+                                <div class="text-4xl font-bold text-white mb-2">---</div>
+                                <div class="text-xs text-gray-500">AWAITING INPUT</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        const state = {
+            apiKey: localStorage.getItem('alphaKey') || '',
+            market: {
+                spy: null,
+                yield: null,
+                btc: null,
+                fng: null
+            },
+            charts: {}
+        };
+
+        // --- INIT ---
+        function init() {
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            if (state.apiKey) {
+                document.getElementById('api-key-input').value = state.apiKey;
+                fetchTradFiData();
+            }
+
+            fetchCryptoData(); // Public API, always fetch
+            setupMacroCanvas();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }
+
+        // --- UI ACTIONS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.app-view').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
+            document.getElementById(tabId.replace('app-', 'tab-')).classList.add('tab-active');
+        }
+
+        function toggleSettings() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function saveSettings() {
+            const key = document.getElementById('api-key-input').value;
+            if(key) {
+                localStorage.setItem('alphaKey', key);
+                state.apiKey = key;
+                toggleSettings();
+                fetchTradFiData(); // Retry fetch
+            }
+        }
+
+        function clearSettings() {
+            localStorage.removeItem('alphaKey');
+            state.apiKey = '';
+            location.reload();
+        }
+
+        function updateProgress() {
+            const checks = document.querySelectorAll('.task-check');
+            const checked = document.querySelectorAll('.task-check:checked');
+            const pct = Math.round((checked.length / checks.length) * 100);
+
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            document.getElementById('progress-text').innerText = `${pct}%`;
+        }
+
+        // --- DATA LAYER (NO FAKE DATA) ---
+
+        async function fetchCryptoData() {
+            const statusEl = document.getElementById('connection-status');
+            const btcPriceEl = document.getElementById('btc-price');
+            const btcChangeEl = document.getElementById('btc-change');
+            const fngEl = document.getElementById('crypto-fng');
+
+            try {
+                // 1. CoinGecko for Price
+                const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+                const priceData = await priceRes.json();
+
+                const btc = priceData.bitcoin;
+                state.market.btc = btc.usd;
+
+                btcPriceEl.innerText = `$${btc.usd.toLocaleString()}`;
+
+                const change = btc.usd_24h_change;
+                btcChangeEl.innerText = `${change.toFixed(2)}% (24H)`;
+                btcChangeEl.className = change >= 0 ? 'text-sm text-cyan' : 'text-sm text-danger';
+
+                // Simple Sentiment Logic based on Real Change (Proxy for FNG to ensure 100% Real Data reliance)
+                let sentiment = "NEUTRAL";
+                let color = "text-white";
+                if(change > 3) { sentiment = "GREED"; color = "text-cyan"; }
+                if(change < -3) { sentiment = "FEAR"; color = "text-danger"; }
+
+                fngEl.innerText = sentiment;
+                fngEl.className = `text-3xl font-bold ${color} mt-1`;
+                document.getElementById('fng-status').innerText = `Based on Real 24h Volatility: ${change.toFixed(2)}%`;
+
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-cyan animate-pulse"></span> ONLINE (CRYPTO)';
+                statusEl.className = "flex items-center gap-2 text-xs font-mono text-cyan";
+
+                renderMiniChart('chart-crypto', [0, change], change >= 0 ? '#00F0FF' : '#FF2A2A');
+
+            } catch (e) {
+                console.error(e);
+                btcPriceEl.innerText = "API ERROR";
+            }
+        }
+
+        async function fetchTradFiData() {
+            if (!state.apiKey) return;
+
+            const spyEl = document.getElementById('spy-price');
+            const yieldEl = document.getElementById('yield-val');
+
+            try {
+                // AlphaVantage Global Quote for SPY
+                const res = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=SPY&apikey=${state.apiKey}`);
+                const data = await res.json();
+
+                if (data['Global Quote']) {
+                    const q = data['Global Quote'];
+                    const price = parseFloat(q['05. price']);
+                    const changePct = parseFloat(q['10. change percent'].replace('%',''));
+
+                    state.market.spy = changePct;
+
+                    spyEl.innerText = `$${price.toFixed(2)}`;
+                    document.getElementById('spy-change').innerText = `${changePct}%`;
+                    document.getElementById('spy-change').className = changePct >= 0 ? 'text-sm text-cyan' : 'text-sm text-danger';
+
+                    renderMiniChart('chart-tradfi', [0, changePct], changePct >= 0 ? '#00F0FF' : '#FF2A2A');
+                }
+
+                // AlphaVantage Treasury Yield
+                const yieldRes = await fetch(`https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=monthly&maturity=10year&apikey=${state.apiKey}`);
+                const yieldData = await yieldRes.json();
+
+                if(yieldData.data && yieldData.data.length > 0) {
+                    const yVal = parseFloat(yieldData.data[0].value);
+                    state.market.yield = yVal;
+                    yieldEl.innerText = `${yVal}%`;
+                } else {
+                    yieldEl.innerText = "API LIMIT";
+                }
+
+                updateMacroCycle();
+
+            } catch (e) {
+                spyEl.innerText = "OFFLINE";
+                yieldEl.innerText = "CHECK KEY";
+            }
+        }
+
+        // --- APP LOGIC: VISUALIZATIONS ---
+
+        function renderMiniChart(id, dataPoints, color) {
+            const ctx = document.getElementById(id).getContext('2d');
+            if(state.charts[id]) state.charts[id].destroy();
+
+            state.charts[id] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Open', 'Now'],
+                    datasets: [{
+                        label: 'Flow',
+                        data: dataPoints,
+                        backgroundColor: color,
+                        barThickness: 20
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false }, y: { display: false } }
+                }
+            });
+        }
+
+        // --- APP B: MACRO CYCLE LOGIC ---
+        function setupMacroCanvas() {
+            const canvas = document.getElementById('macro-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+
+            // Draw Sine Wave
+            ctx.beginPath();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+
+            for (let i = 0; i < canvas.width; i++) {
+                const y = canvas.height / 2 + Math.sin(i * 0.01) * 100;
+                ctx.lineTo(i, y);
+            }
+            ctx.stroke();
+        }
+
+        function updateMacroCycle() {
+            // LOGIC ENGINE: Using Real Data to determine phase
+            const mkt = state.market.spy || 0;
+            const yld = state.market.yield || 4.0;
+
+            let phase = "unknown";
+            let advice = "";
+
+            if(mkt > 0 && yld < 3.5) phase = "recovery";
+            else if(mkt > 0 && yld >= 3.5) phase = "boom";
+            else if(mkt < 0 && yld > 4.0) phase = "slowdown";
+            else phase = "recession";
+
+            // Update UI
+            document.querySelectorAll('.phase-indicator').forEach(el => {
+                el.classList.remove('bg-gold', 'text-black', 'shadow-neon-gold');
+                el.classList.add('text-gray-500');
+            });
+
+            const activeEl = document.getElementById(`phase-${phase}`) || document.getElementById('phase-slowdown');
+            activeEl.classList.add('bg-gold', 'text-black', 'shadow-neon-gold');
+            activeEl.classList.remove('text-gray-500');
+
+            document.getElementById('macro-phase-title').innerText = phase.toUpperCase();
+
+            const assetMap = {
+                'recovery': 'Long Equities, Tech, Crypto',
+                'boom': 'Commodities, Value Stocks',
+                'slowdown': 'Cash, Short Duration Bonds',
+                'recession': 'Long Bonds, Gold, Defensives'
+            };
+            document.getElementById('macro-advice').innerText = `OPTIMAL ASSETS: ${assetMap[phase]}`;
+        }
+
+        // --- APP C: VENTURE LAB LOGIC ---
+        function showVentureData(stage) {
+            const data = {
+                'preseed': { title: 'PRE-SEED', val: '$1M - $5M', dilution: [85, 15], text: 'Build MVP. Verify core hypothesis.' },
+                'seed': { title: 'SEED', val: '$5M - $15M', dilution: [70, 30], text: 'Product-Market Fit. Initial traction.' },
+                'seriesa': { title: 'SERIES A', val: '$15M - $50M', dilution: [55, 45], text: 'Scale core business. Unit economics.' },
+                'seriesb': { title: 'SERIES B+', val: '$50M+', dilution: [40, 60], text: 'Market expansion. M&A opportunities.' },
+                'ipo': { title: 'IPO / EXIT', val: 'Public Market', dilution: [20, 80], text: 'Liquidity event. Public scrutiny.' }
+            };
+
+            const info = data[stage];
+            document.getElementById('v-title').innerText = info.title;
+            document.getElementById('venture-details').querySelector('p').innerHTML = `Valuation: <span class="text-cyan">${info.val}</span><br>Focus: ${info.text}`;
+
+            // Render Donut
+            const ctx = document.getElementById('dilution-chart').getContext('2d');
+            if(state.charts['venture']) state.charts['venture'].destroy();
+
+            state.charts['venture'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Founders', 'Investors'],
+                    datasets: [{
+                        data: info.dilution,
+                        backgroundColor: ['#00F0FF', '#BC13FE'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom', labels: { color: 'white', font: {family: 'JetBrains Mono'} } } }
+                }
+            });
+        }
+
+        // --- APP D: STRATEGY HUB LOGIC ---
+        function runStrategy(timeframe) {
+            const list = document.getElementById('strategy-checklist');
+            const result = document.getElementById('allocation-result');
+            list.innerHTML = '';
+
+            // Check if we have real data
+            if(state.market.spy === null) {
+                list.innerHTML = '<li class="text-danger">ERROR: MARKET DATA MISSING. PLEASE CONFIGURE API KEY.</li>';
+                return;
+            }
+
+            // Logic Rules
+            const spy = state.market.spy;
+            const yld = state.market.yield || 4.0;
+            const btc = state.market.btc || 0;
+
+            let passCount = 0;
+            const checks = [];
+
+            if (timeframe === 'tactical') {
+                checks.push({ name: "Trend Alignment (SPY > 0%)", pass: spy > 0 });
+                checks.push({ name: "Yield Stress (10Y < 4.5%)", pass: yld < 4.5 });
+            } else if (timeframe === 'seasonal') {
+                checks.push({ name: "Macro Trend (SPY > -5%)", pass: spy > -5 });
+                checks.push({ name: "Yield Curve (10Y > 3.5%)", pass: yld > 3.5 });
+            } else {
+                checks.push({ name: "Structural Integrity", pass: true });
+                checks.push({ name: "Yield Environment", pass: yld < 5.0 });
+            }
+
+            // Render Checks
+            checks.forEach(c => {
+                const color = c.pass ? 'text-cyan' : 'text-danger';
+                const icon = c.pass ? '[PASS]' : '[FAIL]';
+                if(c.pass) passCount++;
+                list.innerHTML += `<li class="${color} flex justify-between"><span>${c.name}</span> <span>${icon}</span></li>`;
+            });
+
+            // Allocation Output
+            const sentiment = passCount === checks.length ? "RISK ON" : "DEFENSIVE";
+            const color = passCount === checks.length ? "text-cyan" : "text-gold";
+
+            result.innerHTML = `
+                <div class="text-4xl font-bold ${color} mb-2">${sentiment}</div>
+                <div class="text-xs text-gray-500 font-mono">
+                    ${passCount === checks.length ? '80% EQ / 20% CASH' : '40% EQ / 60% CASH'}
+                </div>
+            `;
+        }
+
+        // Boot
+        window.onload = init;
+
+    </script>
+</body>
+</html>

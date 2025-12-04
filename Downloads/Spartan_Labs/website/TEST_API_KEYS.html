@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Key Loading</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+        }
+        .test-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <h1>🔑 API Key Loading Test</h1>
+
+    <div class="test-box">
+        <h2>Current Status:</h2>
+        <div id="status">Testing...</div>
+    </div>
+
+    <div class="test-box">
+        <h2>API Key Value:</h2>
+        <div id="apiKey">Loading...</div>
+    </div>
+
+    <div class="test-box">
+        <h2>Console Log:</h2>
+        <pre id="log"></pre>
+    </div>
+
+    <script>
+        const log = (msg) => {
+            console.log(msg);
+            document.getElementById('log').innerText += msg + '\n';
+        };
+
+        async function testAPIKeyLoading() {
+            try {
+                // Check URL
+                log(`Current URL: ${window.location.href}`);
+                log(`Protocol: ${window.location.protocol}`);
+
+                if (window.location.protocol === 'file:') {
+                    document.getElementById('status').innerHTML = '<span class="error">❌ WRONG URL!</span>';
+                    log('ERROR: Page loaded from file system!');
+                    log('SOLUTION: Open via http://localhost:8888/TEST_API_KEYS.html');
+                    return;
+                }
+
+                // Test fetch
+                log('Fetching /api/config...');
+                const response = await fetch('/api/config');
+
+                log(`Response status: ${response.status}`);
+                log(`Response OK: ${response.ok}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const config = await response.json();
+                log('Config received successfully!');
+                log(`polygon_api_key present: ${!!config.polygon_api_key}`);
+
+                if (config.polygon_api_key) {
+                    document.getElementById('status').innerHTML = '<span class="success">✅ API KEY LOADED!</span>';
+                    document.getElementById('apiKey').innerHTML = `<span class="success">${config.polygon_api_key}</span>`;
+                    log('SUCCESS: API key loaded successfully!');
+                } else {
+                    document.getElementById('status').innerHTML = '<span class="error">❌ API KEY MISSING!</span>';
+                    log('ERROR: polygon_api_key not in response');
+                    log('SOLUTION: Check POLYGON_IO_API_KEY in .env file');
+                }
+
+            } catch (error) {
+                document.getElementById('status').innerHTML = '<span class="error">❌ FAILED!</span>';
+                document.getElementById('apiKey').innerHTML = `<span class="error">Error: ${error.message}</span>`;
+                log(`ERROR: ${error.message}`);
+                log(`Stack: ${error.stack}`);
+                log('');
+                log('TROUBLESHOOTING:');
+                log('1. Make sure server is running: python3 start_server.py');
+                log('2. Server should be on port 8888');
+                log('3. Open this page at: http://localhost:8888/TEST_API_KEYS.html');
+            }
+        }
+
+        // Run test on page load
+        window.addEventListener('DOMContentLoaded', testAPIKeyLoading);
+    </script>
+</body>
+</html>

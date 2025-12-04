@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Concepts Flashcards - Spartan Research Station</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;
+            --secondary-color: #B22222;
+            --accent-color: #DC143C;
+            --accent-2-color: #FF5252;
+            --accent-3-color: #FF6B6B;
+            --bg-dark: #0a1628;
+            --bg-darker: #050b14;
+            --bg-card: #12203a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c8;
+            --text-muted: #7a8a9a;
+            --border-color: #1e3a5f;
+            --success-color: #00ff88;
+            --warning-color: #ff9500;
+            --danger-color: #FF5252;
+            --info-color: #0096FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 50%, #0a0e27 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 20px rgba(220, 20, 60, 0.5));
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        /* Controls Section */
+        .controls {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .controls-left {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .controls-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .controls select,
+        .controls input[type="text"] {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            min-width: 200px;
+        }
+
+        .controls select:focus,
+        .controls input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: var(--bg-dark);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+        }
+
+        .progress-percent {
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Main Flashcard Container */
+        .flashcard-main {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 25px;
+        }
+
+        .flashcard-display {
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 2px solid var(--border-color);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, var(--bg-darker), var(--bg-dark));
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            transform: rotateY(180deg);
+        }
+
+        .card-category-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 12px;
+            background: rgba(220, 20, 60, 0.2);
+            border: 1px solid var(--accent-color);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-color);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .card-term {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .card-hint {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .card-definition {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+        }
+
+        .card-examples {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-examples-title {
+            color: var(--accent-2-color);
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-example {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--accent-color);
+            text-align: left;
+        }
+
+        /* Card Navigation */
+        .card-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        /* Study Mode Actions */
+        .study-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .study-actions.hidden {
+            display: none;
+        }
+
+        .btn-know {
+            background: var(--success-color);
+            color: var(--bg-dark);
+        }
+
+        .btn-know:hover {
+            background: #00dd77;
+        }
+
+        .btn-review {
+            background: var(--warning-color);
+        }
+
+        .btn-review:hover {
+            background: #ff8800;
+        }
+
+        /* Cards Grid Section */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: var(--accent-color);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .mini-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .mini-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.2);
+        }
+
+        .mini-card-category {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .mini-card-term {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .mini-card-preview {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .mini-card-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Category Filter Badges */
+        .category-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-badge {
+            padding: 8px 16px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-badge:hover,
+        .category-badge.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        /* Keyboard Shortcuts Help */
+        .shortcuts-help {
+            background: rgba(220, 20, 60, 0.05);
+            border: 1px solid rgba(220, 20, 60, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .shortcuts-title {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .shortcuts-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .shortcut-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shortcut-key {
+            background: var(--bg-dark);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .shortcut-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .controls-left,
+            .controls-right {
+                width: 100%;
+            }
+
+            .controls select,
+            .controls input[type="text"] {
+                width: 100%;
+            }
+
+            .card-term {
+                font-size: 1.8rem;
+            }
+
+            .card-definition {
+                font-size: 1.1rem;
+            }
+
+            .flashcard {
+                height: 500px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-card-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="icon">🎴</div>
+            <h1>Market Concepts Flashcards</h1>
+            <p class="subtitle">Master trading concepts through interactive learning</p>
+            <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-card-icon">📚</div>
+                <div class="stat-card-value" id="totalCardsDisplay">52</div>
+                <div class="stat-card-label">Total Cards</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">✅</div>
+                <div class="stat-card-value" id="studiedCardsDisplay">0</div>
+                <div class="stat-card-label">Cards Studied</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">🎯</div>
+                <div class="stat-card-value" id="knownCardsDisplay">0</div>
+                <div class="stat-card-label">Known Cards</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">📈</div>
+                <div class="stat-card-value" id="masteryDisplay">0%</div>
+                <div class="stat-card-label">Mastery</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="controls-left">
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="technical">Technical Analysis</option>
+                    <option value="fundamental">Fundamental Analysis</option>
+                    <option value="psychology">Market Psychology</option>
+                    <option value="risk">Risk Management</option>
+                    <option value="options">Options Trading</option>
+                    <option value="economic">Economic Indicators</option>
+                </select>
+                <input type="text" id="searchCards" placeholder="🔍 Search concepts...">
+            </div>
+            <div class="controls-right">
+                <button class="btn" onclick="shuffleCards()">🔀 Shuffle</button>
+                <button class="btn btn-secondary" id="studyModeBtn" onclick="toggleStudyMode()">📚 Study Mode</button>
+                <button class="btn btn-secondary" onclick="resetProgress()">🔄 Reset Progress</button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Progress:</span>
+                    <span class="stat-value"><span id="cardsStudied">0</span>/<span id="totalCards">52</span></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Current Card:</span>
+                    <span class="stat-value"><span id="currentCardNum">1</span>/<span id="visibleCards">52</span></span>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressFill" style="width: 0%">
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Flashcard Display -->
+        <div class="flashcard-main">
+            <div class="flip-hint">Click card or press <kbd class="shortcut-key">Space</kbd> to flip</div>
+
+            <div class="flashcard-display">
+                <div class="flashcard" id="currentCard" onclick="flipCard()">
+                    <div class="card-face card-front">
+                        <span class="card-number" id="cardNumber">1 / 52</span>
+                        <span class="card-category-badge" id="cardCategoryBadge">Technical</span>
+                        <h2 class="card-term" id="cardTerm">Loading...</h2>
+                        <p class="card-hint">Click to reveal definition</p>
+                    </div>
+                    <div class="card-face card-back">
+                        <span class="card-number" id="cardNumberBack">1 / 52</span>
+                        <span class="card-category-badge" id="cardCategoryBadgeBack">Technical</span>
+                        <p class="card-definition" id="cardDefinition">Loading...</p>
+                        <div class="card-examples" id="cardExamples"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-navigation">
+                <button class="btn nav-btn" onclick="previousCard()">← Previous</button>
+                <button class="btn nav-btn" onclick="flipCard()">🔄 Flip Card</button>
+                <button class="btn nav-btn" onclick="nextCard()">Next →</button>
+            </div>
+
+            <!-- Study Mode Actions -->
+            <div class="study-actions hidden" id="studyActions">
+                <button class="btn btn-know" onclick="markKnown()">✓ I Know This</button>
+                <button class="btn btn-review" onclick="markReview()">? Need Review</button>
+            </div>
+
+            <!-- Keyboard Shortcuts -->
+            <div class="shortcuts-help">
+                <div class="shortcuts-title">⌨️ Keyboard Shortcuts</div>
+                <div class="shortcuts-list">
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Space</span>
+                        <span class="shortcut-desc">Flip card</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">→</span>
+                        <span class="shortcut-desc">Next card</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">←</span>
+                        <span class="shortcut-desc">Previous card</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">K</span>
+                        <span class="shortcut-desc">Mark as known</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">R</span>
+                        <span class="shortcut-desc">Mark for review</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">S</span>
+                        <span class="shortcut-desc">Toggle study mode</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Cards Grid -->
+        <div class="section">
+            <h2>📋 All Cards</h2>
+            <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Comprehensive flashcard database (52 cards)
+        const flashcards = [
+            // TECHNICAL ANALYSIS (15 cards)
+            {
+                term: 'Support Level',
+                definition: 'A price level where buying interest is sufficiently strong to overcome selling pressure, preventing the price from declining further. Support levels are identified by previous price lows and represent a floor where buyers step in.',
+                category: 'technical',
+                examples: [
+                    'If SPY bounces off $450 multiple times, $450 becomes a key support level',
+                    'Break below support often signals further downside momentum',
+                    'Strong support can become resistance after being broken'
+                ]
+            },
+            {
+                term: 'Resistance Level',
+                definition: 'A price level where selling pressure overcomes buying interest, preventing the price from rising further. Resistance is identified by previous price peaks and represents a ceiling where sellers emerge.',
+                category: 'technical',
+                examples: [
+                    'If AAPL fails to break $180 three times, $180 is resistance',
+                    'Breakout above resistance signals potential bullish momentum',
+                    'Previous resistance often becomes new support after breakthrough'
+                ]
+            },
+            {
+                term: 'RSI (Relative Strength Index)',
+                definition: 'A momentum oscillator that measures the speed and magnitude of price changes on a scale of 0 to 100. RSI above 70 indicates overbought conditions, while below 30 indicates oversold conditions.',
+                category: 'technical',
+                examples: [
+                    'RSI at 85 suggests the asset may be overbought and due for a pullback',
+                    'RSI divergence (price makes new high, RSI does not) signals weakening momentum',
+                    'RSI below 30 may present buying opportunities in strong uptrends'
+                ]
+            },
+            {
+                term: 'MACD (Moving Average Convergence Divergence)',
+                definition: 'A trend-following momentum indicator that shows the relationship between two moving averages (typically 12-day and 26-day EMAs). The MACD line crossing above the signal line generates bullish signals.',
+                category: 'technical',
+                examples: [
+                    'MACD crossover above signal line suggests bullish momentum building',
+                    'Histogram expanding indicates strengthening trend',
+                    'MACD divergence from price can signal potential reversals'
+                ]
+            },
+            {
+                term: 'Bollinger Bands',
+                definition: 'Volatility bands placed above and below a moving average (typically 20-day SMA). The bands expand during high volatility and contract during low volatility. Price touching the upper band suggests overbought, lower band suggests oversold.',
+                category: 'technical',
+                examples: [
+                    'Price bouncing between bands in range-bound market',
+                    'Bollinger Band squeeze (narrow bands) often precedes big moves',
+                    'Price walking the upper band indicates strong uptrend'
+                ]
+            },
+            {
+                term: 'Moving Average',
+                definition: 'A calculated average of prices over a specific time period that smooths out price data to identify trends. Common types include Simple Moving Average (SMA) and Exponential Moving Average (EMA).',
+                category: 'technical',
+                examples: [
+                    '50-day MA above 200-day MA is a "Golden Cross" (bullish)',
+                    'Price above 200-day MA suggests long-term uptrend',
+                    'Moving average crossovers generate trading signals'
+                ]
+            },
+            {
+                term: 'Volume Analysis',
+                definition: 'The study of the number of shares or contracts traded. Volume confirms price movements - rising prices on high volume are more significant than on low volume. Volume precedes price.',
+                category: 'technical',
+                examples: [
+                    'Breakout on 3x average volume has higher probability of success',
+                    'Price decline on low volume may be temporary weakness',
+                    'Volume spike at support/resistance indicates important level'
+                ]
+            },
+            {
+                term: 'Candlestick Patterns',
+                definition: 'Visual representations of price action showing open, high, low, and close. Patterns like doji, hammer, and engulfing candles provide insights into market sentiment and potential reversals.',
+                category: 'technical',
+                examples: [
+                    'Bullish engulfing pattern at support suggests reversal',
+                    'Doji at resistance shows indecision, possible trend change',
+                    'Hammer candlestick indicates rejection of lower prices'
+                ]
+            },
+            {
+                term: 'Fibonacci Retracement',
+                definition: 'Horizontal lines indicating potential support and resistance levels based on Fibonacci ratios (23.6%, 38.2%, 50%, 61.8%). Used to identify potential reversal points during pullbacks in trending markets.',
+                category: 'technical',
+                examples: [
+                    'Stock pulls back to 61.8% Fibonacci level and bounces',
+                    '50% retracement is common in healthy uptrends',
+                    'Multiple Fibonacci levels converging creates strong support/resistance zone'
+                ]
+            },
+            {
+                term: 'Trend Lines',
+                definition: 'Diagonal lines connecting successive lows (uptrend) or highs (downtrend). Valid trend lines require at least two touches and provide dynamic support/resistance. Breaks signal potential trend changes.',
+                category: 'technical',
+                examples: [
+                    'Uptrend line connecting three higher lows provides support',
+                    'Break below uptrend line warns of trend reversal',
+                    'Steeper trend lines are less sustainable than gradual ones'
+                ]
+            },
+            {
+                term: 'Head and Shoulders',
+                definition: 'A reversal pattern consisting of three peaks - a higher peak (head) between two lower peaks (shoulders). The neckline connects the lows. Break below neckline confirms bearish reversal.',
+                category: 'technical',
+                examples: [
+                    'Head and shoulders top signals end of uptrend',
+                    'Inverse head and shoulders (bottom) signals bullish reversal',
+                    'Pattern measured move: distance from head to neckline projected downward'
+                ]
+            },
+            {
+                term: 'Double Top/Bottom',
+                definition: 'Reversal patterns where price tests a level twice and fails. Double top forms at resistance (bearish), double bottom at support (bullish). Confirmation requires break of intermediate level.',
+                category: 'technical',
+                examples: [
+                    'Stock makes two highs at $100, breaks support = double top confirmed',
+                    'Double bottom at $50 with break above $55 confirms reversal',
+                    'Volume typically lower on second peak/trough'
+                ]
+            },
+            {
+                term: 'ATR (Average True Range)',
+                definition: 'A volatility indicator measuring the average range between high and low prices over a period (typically 14 days). Higher ATR indicates higher volatility, useful for position sizing and stop placement.',
+                category: 'technical',
+                examples: [
+                    'ATR of $5 means stock typically moves $5 per day',
+                    'Set stop loss at 2x ATR below entry to avoid noise',
+                    'Rising ATR suggests increasing volatility and risk'
+                ]
+            },
+            {
+                term: 'Stochastic Oscillator',
+                definition: 'A momentum indicator comparing closing price to price range over a period. Values range 0-100. Above 80 is overbought, below 20 is oversold. %K and %D line crossovers generate signals.',
+                category: 'technical',
+                examples: [
+                    'Stochastic crosses above 20 from oversold = potential buy signal',
+                    'Bearish divergence: price makes new high, stochastic does not',
+                    'Stochastic remains overbought in strong uptrends'
+                ]
+            },
+            {
+                term: 'Gap Analysis',
+                definition: 'Study of price gaps where the low of current period is above the high of previous period (gap up) or vice versa (gap down). Gaps can signal strength, exhaustion, or continuation.',
+                category: 'technical',
+                examples: [
+                    'Breakaway gap on high volume starts new trend',
+                    'Exhaustion gap near end of move signals reversal',
+                    'Common gaps (no volume) often fill quickly'
+                ]
+            },
+
+            // FUNDAMENTAL ANALYSIS (12 cards)
+            {
+                term: 'P/E Ratio (Price-to-Earnings)',
+                definition: 'Stock price divided by earnings per share. Measures how much investors are willing to pay per dollar of earnings. Higher P/E suggests growth expectations, lower P/E may indicate value or concerns.',
+                category: 'fundamental',
+                examples: [
+                    'Tech stock with P/E of 40 vs. bank with P/E of 12',
+                    'Negative P/E means company is unprofitable',
+                    'P/E compared to industry average and historical range'
+                ]
+            },
+            {
+                term: 'EPS (Earnings Per Share)',
+                definition: 'Company profit divided by outstanding shares. Represents portion of profit allocated to each share. Key metric for profitability. EPS growth drives stock prices long-term.',
+                category: 'fundamental',
+                examples: [
+                    'Company reports $2.50 EPS vs. $2.00 expected (earnings beat)',
+                    'Quarterly EPS growth of 20% year-over-year',
+                    'Diluted EPS accounts for stock options and convertibles'
+                ]
+            },
+            {
+                term: 'ROE (Return on Equity)',
+                definition: 'Net income divided by shareholder equity, expressed as percentage. Measures how efficiently management uses equity to generate profits. ROE above 15% generally considered good.',
+                category: 'fundamental',
+                examples: [
+                    'Company with ROE of 25% generates $0.25 profit per $1 equity',
+                    'High ROE with low debt is preferable to high ROE with high debt',
+                    'Declining ROE may signal deteriorating fundamentals'
+                ]
+            },
+            {
+                term: 'Free Cash Flow',
+                definition: 'Cash generated from operations minus capital expenditures. Represents cash available for dividends, buybacks, debt reduction. More reliable than earnings as it cannot be manipulated by accounting.',
+                category: 'fundamental',
+                examples: [
+                    'Positive FCF allows company to return cash to shareholders',
+                    'FCF yield of 8% more attractive than 2% dividend yield',
+                    'Growing FCF indicates healthy, sustainable business'
+                ]
+            },
+            {
+                term: 'Debt-to-Equity Ratio',
+                definition: 'Total debt divided by shareholder equity. Measures financial leverage. Higher ratio means more debt financing relative to equity. Industry-dependent - utilities can handle more debt than tech.',
+                category: 'fundamental',
+                examples: [
+                    'D/E of 0.5 means $0.50 debt for every $1 equity',
+                    'Rising D/E ratio increases financial risk',
+                    'Compare D/E to industry peers for context'
+                ]
+            },
+            {
+                term: 'Dividend Yield',
+                definition: 'Annual dividend per share divided by stock price, expressed as percentage. Higher yield provides more income but may signal slower growth or unsustainable payout.',
+                category: 'fundamental',
+                examples: [
+                    '5% dividend yield provides $500 annual income on $10,000 investment',
+                    'Dividend yield above 8% may be unsustainably high',
+                    'Dividend aristocrats: companies raising dividends 25+ years'
+                ]
+            },
+            {
+                term: 'Price-to-Book Ratio',
+                definition: 'Stock price divided by book value per share. Book value is total assets minus liabilities. P/B below 1 suggests stock trades below liquidation value. Value investors favor low P/B.',
+                category: 'fundamental',
+                examples: [
+                    'Bank trading at P/B of 0.8 may be undervalued',
+                    'Asset-heavy industries (manufacturing) have lower P/B',
+                    'Tech companies often have high P/B due to intangibles'
+                ]
+            },
+            {
+                term: 'Revenue Growth',
+                definition: 'Percentage increase in sales over a period. Top-line growth indicator. Consistent revenue growth shows market share gains and demand. More important than earnings for growth companies.',
+                category: 'fundamental',
+                examples: [
+                    '30% year-over-year revenue growth for 3 consecutive quarters',
+                    'Revenue growth without earnings growth raises margin concerns',
+                    'Organic growth vs. acquisition-driven growth'
+                ]
+            },
+            {
+                term: 'Operating Margin',
+                definition: 'Operating income divided by revenue, expressed as percentage. Measures operational efficiency and pricing power. Higher margins indicate better cost control and competitive advantage.',
+                category: 'fundamental',
+                examples: [
+                    'Software company with 40% operating margin vs. retailer with 5%',
+                    'Expanding margins while growing revenue is ideal',
+                    'Margin compression signals pricing pressure or rising costs'
+                ]
+            },
+            {
+                term: 'PEG Ratio (Price/Earnings to Growth)',
+                definition: 'P/E ratio divided by earnings growth rate. Accounts for growth in valuation. PEG below 1 suggests stock is undervalued relative to growth. Growth investors prefer low PEG.',
+                category: 'fundamental',
+                examples: [
+                    'Stock with P/E of 20 and 20% growth = PEG of 1.0 (fairly valued)',
+                    'PEG of 0.5 suggests undervalued growth stock',
+                    'PEG above 2 indicates expensive relative to growth'
+                ]
+            },
+            {
+                term: 'Market Capitalization',
+                definition: 'Total value of outstanding shares (share price × shares outstanding). Categorizes companies: large-cap (>$10B), mid-cap ($2-10B), small-cap (<$2B). Affects risk, liquidity, growth potential.',
+                category: 'fundamental',
+                examples: [
+                    'Apple with $3T market cap vs. small-cap with $500M',
+                    'Small-caps offer higher growth potential and volatility',
+                    'Large-caps provide stability and liquidity'
+                ]
+            },
+            {
+                term: 'Earnings Report',
+                definition: 'Quarterly financial statement showing revenue, earnings, cash flow, guidance. Major catalyst for stock price. Beating or missing analyst estimates drives volatility.',
+                category: 'fundamental',
+                examples: [
+                    'Company reports earnings $0.10 above consensus, stock gaps up 8%',
+                    'Earnings call provides forward guidance and strategic updates',
+                    'Earnings season occurs 4 times per year'
+                ]
+            },
+
+            // MARKET PSYCHOLOGY (10 cards)
+            {
+                term: 'Fear and Greed Index',
+                definition: 'Composite indicator measuring market sentiment using volatility, momentum, safe haven demand. Scale 0-100. Extreme fear (0-25) signals oversold, extreme greed (75-100) signals overbought.',
+                category: 'psychology',
+                examples: [
+                    'Fear index at 15 during market crash presents buying opportunity',
+                    'Greed at 90 warns of overheated market',
+                    'Contrarian investors buy fear, sell greed'
+                ]
+            },
+            {
+                term: 'Herd Mentality',
+                definition: 'Tendency of investors to follow the crowd rather than independent analysis. Drives bubbles and crashes. Most dangerous at market extremes when everyone believes the same narrative.',
+                category: 'psychology',
+                examples: [
+                    '1999 tech bubble: everyone believed "it is different this time"',
+                    'Meme stock frenzy driven by social media herd behavior',
+                    'Contrarian motto: "Be fearful when others are greedy"'
+                ]
+            },
+            {
+                term: 'Confirmation Bias',
+                definition: 'Tendency to seek information confirming existing beliefs while ignoring contradictory evidence. Causes traders to hold losing positions too long and miss warning signs.',
+                category: 'psychology',
+                examples: [
+                    'Bull only reads bullish articles, ignores deteriorating fundamentals',
+                    'Trader rationalizes losses instead of accepting wrong analysis',
+                    'Combat by actively seeking opposing viewpoints'
+                ]
+            },
+            {
+                term: 'FOMO (Fear of Missing Out)',
+                definition: 'Anxiety that others are making money in a rising market. Causes impulsive buying at tops without proper analysis. Leads to poor entries and emotional decisions.',
+                category: 'psychology',
+                examples: [
+                    'Buying Bitcoin at $60K because "everyone is getting rich"',
+                    'Chasing stocks after 50% rally without pullback',
+                    'Discipline: only trade your setup, ignore others\' profits'
+                ]
+            },
+            {
+                term: 'Loss Aversion',
+                definition: 'Psychological principle that losses hurt more than equivalent gains feel good. Causes traders to hold losers hoping to break even while selling winners too early.',
+                category: 'psychology',
+                examples: [
+                    'Holding -20% loser but selling +5% winner',
+                    'Unable to take 2% stop loss, ends up with 30% loss',
+                    'Solution: predefined stops and profit targets'
+                ]
+            },
+            {
+                term: 'Overconfidence Bias',
+                definition: 'Overestimating one\'s trading ability and knowledge, especially after winning streak. Leads to excessive risk-taking, ignoring risk management, and ultimate account blowup.',
+                category: 'psychology',
+                examples: [
+                    'After 10 winning trades, increasing position size 5x',
+                    'Thinking "I can\'t lose" leads to preventable losses',
+                    'Humility: market will humble the arrogant'
+                ]
+            },
+            {
+                term: 'Recency Bias',
+                definition: 'Overweighting recent events while ignoring historical patterns. Assumes current trend will continue indefinitely. Causes buying tops (after rally) and selling bottoms (after decline).',
+                category: 'psychology',
+                examples: [
+                    'Believing market will crash forever after 3 red days',
+                    'Assuming Fed will always pivot based on last cycle',
+                    'Perspective: review 10+ year history, not just last month'
+                ]
+            },
+            {
+                term: 'Anchoring Bias',
+                definition: 'Over-reliance on first piece of information (anchor) even when irrelevant. Traders anchor to purchase price, refusing to sell at loss even when fundamentals deteriorate.',
+                category: 'psychology',
+                examples: [
+                    'Stock bought at $100 now $60, refusing to sell because "it was $100"',
+                    'Entry price is irrelevant to current analysis',
+                    'Solution: evaluate position based on current opportunity, not history'
+                ]
+            },
+            {
+                term: 'Revenge Trading',
+                definition: 'Attempting to recover losses by immediately taking new trades without proper setup. Emotional reaction to loss. Almost always leads to larger losses and account destruction.',
+                category: 'psychology',
+                examples: [
+                    'Losing $1000, immediately taking risky trade to recover',
+                    'Doubling position size after loss (martingale - dangerous)',
+                    'Solution: walk away after loss, return when emotional calm'
+                ]
+            },
+            {
+                term: 'Analysis Paralysis',
+                definition: 'Over-analyzing to the point of inaction. Seeking perfect information before acting. Causes missed opportunities and frustration. Markets reward decisive action on good information, not perfect information.',
+                category: 'psychology',
+                examples: [
+                    'Studying chart for 2 hours, missing clean entry while waiting for "confirmation"',
+                    'Reading 20 articles, more confused than before',
+                    'Solution: simple, repeatable decision framework'
+                ]
+            },
+
+            // RISK MANAGEMENT (8 cards)
+            {
+                term: 'Position Sizing',
+                definition: 'Determining how much capital to allocate to each trade based on account size and risk tolerance. Proper sizing prevents single trade from destroying account. Risk 1-2% per trade maximum.',
+                category: 'risk',
+                examples: [
+                    '$100K account, risk $1K (1%) per trade',
+                    'Position size = Risk amount / (Entry - Stop loss)',
+                    'If stop is $5 away and risking $1K, position = 200 shares'
+                ]
+            },
+            {
+                term: 'Stop Loss',
+                definition: 'Predetermined price to exit losing trade, limiting downside risk. Non-negotiable for risk management. Placed below support (long) or above resistance (short). Never move stop against position.',
+                category: 'risk',
+                examples: [
+                    'Buy stock at $50, place stop at $48 (4% risk)',
+                    'Stop hit, loss limited to planned amount',
+                    'Moving stop from $48 to $45 "to give it room" = recipe for disaster'
+                ]
+            },
+            {
+                term: 'Risk/Reward Ratio',
+                definition: 'Potential profit compared to potential loss on trade. Minimum 2:1 (risk $1 to make $2) recommended. Higher ratio allows winning even with 50% win rate.',
+                category: 'risk',
+                examples: [
+                    'Risk $100 (stop loss) for $300 profit target = 3:1',
+                    'With 3:1 and 50% win rate: 3 wins ($900) - 3 losses ($300) = +$600',
+                    'Even 40% win rate profitable with 3:1 ratio'
+                ]
+            },
+            {
+                term: 'Diversification',
+                definition: 'Spreading capital across multiple uncorrelated assets to reduce portfolio risk. If one trade fails, others can offset. Do not over-diversify (diworsification) or under-diversify (concentration risk).',
+                category: 'risk',
+                examples: [
+                    'Hold positions in tech, healthcare, commodities (different sectors)',
+                    '5-10 positions optimal for active traders',
+                    'Over 20 positions dilutes returns, becomes index fund'
+                ]
+            },
+            {
+                term: 'Maximum Drawdown',
+                definition: 'Largest peak-to-trough decline in account value. Critical metric for risk assessment. 50% drawdown requires 100% gain to recover. Limit drawdown to preserve capital.',
+                category: 'risk',
+                examples: [
+                    'Account drops from $100K to $70K = 30% drawdown',
+                    'To recover: $70K must gain 43% to reach $100K',
+                    'Target: keep max drawdown under 20% with proper risk management'
+                ]
+            },
+            {
+                term: 'Kelly Criterion',
+                definition: 'Mathematical formula for optimal position sizing based on win rate and average win/loss. Kelly % = (Win% / Avg Loss) - (Loss% / Avg Win). Use 25-50% of Kelly to avoid over-betting.',
+                category: 'risk',
+                examples: [
+                    '60% win rate, avg win $300, avg loss $100: Kelly = 40%',
+                    'Full Kelly risky due to variance, use half-Kelly (20%)',
+                    'Higher edge allows larger position size'
+                ]
+            },
+            {
+                term: 'Correlation Risk',
+                definition: 'Risk that portfolio positions move together, eliminating diversification benefits. During crashes, correlations approach 1.0 (everything falls). Monitor correlation between holdings.',
+                category: 'risk',
+                examples: [
+                    'Holding 5 tech stocks = not diversified (all correlated)',
+                    '2008: all asset classes fell together (correlation spike)',
+                    'True diversification: stocks, bonds, commodities, currencies'
+                ]
+            },
+            {
+                term: 'Trailing Stop',
+                definition: 'Dynamic stop loss that moves with price in favorable direction, locking in profits while allowing position to run. Never moves against position. Balances profit protection with trend participation.',
+                category: 'risk',
+                examples: [
+                    'Buy at $50, set 10% trailing stop at $45',
+                    'Price rises to $60, stop automatically trails to $54',
+                    'Price falls to $54, stopped out with 8% profit protected'
+                ]
+            },
+
+            // OPTIONS TRADING (4 cards)
+            {
+                term: 'Call Option',
+                definition: 'Contract giving the right (not obligation) to buy stock at specified price (strike) by expiration. Profits when stock rises above strike + premium paid. Limited risk (premium), unlimited profit potential.',
+                category: 'options',
+                examples: [
+                    'Buy $100 call for $5, stock goes to $120, option worth $20 (300% gain)',
+                    'Stock stays at $95, call expires worthless, lose $5 premium',
+                    'Leverage: control 100 shares for fraction of stock price'
+                ]
+            },
+            {
+                term: 'Put Option',
+                definition: 'Contract giving the right to sell stock at specified strike price. Profits when stock falls below strike - premium. Used for bearish speculation or portfolio protection.',
+                category: 'options',
+                examples: [
+                    'Buy $100 put for $4, stock drops to $80, put worth $20 (400% gain)',
+                    'Own stock, buy put as insurance against decline',
+                    'Stock above strike at expiration, put worthless'
+                ]
+            },
+            {
+                term: 'The Greeks',
+                definition: 'Metrics measuring option price sensitivity. Delta: price change per $1 stock move. Gamma: delta change rate. Theta: time decay. Vega: volatility sensitivity. IV: implied volatility.',
+                category: 'options',
+                examples: [
+                    'Delta 0.5: option gains $0.50 per $1 stock increase',
+                    'Theta -0.05: option loses $5/day to time decay',
+                    'High IV before earnings: options expensive, sell premium'
+                ]
+            },
+            {
+                term: 'Credit Spread',
+                definition: 'Selling higher premium option while buying lower premium option for protection. Collect net credit. Profits if stock stays in range. Limited risk and reward.',
+                category: 'options',
+                examples: [
+                    'Sell $100 put for $3, buy $95 put for $1 = $2 credit',
+                    'Max profit: $200 (credit collected)',
+                    'Max loss: $300 (spread width - credit)'
+                ]
+            },
+
+            // ECONOMIC INDICATORS (3 cards)
+            {
+                term: 'GDP (Gross Domestic Product)',
+                definition: 'Total value of goods and services produced in economy. Measures economic growth. Released quarterly. GDP growth above 2-3% considered healthy. Recession = two consecutive quarters negative GDP.',
+                category: 'economic',
+                examples: [
+                    'Q2 GDP +3.5% signals strong economic expansion',
+                    'Negative GDP growth concerns market about recession',
+                    'Real GDP adjusted for inflation vs. nominal GDP'
+                ]
+            },
+            {
+                term: 'CPI (Consumer Price Index)',
+                definition: 'Measures change in prices paid by consumers for basket of goods/services. Primary inflation indicator. Federal Reserve targets 2% CPI. High CPI leads to rate hikes.',
+                category: 'economic',
+                examples: [
+                    'CPI rises 5% year-over-year, above Fed target',
+                    'Core CPI excludes volatile food/energy',
+                    'Higher than expected CPI bearish for stocks'
+                ]
+            },
+            {
+                term: 'Federal Funds Rate',
+                definition: 'Interest rate banks charge each other for overnight loans. Set by Federal Reserve to control inflation and stimulate/cool economy. Affects all borrowing rates and market valuations.',
+                category: 'economic',
+                examples: [
+                    'Fed raises rates from 0% to 5% to fight inflation',
+                    'Higher rates = higher discount rate = lower stock valuations',
+                    'Rate cuts stimulate economy, bullish for risk assets'
+                ]
+            }
+        ];
+
+        // State management
+        let currentIndex = 0;
+        let studyMode = false;
+        let isFlipped = false;
+        let filteredCards = [...flashcards];
+        let studiedCards = new Set();
+        let knownCards = new Set();
+
+        // Initialize app
+        function init() {
+            loadProgress();
+            renderCurrentCard();
+            renderCardsGrid();
+            updateStats();
+            setupEventListeners();
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('flashcardProgress');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    studiedCards = new Set(data.studied || []);
+                    knownCards = new Set(data.known || []);
+                } catch (e) {
+                    console.error('Error loading progress:', e);
+                }
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const data = {
+                studied: Array.from(studiedCards),
+                known: Array.from(knownCards),
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('flashcardProgress', JSON.stringify(data));
+        }
+
+        // Render current card
+        function renderCurrentCard() {
+            if (filteredCards.length === 0) {
+                document.getElementById('cardTerm').textContent = 'No cards match filter';
+                document.getElementById('cardDefinition').textContent = 'Try different filter or search';
+                return;
+            }
+
+            const card = filteredCards[currentIndex];
+            const cardNum = `${currentIndex + 1} / ${filteredCards.length}`;
+
+            // Front
+            document.getElementById('cardNumber').textContent = cardNum;
+            document.getElementById('cardCategoryBadge').textContent = getCategoryName(card.category);
+            document.getElementById('cardTerm').textContent = card.term;
+
+            // Back
+            document.getElementById('cardNumberBack').textContent = cardNum;
+            document.getElementById('cardCategoryBadgeBack').textContent = getCategoryName(card.category);
+            document.getElementById('cardDefinition').textContent = card.definition;
+
+            // Examples
+            const examplesContainer = document.getElementById('cardExamples');
+            if (card.examples && card.examples.length > 0) {
+                examplesContainer.innerHTML = `
+                    <div class="card-examples-title">Examples:</div>
+                    ${card.examples.map(ex => `<div class="card-example">• ${ex}</div>`).join('')}
+                `;
+            } else {
+                examplesContainer.innerHTML = '';
+            }
+
+            // Update current card display
+            document.getElementById('currentCardNum').textContent = currentIndex + 1;
+            document.getElementById('visibleCards').textContent = filteredCards.length;
+
+            // Mark as studied
+            const cardId = getCardId(card);
+            studiedCards.add(cardId);
+            saveProgress();
+            updateStats();
+        }
+
+        // Get card unique ID
+        function getCardId(card) {
+            return `${card.category}-${card.term}`;
+        }
+
+        // Get category display name
+        function getCategoryName(cat) {
+            const names = {
+                technical: 'Technical Analysis',
+                fundamental: 'Fundamental Analysis',
+                psychology: 'Market Psychology',
+                risk: 'Risk Management',
+                options: 'Options Trading',
+                economic: 'Economic Indicators'
+            };
+            return names[cat] || cat;
+        }
+
+        // Flip card
+        function flipCard() {
+            const card = document.getElementById('currentCard');
+            card.classList.toggle('flipped');
+            isFlipped = !isFlipped;
+        }
+
+        // Next card
+        function nextCard() {
+            if (isFlipped) flipCard();
+            currentIndex = (currentIndex + 1) % filteredCards.length;
+            renderCurrentCard();
+        }
+
+        // Previous card
+        function previousCard() {
+            if (isFlipped) flipCard();
+            currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+            renderCurrentCard();
+        }
+
+        // Shuffle cards using crypto API for better randomness
+        function shuffleCards() {
+            // NO FAKE DATA POLICY: Return null/empty instead of synthetic data
+            console.error('❌ FAKE DATA REMOVED: shuffleCards() disabled per NO FAKE DATA policy');
+            console.error('Please use real API data instead.');
+            return null;
+        }
+            currentIndex = 0;
+            if (isFlipped) flipCard();
+            renderCurrentCard();
+            renderCardsGrid();
+        }
+
+        // Toggle study mode
+        function toggleStudyMode() {
+            studyMode = !studyMode;
+            const btn = document.getElementById('studyModeBtn');
+            const actions = document.getElementById('studyActions');
+
+            if (studyMode) {
+                btn.textContent = '✓ Study Mode Active';
+                btn.style.background = 'var(--success-color)';
+                btn.style.color = 'var(--bg-dark)';
+                actions.classList.remove('hidden');
+            } else {
+                btn.textContent = '📚 Study Mode';
+                btn.style.background = '';
+                btn.style.color = '';
+                actions.classList.add('hidden');
+            }
+        }
+
+        // Mark as known
+        function markKnown() {
+            const card = filteredCards[currentIndex];
+            const cardId = getCardId(card);
+            knownCards.add(cardId);
+            saveProgress();
+            updateStats();
+            nextCard();
+        }
+
+        // Mark for review
+        function markReview() {
+            const card = filteredCards[currentIndex];
+            const cardId = getCardId(card);
+            knownCards.delete(cardId);
+            saveProgress();
+            updateStats();
+            nextCard();
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Reset all progress? This cannot be undone.')) {
+                studiedCards.clear();
+                knownCards.clear();
+                saveProgress();
+                updateStats();
+                renderCardsGrid();
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalCards = flashcards.length;
+            const studiedCount = studiedCards.size;
+            const knownCount = knownCards.size;
+            const masteryPercent = totalCards > 0 ? Math.round((knownCount / totalCards) * 100) : 0;
+
+            document.getElementById('totalCards').textContent = totalCards;
+            document.getElementById('cardsStudied').textContent = studiedCount;
+            document.getElementById('totalCardsDisplay').textContent = totalCards;
+            document.getElementById('studiedCardsDisplay').textContent = studiedCount;
+            document.getElementById('knownCardsDisplay').textContent = knownCount;
+            document.getElementById('masteryDisplay').textContent = masteryPercent + '%';
+
+            // Progress bar
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const studyProgress = totalCards > 0 ? (studiedCount / totalCards) * 100 : 0;
+
+            progressFill.style.width = studyProgress + '%';
+            progressPercent.textContent = Math.round(studyProgress) + '%';
+        }
+
+        // Filter cards
+        function filterCards() {
+            const category = document.getElementById('categoryFilter').value;
+            const search = document.getElementById('searchCards').value.toLowerCase();
+
+            filteredCards = flashcards.filter(card => {
+                const matchCategory = category === 'all' || card.category === category;
+                const matchSearch = search === '' ||
+                    card.term.toLowerCase().includes(search) ||
+                    card.definition.toLowerCase().includes(search);
+                return matchCategory && matchSearch;
+            });
+
+            currentIndex = 0;
+            if (isFlipped) flipCard();
+            renderCurrentCard();
+            renderCardsGrid();
+        }
+
+        // Render cards grid
+        function renderCardsGrid() {
+            const grid = document.getElementById('cardsGrid');
+
+            grid.innerHTML = filteredCards.map((card, index) => {
+                const cardId = getCardId(card);
+                const isStudied = studiedCards.has(cardId);
+                const isKnown = knownCards.has(cardId);
+                const status = isKnown ? '✓' : isStudied ? '👁' : '';
+
+                return `
+                    <div class="mini-card" onclick="jumpToCard(${index})">
+                        <div class="mini-card-status">${status}</div>
+                        <div class="mini-card-category">${getCategoryName(card.category)}</div>
+                        <div class="mini-card-term">${card.term}</div>
+                        <div class="mini-card-preview">${card.definition.substring(0, 100)}...</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Jump to specific card
+        function jumpToCard(index) {
+            currentIndex = index;
+            if (isFlipped) flipCard();
+            renderCurrentCard();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Category filter
+            document.getElementById('categoryFilter').addEventListener('change', filterCards);
+
+            // Search
+            document.getElementById('searchCards').addEventListener('input', filterCards);
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ignore if typing in input
+                if (e.target.tagName === 'INPUT') return;
+
+                switch(e.code) {
+                    case 'Space':
+                        e.preventDefault();
+                        flipCard();
+                        break;
+                    case 'ArrowRight':
+                        nextCard();
+                        break;
+                    case 'ArrowLeft':
+                        previousCard();
+                        break;
+                    case 'KeyK':
+                        if (studyMode) markKnown();
+                        break;
+                    case 'KeyR':
+                        if (studyMode) markReview();
+                        break;
+                    case 'KeyS':
+                        toggleStudyMode();
+                        break;
+                }
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

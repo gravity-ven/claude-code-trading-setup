@@ -1,0 +1,5 @@
+# Minimal requirements for data validation monitor
+redis>=5.0.0
+psycopg2-binary>=2.9.0
+psutil>=5.9.0
+asyncio

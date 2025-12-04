@@ -1,0 +1,1 @@
+/mnt/c/Users/Quantum/Desktop/Spartan_Shortcuts/STOP.sh

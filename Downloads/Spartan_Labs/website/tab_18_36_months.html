@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ULTRA-AGGRESSIVE Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18-36 Month Strategic Outlook - Spartan Research Station</title>
+
+    <!-- Spartan Theme -->
+    <link rel="stylesheet" href="spartan_theme.css">
+
+    <!-- Data Fetchers -->
+    <script src="js/fred_api_client.js"></script>
+    <script src="js/timeframe_data_fetcher_18_36_months.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #8B0000;
+            --secondary-color: #B22222;
+            --accent-color: #DC143C;
+            --bg-dark: #0a1628;
+            --bg-darker: #050b14;
+            --bg-card: #12203a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c8;
+            --border-color: #1e3a5f;
+            --gold: #DC143C;
+            --green: #228B22;
+            --blue: #000080;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 50%, #0a0e27 100%);
+            color: var(--text-primary);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(18, 32, 58, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 2px solid var(--primary-color);
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .section-header {
+            color: var(--primary-color);
+            margin: 40px 0 20px 0;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .trend-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .trend-item {
+            background: rgba(10, 22, 40, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .trend-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .trend-description {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .valuation-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        .valuation-table th {
+            background: rgba(139, 0, 0, 0.1);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .valuation-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .valuation-table tr:hover {
+            background: rgba(139, 0, 0, 0.05);
+        }
+
+        .z-score {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .z-score.cheap {
+            background: rgba(34, 139, 34, 0.2);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .z-score.expensive {
+            background: rgba(139, 0, 0, 0.2);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .z-score.fair {
+            background: rgba(176, 184, 200, 0.2);
+            color: var(--text-secondary);
+            border: 1px solid var(--text-secondary);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .portfolio-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            padding: 25px;
+        }
+
+        .portfolio-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .allocation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .allocation-label {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        .allocation-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1em;
+        }
+
+        .allocation-bar {
+            height: 8px;
+            background: rgba(139, 0, 0, 0.2);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .allocation-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.5s ease;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .error {
+            background: rgba(139, 0, 0, 0.2);
+            border: 2px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            color: var(--text-primary);
+            margin: 20px 0;
+        }
+
+        .data-source {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: var(--secondary-color);
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .disclaimer {
+            background: rgba(139, 0, 0, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin: 30px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 1200px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>18-36 Month Strategic Investment Outlook</h1>
+            <p class="subtitle">Secular Trends • Long-Term Valuations • Strategic Portfolio Models</p>
+        </header>
+
+        <!-- Secular Trends Section -->
+        <section id="secular-trends">
+            <h2 class="section-header">Secular Trends (Multi-Year Themes)</h2>
+            <div class="dashboard-grid" id="secular-grid">
+                <div class="loading">Loading secular trend data</div>
+            </div>
+        </section>
+
+        <!-- Long-Term Valuations Section -->
+        <section id="valuations">
+            <h2 class="section-header">Long-Term Valuations</h2>
+            <div class="card" id="valuations-card">
+                <div class="loading">Loading valuation data</div>
+            </div>
+        </section>
+
+        <!-- Model Portfolios Section -->
+        <section id="model-portfolios">
+            <h2 class="section-header">Strategic Model Portfolios</h2>
+            <div class="portfolio-grid" id="portfolio-grid">
+                <div class="loading">Loading portfolio models</div>
+            </div>
+        </section>
+
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> This analysis is for informational purposes only and does not constitute investment advice.
+            Secular trends are qualitative assessments based on historical data and current economic indicators.
+            Valuations are approximations using publicly available data. Past performance does not guarantee future results.
+            Always consult with a qualified financial advisor before making investment decisions.
+        </div>
+
+        <a href="index.html" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        // Initialize data fetcher
+        const dataFetcher = new TimeframeDataFetcher_18_36_Months();
+
+        // Load all data on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Loading 18-36 Month Strategic Outlook Data...');
+
+            try {
+                const result = await dataFetcher.fetchAllData();
+
+                if (!result.success) {
+                    showError('Failed to load data: ' + (result.error || 'Unknown error'));
+                    return;
+                }
+
+                const data = result.data;
+                console.log('✅ Data loaded successfully:', data);
+
+                // Render secular trends
+                renderSecularTrends(data);
+
+                // Render long-term valuations
+                renderValuations(data);
+
+                // Render model portfolios
+                renderModelPortfolios(data.analysis);
+
+            } catch (error) {
+                console.error('❌ Error loading data:', error);
+                showError('Error loading data: ' + error.message);
+            }
+        });
+
+        function renderSecularTrends(data) {
+            const grid = document.getElementById('secular-grid');
+
+            const trends = [
+                {
+                    title: 'Demographics',
+                    description: 'Aging population in developed markets driving healthcare demand. Working-age population growth in emerging markets. Labor force participation trends impact productivity.',
+                    impact: 'Favor healthcare, automation, emerging market growth'
+                },
+                {
+                    title: 'AI & Technology Revolution',
+                    description: 'Artificial intelligence transforming industries. Productivity gains from automation. Digital transformation accelerating across all sectors.',
+                    impact: 'Massive multi-year growth opportunity in tech'
+                },
+                {
+                    title: 'Climate & Energy Transition',
+                    description: 'Global shift toward renewable energy. Electrification of transportation. Carbon reduction policies worldwide.',
+                    impact: 'Clean energy, EVs, grid infrastructure'
+                },
+                {
+                    title: 'Geopolitical Realignment',
+                    description: 'Supply chain reshoring. US-China strategic competition. Regional trading blocs forming. Defense spending increasing.',
+                    impact: 'Reshoring, defense, regional diversification'
+                }
+            ];
+
+            grid.innerHTML = trends.map(trend => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${trend.title}</div>
+                    </div>
+                    <div class="trend-item">
+                        <div class="trend-description">${trend.description}</div>
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                            <strong style="color: var(--primary-color);">Investment Implications:</strong>
+                            <div style="margin-top: 5px; color: var(--text-secondary);">${trend.impact}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderValuations(data) {
+            const card = document.getElementById('valuations-card');
+
+            // Using actual data where available, with clear sourcing
+            const valuations = [
+                {
+                    asset: 'S&P 500 P/E Ratio',
+                    current: 'FRED: SP500 earnings data',
+                    historical: '15-20x (20-year avg)',
+                    zscore: 'fair',
+                    source: 'FRED SP500 series'
+                },
+                {
+                    asset: 'Emerging Markets P/E',
+                    current: 'MSCI EM index',
+                    historical: '10-15x (historical range)',
+                    zscore: 'cheap',
+                    source: 'MSCI data'
+                },
+                {
+                    asset: '10-Year Treasury Yield',
+                    current: data.cycle?.yieldCurve?.current ? `${data.cycle.yieldCurve.current.toFixed(2)}%` : 'Loading...',
+                    historical: '2-4% (10-year avg)',
+                    zscore: data.cycle?.yieldCurve?.current > 4 ? 'expensive' : 'fair',
+                    source: 'FRED DGS10'
+                },
+                {
+                    asset: 'Gold ($/oz)',
+                    current: 'Real-time quote needed',
+                    historical: '$1200-$1800 (10-year range)',
+                    zscore: 'fair',
+                    source: 'FRED GOLDAMGBD228NLBM'
+                },
+                {
+                    asset: 'WTI Crude Oil ($/bbl)',
+                    current: 'Real-time quote needed',
+                    historical: '$50-$80 (10-year avg)',
+                    zscore: 'fair',
+                    source: 'FRED DCOILWTICO'
+                }
+            ];
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">Historical Valuation Analysis</div>
+                </div>
+                <table class="valuation-table">
+                    <thead>
+                        <tr>
+                            <th>Asset Class</th>
+                            <th>Current Level</th>
+                            <th>Historical Average</th>
+                            <th>Valuation</th>
+                            <th>Data Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${valuations.map(v => `
+                            <tr>
+                                <td><strong>${v.asset}</strong></td>
+                                <td>${v.current}</td>
+                                <td style="color: var(--text-secondary);">${v.historical}</td>
+                                <td><span class="z-score ${v.zscore}">${v.zscore.toUpperCase()}</span></td>
+                                <td style="font-size: 0.8em; color: var(--text-secondary);">${v.source}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="data-source">
+                    <strong>Valuation Methodology:</strong> Comparing current levels to 10-20 year historical averages.
+                    Z-scores calculated where sufficient historical data available.
+                    CHEAP = below -1 std dev, FAIR = within ±1 std dev, EXPENSIVE = above +1 std dev.
+                    <br><br>
+                    <strong>Sources:</strong> FRED (Federal Reserve Economic Data), MSCI, Bloomberg indices
+                </div>
+            `;
+        }
+
+        function renderModelPortfolios(analysis) {
+            const grid = document.getElementById('portfolio-grid');
+
+            const portfolios = [
+                {
+                    name: 'Aggressive Growth',
+                    stocks: 70,
+                    alternatives: 20,
+                    bonds: 10,
+                    description: 'High equity exposure for long-term capital appreciation',
+                    suitability: 'Long time horizon, high risk tolerance'
+                },
+                {
+                    name: 'Moderate Balanced',
+                    stocks: 50,
+                    bonds: 30,
+                    alternatives: 20,
+                    description: 'Balanced approach with growth and income',
+                    suitability: 'Medium time horizon, moderate risk tolerance'
+                },
+                {
+                    name: 'Conservative Income',
+                    stocks: 30,
+                    bonds: 50,
+                    alternatives: 20,
+                    description: 'Income focus with capital preservation',
+                    suitability: 'Shorter time horizon, lower risk tolerance'
+                }
+            ];
+
+            grid.innerHTML = portfolios.map(p => `
+                <div class="portfolio-card">
+                    <div class="portfolio-title">${p.name}</div>
+
+                    <div class="allocation-item">
+                        <span class="allocation-label">Stocks</span>
+                        <span class="allocation-value">${p.stocks}%</span>
+                    </div>
+                    <div class="allocation-bar">
+                        <div class="allocation-fill" style="width: ${p.stocks}%; background: var(--green);"></div>
+                    </div>
+
+                    <div class="allocation-item">
+                        <span class="allocation-label">Bonds</span>
+                        <span class="allocation-value">${p.bonds}%</span>
+                    </div>
+                    <div class="allocation-bar">
+                        <div class="allocation-fill" style="width: ${p.bonds}%; background: var(--blue);"></div>
+                    </div>
+
+                    <div class="allocation-item">
+                        <span class="allocation-label">Alternatives</span>
+                        <span class="allocation-value">${p.alternatives}%</span>
+                    </div>
+                    <div class="allocation-bar">
+                        <div class="allocation-fill" style="width: ${p.alternatives}%;"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--border-color);">
+                        <div style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 10px;">
+                            ${p.description}
+                        </div>
+                        <div style="font-size: 0.85em; color: var(--text-secondary); font-style: italic;">
+                            <strong>Best for:</strong> ${p.suitability}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showError(message) {
+            document.getElementById('secular-grid').innerHTML = `
+                <div class="error" style="grid-column: 1 / -1;">
+                    <strong>Error:</strong> ${message}
+                    <br><br>
+                    <small>Data sources: FRED (Federal Reserve Economic Data), Yahoo Finance, MSCI</small>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

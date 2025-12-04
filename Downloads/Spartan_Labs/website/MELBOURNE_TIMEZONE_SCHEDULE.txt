@@ -1,0 +1,118 @@
+====================================================================
+   CFTC DATA SCHEDULE - MELBOURNE, AUSTRALIA TIMEZONE
+====================================================================
+
+Your Location: Melbourne, Australia (AEDT/AEST)
+
+====================================================================
+CFTC PUBLICATION SCHEDULE
+====================================================================
+
+US Time (CFTC):
+  📅 Every Friday at 3:30 PM ET (Eastern Time)
+  📊 Data as of: Previous Tuesday's close
+
+Melbourne Time:
+  🇦🇺 SATURDAY at 7:30 AM AEDT (summer - Oct to Apr)
+  🇦🇺 SATURDAY at 6:30 AM AEST (winter - Apr to Oct)
+
+Conversion:
+  Friday 3:30 PM EST (UTC-5) → Saturday 7:30 AM AEDT (UTC+11)
+  Friday 3:30 PM EDT (UTC-4) → Saturday 6:30 AM AEST (UTC+10)
+
+====================================================================
+RECOMMENDED SCHEDULE FOR YOU
+====================================================================
+
+Option 1: SATURDAY MORNING (Recommended)
+   ⏰ 8:00 AM Melbourne time (every Saturday)
+   ✅ Fresh CFTC data available
+   ✅ Review over weekend coffee
+
+Option 2: SATURDAY/SUNDAY/MONDAY
+   ⏰ 8:00 AM Saturday (primary fetch)
+   ⏰ 10:00 AM Sunday (backup check)
+   ⏰ 8:00 AM Monday (final check)
+   ✅ Multiple opportunities to review
+
+Option 3: WEEKEND EVENINGS
+   ⏰ 6:00 PM Saturday
+   ⏰ 6:00 PM Sunday
+   ✅ Review after work/weekend activities
+
+====================================================================
+AUTOMATED SCHEDULE SETUP
+====================================================================
+
+I will configure the agents to run:
+
+PRIMARY: Saturday 8:00 AM (Melbourne)
+   - Fetch fresh CFTC data
+   - Calculate COT Index
+   - Generate trade sheets
+
+BACKUP: Sunday 10:00 AM (Melbourne)
+   - Verify data downloaded
+   - Regenerate trade sheets if needed
+
+FINAL: Monday 8:00 AM (Melbourne)
+   - Final check before trading week
+   - Latest analysis available
+
+====================================================================
+CRON SCHEDULE (Melbourne Timezone)
+====================================================================
+
+# COT Agents - Melbourne Weekend Schedule
+# Saturday 8:00 AM
+0 8 * * 6 cd /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website && python3 run_100_agents.py --single-cycle
+
+# Sunday 10:00 AM (backup)
+0 10 * * 0 cd /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website && python3 run_100_agents.py --single-cycle
+
+# Monday 8:00 AM (final check)
+0 8 * * 1 cd /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website && python3 run_100_agents.py --single-cycle
+
+====================================================================
+WHAT YOU'LL SEE
+====================================================================
+
+Saturday Morning (8 AM):
+  📧 Trade sheet generated → output/latest_trade_sheet.txt
+  📊 COT signals for the week ahead
+  🎯 Top opportunities identified
+
+Sunday Morning (10 AM):
+  ✅ Verification run
+  📊 Updated confluence scores
+
+Monday Morning (8 AM):
+  📋 Final review before trading week
+  🚀 Ready to execute trades
+
+====================================================================
+HOW TO CHECK YOUR TRADE SHEETS
+====================================================================
+
+Anytime during weekend:
+  cat output/latest_trade_sheet.txt
+
+Or view in browser:
+  open output/latest_trade_sheet.html  # (when HTML version added)
+
+Or check database:
+  psql -d spartan_research_db -U spartan -c "SELECT * FROM trade_sheets ORDER BY sheet_date DESC LIMIT 1;"
+
+====================================================================
+MANUAL RUNS (ANYTIME)
+====================================================================
+
+Check now:
+  python3 run_100_agents.py --single-cycle
+
+Or run in background:
+  python3 run_100_agents.py --single-cycle > logs/manual_run_$(date +%Y%m%d_%H%M%S).log 2>&1 &
+
+====================================================================
+
+Your Melbourne-optimized schedule is being set up now...

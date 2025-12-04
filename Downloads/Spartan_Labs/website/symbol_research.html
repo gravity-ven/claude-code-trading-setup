@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="max-age=0">
+    <meta name="last-modified" content="2025-11-18 00:00:00">
+    <meta name="build-version" content="v1.0-SYMBOL-RESEARCH-DASHBOARD">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spartan Research Station - Symbol Research</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="spartan_theme.css">
+
+    <!-- Chart.js for price charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;
+            --secondary-color: #B22222;
+            --accent-color: #DC143C;
+            --accent-2-color: #FF5252;
+            --accent-3-color: #FF6B6B;
+            --bg-dark: #0a1628;
+            --bg-darker: #050b14;
+            --bg-card: #12203a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c8;
+            --text-muted: #7a8a9a;
+            --border-color: #1e3a5f;
+            --success-color: #00ff88;
+            --warning-color: #ff9500;
+            --danger-color: #FF5252;
+            --info-color: #0096FF;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        /* Spartan Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        /* Navigation */
+        .nav-container {
+            margin-bottom: 30px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--accent-color);
+        }
+
+        .back-button:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.3);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            background: var(--bg-darker);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.3);
+        }
+
+        .search-button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.4);
+        }
+
+        .search-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Data Grid */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .data-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .data-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.2);
+        }
+
+        .data-card-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .data-card-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .data-card-value.positive {
+            color: var(--success-color);
+        }
+
+        .data-card-value.negative {
+            color: var(--danger-color);
+        }
+
+        /* Chart Card */
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .chart-title {
+            font-size: 1.6rem;
+            color: var(--accent-color);
+            margin: 0 0 25px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+
+        .status-message.error {
+            background: rgba(255, 82, 82, 0.1);
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .status-message.info {
+            background: rgba(0, 150, 255, 0.1);
+            border: 1px solid var(--info-color);
+            color: var(--info-color);
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th {
+            background: var(--bg-darker);
+            padding: 15px;
+            text-align: left;
+            color: var(--accent-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--bg-darker);
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .search-input-group {
+                flex-direction: column;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Navigation -->
+        <div class="nav-container">
+            <a href="index.html" class="back-button">
+                <span style="margin-right: 8px;">←</span> Back to Main Dashboard
+            </a>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>Symbol Research Dashboard</h1>
+            <p>Comprehensive Fundamental & Technical Analysis</p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-input-group">
+                <input
+                    type="text"
+                    id="symbolInput"
+                    class="search-input"
+                    placeholder="Enter symbol (e.g., AAPL, TSLA, MSFT)"
+                    onkeypress="handleKeyPress(event)"
+                >
+                <button class="search-button" onclick="searchSymbol()" id="searchBtn">
+                    Research Symbol
+                </button>
+            </div>
+            <div id="statusMessage" class="hidden"></div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" class="hidden">
+            <!-- Company Info -->
+            <div class="chart-card">
+                <h3 class="chart-title">Company Information</h3>
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="data-card-title">Company Name</div>
+                        <div class="data-card-value" id="companyName" style="font-size: 1.5rem;">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Sector</div>
+                        <div class="data-card-value" id="sector" style="font-size: 1.3rem;">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Industry</div>
+                        <div class="data-card-value" id="industry" style="font-size: 1.3rem;">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Market Cap</div>
+                        <div class="data-card-value" id="marketCap">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="chart-card">
+                <h3 class="chart-title">Key Fundamentals</h3>
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="data-card-title">Current Price</div>
+                        <div class="data-card-value" id="currentPrice">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">P/E Ratio</div>
+                        <div class="data-card-value" id="peRatio">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">EPS (TTM)</div>
+                        <div class="data-card-value" id="eps">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Dividend Yield</div>
+                        <div class="data-card-value" id="dividendYield">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">52 Week High</div>
+                        <div class="data-card-value" id="high52">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">52 Week Low</div>
+                        <div class="data-card-value" id="low52">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Beta</div>
+                        <div class="data-card-value" id="beta">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Average Volume</div>
+                        <div class="data-card-value" id="avgVolume">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Chart -->
+            <div class="chart-card">
+                <h3 class="chart-title">6-Month Price Chart</h3>
+                <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Volume Analysis -->
+            <div class="chart-card">
+                <h3 class="chart-title">Volume Analysis</h3>
+                <div class="chart-container">
+                    <canvas id="volumeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Historical Data Table -->
+            <div class="chart-card">
+                <h3 class="chart-title">Recent Price History (Last 30 Days)</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                                <th>Change %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Key Statistics -->
+            <div class="chart-card">
+                <h3 class="chart-title">Key Statistics</h3>
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="data-card-title">Forward P/E</div>
+                        <div class="data-card-value" id="forwardPE">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">PEG Ratio</div>
+                        <div class="data-card-value" id="pegRatio">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Price to Book</div>
+                        <div class="data-card-value" id="priceToBook">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Profit Margin</div>
+                        <div class="data-card-value" id="profitMargin">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Operating Margin</div>
+                        <div class="data-card-value" id="operatingMargin">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">ROE</div>
+                        <div class="data-card-value" id="roe">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">ROA</div>
+                        <div class="data-card-value" id="roa">-</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-card-title">Debt to Equity</div>
+                        <div class="data-card-value" id="debtToEquity">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let priceChart = null;
+        let volumeChart = null;
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchSymbol();
+            }
+        }
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.classList.remove('hidden');
+        }
+
+        function hideStatus() {
+            document.getElementById('statusMessage').classList.add('hidden');
+        }
+
+        function formatNumber(num, decimals = 2) {
+            if (num === null || num === undefined || isNaN(num)) return 'N/A';
+            return Number(num).toLocaleString('en-US', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+        }
+
+        function formatLargeNumber(num) {
+            if (num === null || num === undefined || isNaN(num)) return 'N/A';
+
+            if (num >= 1e12) {
+                return '$' + (num / 1e12).toFixed(2) + 'T';
+            } else if (num >= 1e9) {
+                return '$' + (num / 1e9).toFixed(2) + 'B';
+            } else if (num >= 1e6) {
+                return '$' + (num / 1e6).toFixed(2) + 'M';
+            } else if (num >= 1e3) {
+                return '$' + (num / 1e3).toFixed(2) + 'K';
+            } else {
+                return '$' + num.toFixed(2);
+            }
+        }
+
+        function formatVolume(vol) {
+            if (vol === null || vol === undefined || isNaN(vol)) return 'N/A';
+
+            if (vol >= 1e9) {
+                return (vol / 1e9).toFixed(2) + 'B';
+            } else if (vol >= 1e6) {
+                return (vol / 1e6).toFixed(2) + 'M';
+            } else if (vol >= 1e3) {
+                return (vol / 1e3).toFixed(2) + 'K';
+            } else {
+                return vol.toFixed(0);
+            }
+        }
+
+        async function searchSymbol() {
+            const symbol = document.getElementById('symbolInput').value.trim().toUpperCase();
+
+            if (!symbol) {
+                showStatus('Please enter a symbol', 'error');
+                return;
+            }
+
+            // Disable search button
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Researching...';
+
+            try {
+                showStatus(`Fetching real-time data for ${symbol} from yfinance...`, 'info');
+
+                // Fetch data from yfinance via API
+                const response = await fetch(`http://localhost:5002/api/yahoo/chart/${symbol}?range=6mo&interval=1d`);
+
+                if (!response.ok) {
+                    throw new Error('Symbol not found or API error');
+                }
+
+                const data = await response.json();
+
+                if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
+                    throw new Error('No data available for this symbol');
+                }
+
+                const result = data.chart.result[0];
+
+                // Fetch additional quote data
+                const quoteResponse = await fetch(`http://localhost:5002/api/yahoo/quote?symbols=${symbol}`);
+                const quoteData = await quoteResponse.json();
+                const quote = quoteData.quoteResponse.results[0];
+
+                // Process data
+                populateCompanyInfo(quote);
+                populateFundamentals(quote);
+                populateStatistics(quote);
+                plotPriceChart(result);
+                plotVolumeChart(result);
+                populateHistoryTable(result);
+
+                // Show results
+                document.getElementById('resultsContainer').classList.remove('hidden');
+                hideStatus();
+
+            } catch (error) {
+                console.error('Error fetching symbol data:', error);
+                showStatus(`Error: ${error.message}. Please check the symbol and try again.`, 'error');
+                document.getElementById('resultsContainer').classList.add('hidden');
+            } finally {
+                // Re-enable search button
+                searchBtn.disabled = false;
+                searchBtn.textContent = 'Research Symbol';
+            }
+        }
+
+        function populateCompanyInfo(quote) {
+            document.getElementById('companyName').textContent = quote.longName || quote.shortName || 'N/A';
+            document.getElementById('sector').textContent = quote.sector || 'N/A';
+            document.getElementById('industry').textContent = quote.industry || 'N/A';
+            document.getElementById('marketCap').textContent = formatLargeNumber(quote.marketCap);
+        }
+
+        function populateFundamentals(quote) {
+            // Current Price
+            const currentPrice = quote.regularMarketPrice || quote.ask || quote.bid;
+            document.getElementById('currentPrice').textContent = currentPrice ? '$' + formatNumber(currentPrice) : 'N/A';
+
+            // P/E Ratio
+            const pe = quote.trailingPE || quote.forwardPE;
+            document.getElementById('peRatio').textContent = pe ? formatNumber(pe) : 'N/A';
+
+            // EPS
+            const eps = quote.epsTrailingTwelveMonths || quote.epsCurrentYear;
+            document.getElementById('eps').textContent = eps ? '$' + formatNumber(eps) : 'N/A';
+
+            // Dividend Yield
+            const divYield = quote.dividendYield;
+            document.getElementById('dividendYield').textContent = divYield ? (divYield * 100).toFixed(2) + '%' : 'N/A';
+
+            // 52 Week High/Low
+            document.getElementById('high52').textContent = quote.fiftyTwoWeekHigh ? '$' + formatNumber(quote.fiftyTwoWeekHigh) : 'N/A';
+            document.getElementById('low52').textContent = quote.fiftyTwoWeekLow ? '$' + formatNumber(quote.fiftyTwoWeekLow) : 'N/A';
+
+            // Beta
+            document.getElementById('beta').textContent = quote.beta ? formatNumber(quote.beta) : 'N/A';
+
+            // Average Volume
+            document.getElementById('avgVolume').textContent = formatVolume(quote.averageDailyVolume3Month || quote.averageDailyVolume10Day);
+        }
+
+        function populateStatistics(quote) {
+            // Forward P/E
+            document.getElementById('forwardPE').textContent = quote.forwardPE ? formatNumber(quote.forwardPE) : 'N/A';
+
+            // PEG Ratio
+            document.getElementById('pegRatio').textContent = quote.pegRatio ? formatNumber(quote.pegRatio) : 'N/A';
+
+            // Price to Book
+            document.getElementById('priceToBook').textContent = quote.priceToBook ? formatNumber(quote.priceToBook) : 'N/A';
+
+            // Margins
+            const profitMargin = quote.profitMargins;
+            document.getElementById('profitMargin').textContent = profitMargin ? (profitMargin * 100).toFixed(2) + '%' : 'N/A';
+
+            const operatingMargin = quote.operatingMargins;
+            document.getElementById('operatingMargin').textContent = operatingMargin ? (operatingMargin * 100).toFixed(2) + '%' : 'N/A';
+
+            // ROE and ROA
+            const roe = quote.returnOnEquity;
+            document.getElementById('roe').textContent = roe ? (roe * 100).toFixed(2) + '%' : 'N/A';
+
+            const roa = quote.returnOnAssets;
+            document.getElementById('roa').textContent = roa ? (roa * 100).toFixed(2) + '%' : 'N/A';
+
+            // Debt to Equity
+            document.getElementById('debtToEquity').textContent = quote.debtToEquity ? formatNumber(quote.debtToEquity) : 'N/A';
+        }
+
+        function plotPriceChart(result) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (priceChart) {
+                priceChart.destroy();
+            }
+
+            // Prepare data
+            const timestamps = result.timestamp;
+            const quotes = result.indicators.quote[0];
+            const closes = quotes.close;
+
+            const dates = timestamps.map(ts => {
+                const date = new Date(ts * 1000);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(220, 20, 60, 0.3)');
+            gradient.addColorStop(1, 'rgba(220, 20, 60, 0.0)');
+
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Close Price',
+                        data: closes,
+                        borderColor: '#DC143C',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#DC143C',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(18, 32, 58, 0.95)',
+                            titleColor: '#DC143C',
+                            bodyColor: '#ffffff',
+                            borderColor: '#DC143C',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Price: $' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#7a8a9a',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#7a8a9a',
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        function plotVolumeChart(result) {
+            const ctx = document.getElementById('volumeChart').getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (volumeChart) {
+                volumeChart.destroy();
+            }
+
+            // Prepare data
+            const timestamps = result.timestamp;
+            const quotes = result.indicators.quote[0];
+            const volumes = quotes.volume;
+
+            const dates = timestamps.map(ts => {
+                const date = new Date(ts * 1000);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+
+            volumeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Volume',
+                        data: volumes,
+                        backgroundColor: 'rgba(0, 255, 136, 0.3)',
+                        borderColor: '#00ff88',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(18, 32, 58, 0.95)',
+                            titleColor: '#00ff88',
+                            bodyColor: '#ffffff',
+                            borderColor: '#00ff88',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Volume: ' + formatVolume(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#7a8a9a',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#7a8a9a',
+                                callback: function(value) {
+                                    return formatVolume(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function populateHistoryTable(result) {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+
+            const timestamps = result.timestamp;
+            const quotes = result.indicators.quote[0];
+
+            // Get last 30 days
+            const startIndex = Math.max(0, timestamps.length - 30);
+            const recentTimestamps = timestamps.slice(startIndex);
+            const recentData = {
+                opens: quotes.open.slice(startIndex),
+                highs: quotes.high.slice(startIndex),
+                lows: quotes.low.slice(startIndex),
+                closes: quotes.close.slice(startIndex),
+                volumes: quotes.volume.slice(startIndex)
+            };
+
+            // Reverse for table display (most recent first)
+            for (let i = recentTimestamps.length - 1; i >= 0; i--) {
+                const date = new Date(recentTimestamps[i] * 1000);
+                const dateStr = date.toLocaleDateString('en-US');
+
+                // Calculate daily change %
+                const change = i < recentTimestamps.length - 1
+                    ? ((recentData.closes[i] - recentData.closes[i + 1]) / recentData.closes[i + 1]) * 100
+                    : 0;
+
+                const changeClass = change > 0 ? 'positive' : change < 0 ? 'negative' : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${dateStr}</td>
+                    <td>$${formatNumber(recentData.opens[i])}</td>
+                    <td>$${formatNumber(recentData.highs[i])}</td>
+                    <td>$${formatNumber(recentData.lows[i])}</td>
+                    <td>$${formatNumber(recentData.closes[i])}</td>
+                    <td>${formatVolume(recentData.volumes[i])}</td>
+                    <td class="${changeClass}">${change.toFixed(2)}%</td>
+                `;
+
+                tbody.appendChild(tr);
+            }
+        }
+
+        // Auto-focus search input on load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('symbolInput').focus();
+        });
+    </script>
+</body>
+</html>

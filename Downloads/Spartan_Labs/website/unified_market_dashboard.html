@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="max-age=0">
+    <meta name="last-modified" content="2025-11-18 12:00:00">
+    <meta name="build-version" content="v1.0-UNIFIED-MARKET-COMMAND-CENTER">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Market Dashboard - Spartan Research Station</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;        /* Spartan Red */
+            --secondary-color: #B22222;      /* Spartan Firebrick */
+            --accent-color: #DC143C;         /* Spartan Crimson */
+            --accent-2-color: #FF5252;       /* Bright Red */
+            --accent-3-color: #FF6B6B;       /* Light Red */
+            --bg-dark: #0a1628;              /* Main Background */
+            --bg-darker: #050b14;            /* Darker Background */
+            --bg-card: #12203a;              /* Card Background */
+            --text-primary: #ffffff;         /* White Text */
+            --text-secondary: #b0b8c8;       /* Gray Text */
+            --text-muted: #7a8a9a;           /* Muted Gray */
+            --border-color: #1e3a5f;         /* Border Color */
+            --success-color: #00ff88;        /* Success Green */
+            --warning-color: #ff9500;        /* Warning Orange */
+            --danger-color: #FF5252;         /* Danger Red */
+            --info-color: #0096FF;           /* Info Blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1900px;
+            margin: 0 auto;
+        }
+
+        /* Spartan Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        /* Section Styling */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+        }
+
+        /* Grid Layouts */
+        .indices-grid,
+        .economic-grid,
+        .commodities-grid,
+        .fx-grid,
+        .global-grid,
+        .vol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .market-card {
+            background: rgba(220, 20, 60, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .market-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-symbol {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .card-change {
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .positive {
+            color: var(--success-color);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .negative {
+            color: var(--danger-color);
+            background: rgba(255, 82, 82, 0.1);
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        /* Sparkline Charts */
+        .sparkline-container {
+            height: 60px;
+            margin-top: 15px;
+        }
+
+        /* Sector Heatmap */
+        .sector-heatmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .sector-cell {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sector-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .sector-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .sector-symbol {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .sector-change {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-top: 20px;
+        }
+
+        .chart-container-small {
+            position: relative;
+            height: 250px;
+            margin-top: 20px;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-live {
+            background: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Market Breadth Grid */
+        .breadth-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .breadth-stat {
+            background: rgba(220, 20, 60, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .breadth-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .breadth-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Yield Curve Specific */
+        .yield-curve-container {
+            position: relative;
+            height: 400px;
+            margin-top: 20px;
+        }
+
+        /* Economic Indicators */
+        .economic-card {
+            background: rgba(220, 20, 60, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .economic-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .economic-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .economic-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Last Updated */
+        .last-updated {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .indices-grid,
+            .economic-grid,
+            .commodities-grid,
+            .fx-grid,
+            .global-grid,
+            .vol-grid,
+            .breadth-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container,
+            .yield-curve-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌐 UNIFIED MARKET DASHBOARD</h1>
+            <p>
+                <span class="status-indicator status-live"></span>
+                Command Center - All Asset Classes
+            </p>
+            <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <!-- Market Overview Section -->
+        <div class="section">
+            <h2>📊 Major Market Indices</h2>
+            <div id="indicesLoading" class="loading">Loading market data</div>
+            <div id="indicesGrid" class="indices-grid" style="display: none;"></div>
+        </div>
+
+        <!-- Economic Dashboard Section -->
+        <div class="section">
+            <h2>💹 Economic Indicators (FRED)</h2>
+            <div id="economicLoading" class="loading">Loading economic data</div>
+            <div id="economicGrid" class="economic-grid" style="display: none;"></div>
+        </div>
+
+        <!-- Sector Performance Section -->
+        <div class="section">
+            <h2>🎯 Sector Performance Heatmap</h2>
+            <div id="sectorLoading" class="loading">Loading sector data</div>
+            <div id="sectorHeatmap" class="sector-heatmap" style="display: none;"></div>
+        </div>
+
+        <!-- Commodities Section -->
+        <div class="section">
+            <h2>🥇 Commodities Dashboard</h2>
+            <div id="commoditiesLoading" class="loading">Loading commodities data</div>
+            <div id="commoditiesGrid" class="commodities-grid" style="display: none;"></div>
+        </div>
+
+        <!-- Currency Markets Section -->
+        <div class="section">
+            <h2>💱 Currency Markets</h2>
+            <div id="fxLoading" class="loading">Loading currency data</div>
+            <div id="fxGrid" class="fx-grid" style="display: none;"></div>
+        </div>
+
+        <!-- Fixed Income Section -->
+        <div class="section">
+            <h2>📈 Fixed Income & Yield Curve</h2>
+            <div id="bondsLoading" class="loading">Loading bond data</div>
+            <div id="bondsContainer" style="display: none;">
+                <div class="yield-curve-container">
+                    <canvas id="yieldCurveChart"></canvas>
+                </div>
+                <div class="breadth-grid" id="bondStats" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- Global Markets Section -->
+        <div class="section">
+            <h2>🌍 Global Markets</h2>
+            <div id="globalLoading" class="loading">Loading global markets data</div>
+            <div id="globalGrid" class="global-grid" style="display: none;"></div>
+        </div>
+
+        <!-- Market Breadth Section -->
+        <div class="section">
+            <h2>📉 Market Breadth & Internals</h2>
+            <div id="breadthLoading" class="loading">Loading market breadth data</div>
+            <div id="breadthGrid" class="breadth-grid" style="display: none;"></div>
+        </div>
+
+        <!-- Volatility Dashboard Section -->
+        <div class="section">
+            <h2>⚡ Volatility Dashboard</h2>
+            <div id="volLoading" class="loading">Loading volatility data</div>
+            <div id="volGrid" class="vol-grid" style="display: none;"></div>
+        </div>
+
+        <!-- Last Updated -->
+        <div class="last-updated" id="lastUpdated">
+            Initializing...
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const FRED_API_KEY = '0a08e7a69f8dbd1b02e19e7af5a82b61';
+        const YFINANCE_PROXY = 'http://localhost:5002/api/yahoo/chart/';
+
+        // Market Configuration
+        const MARKET_CONFIG = {
+            indices: [
+                { symbol: 'SPY', name: 'S&P 500 ETF' },
+                { symbol: 'QQQ', name: 'Nasdaq 100 ETF' },
+                { symbol: 'DIA', name: 'Dow Jones ETF' },
+                { symbol: 'IWM', name: 'Russell 2000 ETF' }
+            ],
+            sectors: [
+                { symbol: 'XLK', name: 'Technology' },
+                { symbol: 'XLF', name: 'Financials' },
+                { symbol: 'XLE', name: 'Energy' },
+                { symbol: 'XLV', name: 'Healthcare' },
+                { symbol: 'XLY', name: 'Consumer Discretionary' },
+                { symbol: 'XLP', name: 'Consumer Staples' },
+                { symbol: 'XLI', name: 'Industrials' },
+                { symbol: 'XLB', name: 'Materials' },
+                { symbol: 'XLU', name: 'Utilities' },
+                { symbol: 'XLRE', name: 'Real Estate' },
+                { symbol: 'XLC', name: 'Communication Services' }
+            ],
+            commodities: [
+                { symbol: 'GC=F', name: 'Gold Futures' },
+                { symbol: 'CL=F', name: 'Crude Oil Futures' },
+                { symbol: 'HG=F', name: 'Copper Futures' },
+                { symbol: 'NG=F', name: 'Natural Gas Futures' }
+            ],
+            currencies: [
+                { symbol: 'EURUSD=X', name: 'EUR/USD' },
+                { symbol: 'GBPUSD=X', name: 'GBP/USD' },
+                { symbol: 'USDJPY=X', name: 'USD/JPY' },
+                { symbol: 'DX-Y.NYB', name: 'US Dollar Index' }
+            ],
+            bonds: [
+                { symbol: 'SHY', name: '1-3 Year Treasury', maturity: '2Y' },
+                { symbol: 'IEI', name: '3-7 Year Treasury', maturity: '5Y' },
+                { symbol: 'IEF', name: '7-10 Year Treasury', maturity: '10Y' },
+                { symbol: 'TLT', name: '20+ Year Treasury', maturity: '30Y' }
+            ],
+            global: [
+                { symbol: 'EEM', name: 'Emerging Markets' },
+                { symbol: 'FXI', name: 'China Large-Cap' },
+                { symbol: 'EWJ', name: 'Japan' },
+                { symbol: 'EWZ', name: 'Brazil' }
+            ],
+            breadth: [
+                { symbol: 'ADVN.NYS', name: 'NYSE Advancing' },
+                { symbol: 'DECN.NYS', name: 'NYSE Declining' },
+                { symbol: 'UNCH.NYS', name: 'NYSE Unchanged' }
+            ],
+            volatility: [
+                { symbol: '^VIX', name: 'VIX Index' },
+                { symbol: '^VVIX', name: 'VVIX Index' }
+            ],
+            fredIndicators: [
+                { series: 'GDP', name: 'GDP (Billions)', format: '$' },
+                { series: 'UNRATE', name: 'Unemployment Rate', format: '%' },
+                { series: 'CPIAUCSL', name: 'CPI (All Items)', format: '' },
+                { series: 'FEDFUNDS', name: 'Federal Funds Rate', format: '%' }
+            ]
+        };
+
+        // Chart.js Global Config
+        Chart.defaults.color = '#b0b8c8';
+        Chart.defaults.borderColor = '#1e3a5f';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        // Utility Functions
+        function formatNumber(num, decimals = 2) {
+            if (num === null || num === undefined || isNaN(num)) return 'N/A';
+            return Number(num).toLocaleString('en-US', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+        }
+
+        function formatPercent(num, decimals = 2) {
+            if (num === null || num === undefined || isNaN(num)) return 'N/A';
+            const sign = num >= 0 ? '+' : '';
+            return `${sign}${num.toFixed(decimals)}%`;
+        }
+
+        function getChangeClass(value) {
+            return value >= 0 ? 'positive' : 'negative';
+        }
+
+        function getHeatmapColor(value) {
+            // Generate color based on performance
+            if (value >= 3) return 'rgba(0, 255, 136, 0.8)';      // Strong Green
+            if (value >= 1) return 'rgba(0, 255, 136, 0.5)';      // Green
+            if (value >= 0) return 'rgba(0, 255, 136, 0.2)';      // Light Green
+            if (value >= -1) return 'rgba(255, 82, 82, 0.2)';     // Light Red
+            if (value >= -3) return 'rgba(255, 82, 82, 0.5)';     // Red
+            return 'rgba(255, 82, 82, 0.8)';                      // Strong Red
+        }
+
+        // Yahoo Finance API Functions
+        async function fetchYahooData(symbol, range = '1d', interval = '5m') {
+            try {
+                const url = `${YFINANCE_PROXY}${symbol}?range=${range}&interval=${interval}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
+                    throw new Error('Invalid data structure');
+                }
+
+                const result = data.chart.result[0];
+                const quote = result.indicators.quote[0];
+                const timestamps = result.timestamp;
+
+                return {
+                    symbol: result.meta.symbol,
+                    price: result.meta.regularMarketPrice,
+                    previousClose: result.meta.previousClose,
+                    change: result.meta.regularMarketPrice - result.meta.previousClose,
+                    changePercent: ((result.meta.regularMarketPrice - result.meta.previousClose) / result.meta.previousClose) * 100,
+                    timestamps: timestamps,
+                    prices: quote.close,
+                    volume: quote.volume,
+                    high: result.meta.regularMarketDayHigh,
+                    low: result.meta.regularMarketDayLow
+                };
+            } catch (error) {
+                console.error(`Error fetching ${symbol}:`, error);
+                return null;
+            }
+        }
+
+        async function fetchMultipleYahooData(symbols, range = '1d', interval = '5m') {
+            const promises = symbols.map(symbol => fetchYahooData(symbol, range, interval));
+            return await Promise.all(promises);
+        }
+
+        // FRED API Functions
+        async function fetchFREDData(seriesId) {
+            try {
+                const url = `http://localhost:5002/api/fred/series/observations?series_id=${seriesId}&api_key=${FRED_API_KEY}&file_type=json&limit=1&sort_order=desc`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.observations || data.observations.length === 0) {
+                    throw new Error('No observations found');
+                }
+
+                const latest = data.observations[0];
+                return {
+                    value: parseFloat(latest.value),
+                    date: latest.date
+                };
+            } catch (error) {
+                console.error(`Error fetching FRED ${seriesId}:`, error);
+                return null;
+            }
+        }
+
+        async function fetchMultipleFREDData(seriesIds) {
+            const promises = seriesIds.map(id => fetchFREDData(id));
+            return await Promise.all(promises);
+        }
+
+        // Create Sparkline Chart
+        function createSparkline(canvasId, data, isPositive) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            const color = isPositive ? 'rgba(0, 255, 136, 1)' : 'rgba(255, 82, 82, 1)';
+            const bgColor = isPositive ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 82, 82, 0.1)';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map((_, i) => i),
+                    datasets: [{
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: bgColor,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Render Market Indices
+        async function renderIndices() {
+            const symbols = MARKET_CONFIG.indices.map(i => i.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const container = document.getElementById('indicesGrid');
+            const loading = document.getElementById('indicesLoading');
+
+            container.innerHTML = '';
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.indices[index];
+                const canvasId = `spark-${config.symbol}`;
+
+                const card = document.createElement('div');
+                card.className = 'market-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-symbol">${config.symbol}</span>
+                    </div>
+                    <div class="card-price">${formatNumber(data.price)}</div>
+                    <div class="card-change ${getChangeClass(data.changePercent)}">
+                        ${formatPercent(data.changePercent)} (${formatNumber(data.change)})
+                    </div>
+                    <div class="card-meta">${config.name}</div>
+                    <div class="sparkline-container">
+                        <canvas id="${canvasId}"></canvas>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                // Create sparkline
+                setTimeout(() => {
+                    createSparkline(canvasId, data.prices.filter(p => p !== null), data.changePercent >= 0);
+                }, 100);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Render Economic Indicators
+        async function renderEconomicIndicators() {
+            const series = MARKET_CONFIG.fredIndicators.map(i => i.series);
+            const dataArray = await fetchMultipleFREDData(series);
+
+            const container = document.getElementById('economicGrid');
+            const loading = document.getElementById('economicLoading');
+
+            container.innerHTML = '';
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.fredIndicators[index];
+
+                const card = document.createElement('div');
+                card.className = 'economic-card';
+                card.innerHTML = `
+                    <div class="economic-label">${config.name}</div>
+                    <div class="economic-value">
+                        ${config.format}${formatNumber(data.value, config.format === '%' ? 2 : 0)}
+                    </div>
+                    <div class="economic-date">As of ${data.date}</div>
+                `;
+                container.appendChild(card);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Render Sector Heatmap
+        async function renderSectorHeatmap() {
+            const symbols = MARKET_CONFIG.sectors.map(s => s.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const container = document.getElementById('sectorHeatmap');
+            const loading = document.getElementById('sectorLoading');
+
+            container.innerHTML = '';
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.sectors[index];
+
+                const cell = document.createElement('div');
+                cell.className = 'sector-cell';
+                cell.style.background = getHeatmapColor(data.changePercent);
+                cell.innerHTML = `
+                    <div class="sector-name">${config.name}</div>
+                    <div class="sector-symbol">${config.symbol}</div>
+                    <div class="sector-change">${formatPercent(data.changePercent)}</div>
+                `;
+                container.appendChild(cell);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Render Commodities
+        async function renderCommodities() {
+            const symbols = MARKET_CONFIG.commodities.map(c => c.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const container = document.getElementById('commoditiesGrid');
+            const loading = document.getElementById('commoditiesLoading');
+
+            container.innerHTML = '';
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.commodities[index];
+                const canvasId = `comm-${config.symbol.replace('=', '')}`;
+
+                const card = document.createElement('div');
+                card.className = 'market-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-symbol">${config.symbol}</span>
+                    </div>
+                    <div class="card-price">${formatNumber(data.price)}</div>
+                    <div class="card-change ${getChangeClass(data.changePercent)}">
+                        ${formatPercent(data.changePercent)} (${formatNumber(data.change)})
+                    </div>
+                    <div class="card-meta">${config.name}</div>
+                    <div class="sparkline-container">
+                        <canvas id="${canvasId}"></canvas>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                setTimeout(() => {
+                    createSparkline(canvasId, data.prices.filter(p => p !== null), data.changePercent >= 0);
+                }, 100);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Render Currencies
+        async function renderCurrencies() {
+            const symbols = MARKET_CONFIG.currencies.map(c => c.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const container = document.getElementById('fxGrid');
+            const loading = document.getElementById('fxLoading');
+
+            container.innerHTML = '';
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.currencies[index];
+                const canvasId = `fx-${config.symbol.replace(/[=\-\.]/g, '')}`;
+
+                const card = document.createElement('div');
+                card.className = 'market-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-symbol">${config.symbol}</span>
+                    </div>
+                    <div class="card-price">${formatNumber(data.price, 4)}</div>
+                    <div class="card-change ${getChangeClass(data.changePercent)}">
+                        ${formatPercent(data.changePercent)} (${formatNumber(data.change, 4)})
+                    </div>
+                    <div class="card-meta">${config.name}</div>
+                    <div class="sparkline-container">
+                        <canvas id="${canvasId}"></canvas>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                setTimeout(() => {
+                    createSparkline(canvasId, data.prices.filter(p => p !== null), data.changePercent >= 0);
+                }, 100);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Render Fixed Income
+        async function renderFixedIncome() {
+            const symbols = MARKET_CONFIG.bonds.map(b => b.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const loading = document.getElementById('bondsLoading');
+            const container = document.getElementById('bondsContainer');
+            const statsContainer = document.getElementById('bondStats');
+
+            // Yield Curve Chart
+            const yields = dataArray.map(d => d ? d.changePercent : 0);
+            const maturities = MARKET_CONFIG.bonds.map(b => b.maturity);
+
+            const ctx = document.getElementById('yieldCurveChart');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: maturities,
+                    datasets: [{
+                        label: 'Yield Curve Change (%)',
+                        data: yields,
+                        borderColor: '#DC143C',
+                        backgroundColor: 'rgba(220, 20, 60, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { color: '#b0b8c8' }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#1e3a5f' },
+                            ticks: { color: '#b0b8c8' }
+                        },
+                        y: {
+                            grid: { color: '#1e3a5f' },
+                            ticks: { color: '#b0b8c8' }
+                        }
+                    }
+                }
+            });
+
+            // Bond Stats
+            statsContainer.innerHTML = '';
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.bonds[index];
+
+                const stat = document.createElement('div');
+                stat.className = 'breadth-stat';
+                stat.innerHTML = `
+                    <div class="breadth-label">${config.name}</div>
+                    <div class="breadth-value ${getChangeClass(data.changePercent)}">
+                        ${formatPercent(data.changePercent)}
+                    </div>
+                `;
+                statsContainer.appendChild(stat);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'block';
+        }
+
+        // Render Global Markets
+        async function renderGlobalMarkets() {
+            const symbols = MARKET_CONFIG.global.map(g => g.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const container = document.getElementById('globalGrid');
+            const loading = document.getElementById('globalLoading');
+
+            container.innerHTML = '';
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.global[index];
+                const canvasId = `global-${config.symbol}`;
+
+                const card = document.createElement('div');
+                card.className = 'market-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-symbol">${config.symbol}</span>
+                    </div>
+                    <div class="card-price">${formatNumber(data.price)}</div>
+                    <div class="card-change ${getChangeClass(data.changePercent)}">
+                        ${formatPercent(data.changePercent)} (${formatNumber(data.change)})
+                    </div>
+                    <div class="card-meta">${config.name}</div>
+                    <div class="sparkline-container">
+                        <canvas id="${canvasId}"></canvas>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                setTimeout(() => {
+                    createSparkline(canvasId, data.prices.filter(p => p !== null), data.changePercent >= 0);
+                }, 100);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Render Market Breadth
+        async function renderMarketBreadth() {
+            const symbols = MARKET_CONFIG.breadth.map(b => b.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const container = document.getElementById('breadthGrid');
+            const loading = document.getElementById('breadthLoading');
+
+            container.innerHTML = '';
+
+            // Calculate breadth metrics
+            let advancing = 0, declining = 0, unchanged = 0;
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.breadth[index];
+                if (config.name.includes('Advancing')) advancing = data.price;
+                if (config.name.includes('Declining')) declining = data.price;
+                if (config.name.includes('Unchanged')) unchanged = data.price;
+            });
+
+            const total = advancing + declining + unchanged;
+            const advDecRatio = declining > 0 ? (advancing / declining).toFixed(2) : 'N/A';
+            const breadthPercent = total > 0 ? ((advancing - declining) / total * 100).toFixed(2) : 'N/A';
+
+            const stats = [
+                { label: 'Advancing Issues', value: formatNumber(advancing, 0) },
+                { label: 'Declining Issues', value: formatNumber(declining, 0) },
+                { label: 'Unchanged Issues', value: formatNumber(unchanged, 0) },
+                { label: 'Advance/Decline Ratio', value: advDecRatio },
+                { label: 'Net Breadth %', value: `${breadthPercent}%` },
+                { label: 'Total Issues', value: formatNumber(total, 0) }
+            ];
+
+            stats.forEach(stat => {
+                const div = document.createElement('div');
+                div.className = 'breadth-stat';
+                div.innerHTML = `
+                    <div class="breadth-label">${stat.label}</div>
+                    <div class="breadth-value">${stat.value}</div>
+                `;
+                container.appendChild(div);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Render Volatility
+        async function renderVolatility() {
+            const symbols = MARKET_CONFIG.volatility.map(v => v.symbol);
+            const dataArray = await fetchMultipleYahooData(symbols);
+
+            const container = document.getElementById('volGrid');
+            const loading = document.getElementById('volLoading');
+
+            container.innerHTML = '';
+
+            dataArray.forEach((data, index) => {
+                if (!data) return;
+
+                const config = MARKET_CONFIG.volatility[index];
+                const canvasId = `vol-${config.symbol.replace('^', '')}`;
+
+                const card = document.createElement('div');
+                card.className = 'market-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-symbol">${config.symbol}</span>
+                    </div>
+                    <div class="card-price">${formatNumber(data.price)}</div>
+                    <div class="card-change ${getChangeClass(data.changePercent)}">
+                        ${formatPercent(data.changePercent)} (${formatNumber(data.change)})
+                    </div>
+                    <div class="card-meta">${config.name}</div>
+                    <div class="sparkline-container">
+                        <canvas id="${canvasId}"></canvas>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                setTimeout(() => {
+                    createSparkline(canvasId, data.prices.filter(p => p !== null), data.changePercent >= 0);
+                }, 100);
+            });
+
+            loading.style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Update Last Updated Timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            const timestamp = now.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            });
+            document.getElementById('lastUpdated').textContent = `Last Updated: ${timestamp}`;
+        }
+
+        // Initialize Dashboard
+        async function initDashboard() {
+            try {
+                // Render all sections in parallel
+                await Promise.all([
+                    renderIndices(),
+                    renderEconomicIndicators(),
+                    renderSectorHeatmap(),
+                    renderCommodities(),
+                    renderCurrencies(),
+                    renderFixedIncome(),
+                    renderGlobalMarkets(),
+                    renderMarketBreadth(),
+                    renderVolatility()
+                ]);
+
+                updateTimestamp();
+
+                console.log('✅ Unified Market Dashboard loaded successfully');
+            } catch (error) {
+                console.error('❌ Error initializing dashboard:', error);
+            }
+        }
+
+        // Auto-refresh every 90 seconds
+        function startAutoRefresh() {
+            setInterval(() => {
+                console.log('🔄 Auto-refreshing dashboard...');
+                initDashboard();
+            }, 90000);
+        }
+
+        // Start Dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+            startAutoRefresh();
+        });
+    </script>
+</body>
+</html>

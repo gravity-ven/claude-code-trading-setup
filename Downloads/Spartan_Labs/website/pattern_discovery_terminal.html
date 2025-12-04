@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="max-age=0">
+    <meta name="last-modified" content="2025-11-18 12:00:00">
+    <meta name="build-version" content="v1.0-PATTERN-DISCOVERY">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Discovery Terminal - Spartan Research Station</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;        /* Spartan Red */
+            --secondary-color: #B22222;      /* Spartan Firebrick */
+            --accent-color: #DC143C;         /* Spartan Crimson */
+            --accent-2-color: #FF5252;       /* Bright Red */
+            --accent-3-color: #FF6B6B;       /* Light Red */
+            --bg-dark: #0a1628;              /* Main Background */
+            --bg-darker: #050b14;            /* Darker Background */
+            --bg-card: #12203a;              /* Card Background */
+            --text-primary: #ffffff;         /* White Text */
+            --text-secondary: #b0b8c8;       /* Gray Text */
+            --text-muted: #7a8a9a;           /* Muted Gray */
+            --border-color: #1e3a5f;         /* Border Color */
+            --success-color: #00ff88;        /* Success Green */
+            --warning-color: #ff9500;        /* Warning Orange */
+            --danger-color: #FF5252;         /* Danger Red */
+            --info-color: #0096FF;           /* Info Blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        /* Spartan Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        /* Section Styling */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.1);
+        }
+
+        .section h2 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+        }
+
+        .section h3 {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            margin: 20px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        select, input {
+            padding: 12px 15px;
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(220, 20, 60, 0.1);
+        }
+
+        select:hover, input:hover {
+            border-color: var(--accent-color);
+        }
+
+        button {
+            padding: 12px 25px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: var(--bg-dark);
+        }
+
+        .btn-success:hover {
+            background: #00dd77;
+        }
+
+        /* Drawing Canvas */
+        #drawingCanvas {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            background: var(--bg-darker);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: crosshair;
+            display: block;
+            margin: 20px auto;
+            transition: border-color 0.3s ease;
+        }
+
+        #drawingCanvas:hover {
+            border-color: var(--accent-color);
+        }
+
+        .canvas-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Pattern Cards */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .pattern-card {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.15);
+        }
+
+        .pattern-card h4 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .pattern-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .pattern-stat {
+            background: rgba(220, 20, 60, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .pattern-stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .pattern-stat-value {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .pattern-stat-value.positive {
+            color: var(--success-color);
+        }
+
+        .pattern-stat-value.negative {
+            color: var(--danger-color);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(139,0,0,0.2), rgba(220,20,60,0.1));
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .stat-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .value {
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 10px 0;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .stat-card .change {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .stat-card .change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-card .change.negative {
+            color: var(--danger-color);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            background: var(--bg-darker);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        canvas {
+            max-height: 100%;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert.active {
+            display: block;
+        }
+
+        .alert-info {
+            background: rgba(0, 150, 255, 0.1);
+            border: 1px solid var(--info-color);
+            color: var(--info-color);
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .alert-warning {
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        .alert-danger {
+            background: rgba(255, 82, 82, 0.1);
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        /* Match List */
+        .match-list {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .match-item {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .match-date {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .match-similarity {
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .match-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .match-detail {
+            color: var(--text-muted);
+        }
+
+        .match-detail strong {
+            color: var(--text-primary);
+        }
+
+        /* Parameter Inputs */
+        .parameter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--bg-darker);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: rgba(220, 20, 60, 0.1);
+            color: var(--accent-color);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .data-table tr:hover {
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+
+            .pattern-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .match-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mini Chart */
+        .mini-chart {
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-darker);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: rgba(0, 150, 255, 0.05);
+            border: 1px solid var(--info-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-panel h4 {
+            color: var(--info-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-panel p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Code Display */
+        .code-display {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--success-color);
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        /* Tag */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(220, 20, 60, 0.1);
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin: 5px 5px 5px 0;
+        }
+
+        .tag.success {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .tag.warning {
+            background: rgba(255, 149, 0, 0.1);
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="icon">🔬</div>
+            <h1>Pattern Discovery Terminal</h1>
+            <p>Advanced pattern recognition and correlation analysis powered by real market data</p>
+            <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 10px;">
+                Statistical algorithms • Shape similarity • Euclidean distance • Backtesting
+            </p>
+            <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <!-- Alert Area -->
+        <div id="alertArea"></div>
+
+        <!-- Pattern Discovery Controls -->
+        <div class="section">
+            <h2>🔍 Pattern Discovery Engine</h2>
+            <div class="info-panel">
+                <h4>How Pattern Discovery Works</h4>
+                <p>This system uses statistical sliding window analysis to discover recurring patterns in price data.
+                It normalizes price sequences, calculates Euclidean distances between patterns, and identifies
+                statistically significant repetitions. Patterns are scored based on frequency, similarity, and
+                historical performance.</p>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="symbolSelect">Select Symbol</label>
+                    <select id="symbolSelect">
+                        <option value="SPY">SPY - S&P 500 ETF</option>
+                        <option value="QQQ">QQQ - Nasdaq 100 ETF</option>
+                        <option value="IWM">IWM - Russell 2000 ETF</option>
+                        <option value="DIA">DIA - Dow Jones ETF</option>
+                        <option value="AAPL">AAPL - Apple Inc.</option>
+                        <option value="MSFT">MSFT - Microsoft</option>
+                        <option value="GOOGL">GOOGL - Alphabet</option>
+                        <option value="AMZN">AMZN - Amazon</option>
+                        <option value="TSLA">TSLA - Tesla</option>
+                        <option value="NVDA">NVDA - Nvidia</option>
+                        <option value="META">META - Meta Platforms</option>
+                        <option value="GLD">GLD - Gold ETF</option>
+                        <option value="SLV">SLV - Silver ETF</option>
+                        <option value="TLT">TLT - 20Y Treasury ETF</option>
+                        <option value="UUP">UUP - US Dollar ETF</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="timeframeSelect">Timeframe</label>
+                    <select id="timeframeSelect">
+                        <option value="1d">Daily</option>
+                        <option value="1wk">Weekly</option>
+                        <option value="1mo">Monthly</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="periodInput">Historical Period (days)</label>
+                    <input type="number" id="periodInput" value="365" min="90" max="1825">
+                </div>
+
+                <div class="control-group">
+                    <label for="windowSizeInput">Pattern Window Size</label>
+                    <input type="number" id="windowSizeInput" value="10" min="5" max="30">
+                </div>
+            </div>
+
+            <div class="parameter-grid">
+                <div class="control-group">
+                    <label for="minOccurrencesInput">Minimum Occurrences</label>
+                    <input type="number" id="minOccurrencesInput" value="3" min="2" max="10">
+                </div>
+
+                <div class="control-group">
+                    <label for="similarityThreshold">Similarity Threshold (%)</label>
+                    <input type="number" id="similarityThreshold" value="85" min="50" max="99">
+                </div>
+
+                <div class="control-group">
+                    <label for="forwardLookInput">Forward Look (days)</label>
+                    <input type="number" id="forwardLookInput" value="5" min="1" max="30">
+                </div>
+            </div>
+
+            <button onclick="discoverPatterns()" style="margin-top: 20px; width: 100%;">
+                🔬 Discover Patterns
+            </button>
+
+            <div class="loading" id="discoveryLoading">
+                <div class="spinner"></div>
+                <p>Analyzing market data and discovering patterns...</p>
+            </div>
+        </div>
+
+        <!-- Pattern Discovery Results -->
+        <div class="section" id="discoveryResultsSection" style="display: none;">
+            <h2>📊 Discovered Patterns</h2>
+            <div class="stats-grid" id="discoveryStats"></div>
+            <div class="pattern-grid" id="discoveredPatterns"></div>
+        </div>
+
+        <!-- Custom Pattern Builder -->
+        <div class="section">
+            <h2>✏️ Custom Pattern Builder</h2>
+            <div class="info-panel">
+                <h4>Draw Your Pattern</h4>
+                <p>Use your mouse to draw a price pattern on the canvas below. The system will normalize your drawing
+                and search for similar patterns in historical data using shape similarity algorithms. Click "Clear" to
+                start over, then "Find Matches" to search.</p>
+            </div>
+
+            <canvas id="drawingCanvas" width="800" height="300"></canvas>
+
+            <div class="canvas-controls">
+                <button class="btn-secondary" onclick="clearDrawing()">🗑️ Clear Drawing</button>
+                <button class="btn-success" onclick="findMatchingPatterns()">🎯 Find Matches</button>
+                <button class="btn-secondary" onclick="savePattern()">💾 Save Pattern</button>
+            </div>
+
+            <div class="loading" id="matchingLoading">
+                <div class="spinner"></div>
+                <p>Searching for matching patterns...</p>
+            </div>
+        </div>
+
+        <!-- Pattern Matches -->
+        <div class="section" id="matchesSection" style="display: none;">
+            <h2>🎯 Pattern Matches</h2>
+            <div class="stats-grid" id="matchStats"></div>
+            <div class="match-list" id="patternMatches"></div>
+        </div>
+
+        <!-- Backtest Results -->
+        <div class="section" id="backtestSection" style="display: none;">
+            <h2>📈 Pattern Backtest Analysis</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Occurrences</h3>
+                    <div class="value" id="backtestOccurrences">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Success Rate</h3>
+                    <div class="value" id="backtestSuccessRate">0%</div>
+                    <div class="change" id="backtestSuccessChange"></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Average Return</h3>
+                    <div class="value" id="backtestAvgReturn">0%</div>
+                    <div class="change" id="backtestReturnChange"></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Win/Loss Ratio</h3>
+                    <div class="value" id="backtestWinLoss">0.0</div>
+                </div>
+            </div>
+
+            <h3>Return Distribution</h3>
+            <div class="chart-container">
+                <canvas id="backtestChart"></canvas>
+            </div>
+
+            <h3>Performance Over Time</h3>
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Correlation Analysis -->
+        <div class="section">
+            <h2>🔗 Multi-Symbol Correlation Analysis</h2>
+            <div class="info-panel">
+                <h4>Pattern Correlation Discovery</h4>
+                <p>Analyze correlations between patterns across different symbols. This can reveal leading indicators
+                and inter-market relationships that may predict future movements.</p>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="correlationSymbol1">Primary Symbol</label>
+                    <select id="correlationSymbol1">
+                        <option value="SPY">SPY - S&P 500</option>
+                        <option value="QQQ">QQQ - Nasdaq 100</option>
+                        <option value="IWM">IWM - Russell 2000</option>
+                        <option value="DIA">DIA - Dow Jones</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="correlationSymbol2">Secondary Symbol</label>
+                    <select id="correlationSymbol2">
+                        <option value="GLD">GLD - Gold</option>
+                        <option value="TLT">TLT - Treasuries</option>
+                        <option value="UUP">UUP - US Dollar</option>
+                        <option value="VIX">^VIX - Volatility Index</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="correlationLag">Lag Period (days)</label>
+                    <input type="number" id="correlationLag" value="0" min="0" max="20">
+                </div>
+            </div>
+
+            <button onclick="analyzeCorrelation()" style="margin-top: 20px; width: 100%;">
+                🔗 Analyze Correlation
+            </button>
+
+            <div class="loading" id="correlationLoading">
+                <div class="spinner"></div>
+                <p>Analyzing cross-market correlations...</p>
+            </div>
+        </div>
+
+        <!-- Correlation Results -->
+        <div class="section" id="correlationSection" style="display: none;">
+            <h2>📊 Correlation Results</h2>
+            <div class="stats-grid" id="correlationStats"></div>
+            <div class="chart-container">
+                <canvas id="correlationChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let historicalData = null;
+        let discoveredPatterns = [];
+        let drawnPattern = [];
+        let isDrawing = false;
+        let backtestChart = null;
+        let performanceChart = null;
+        let correlationChart = null;
+
+        // Drawing Canvas Setup
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas background
+        function initCanvas() {
+            ctx.fillStyle = '#050b14';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#DC143C';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        initCanvas();
+
+        // Drawing event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup', {});
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        function startDrawing(e) {
+            isDrawing = true;
+            drawnPattern = [];
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            drawnPattern.push({ x, y });
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            drawnPattern.push({ x, y });
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                ctx.closePath();
+            }
+        }
+
+        function clearDrawing() {
+            initCanvas();
+            drawnPattern = [];
+            showAlert('Drawing cleared. Draw a new pattern.', 'info');
+        }
+
+        function savePattern() {
+            if (drawnPattern.length < 10) {
+                showAlert('Please draw a longer pattern (at least 10 points).', 'warning');
+                return;
+            }
+
+            const patternName = prompt('Enter a name for this pattern:');
+            if (!patternName) return;
+
+            const savedPatterns = JSON.parse(localStorage.getItem('savedPatterns') || '[]');
+            savedPatterns.push({
+                name: patternName,
+                pattern: normalizeDrawnPattern(drawnPattern),
+                date: new Date().toISOString()
+            });
+
+            localStorage.setItem('savedPatterns', JSON.stringify(savedPatterns));
+            showAlert(`Pattern "${patternName}" saved successfully!`, 'success');
+        }
+
+        // Alert system
+        function showAlert(message, type = 'info') {
+            const alertArea = document.getElementById('alertArea');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} active`;
+            alert.textContent = message;
+            alertArea.appendChild(alert);
+
+            setTimeout(() => {
+                alert.classList.remove('active');
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+
+        // Pattern Discovery
+        async function discoverPatterns() {
+            const symbol = document.getElementById('symbolSelect').value;
+            const timeframe = document.getElementById('timeframeSelect').value;
+            const period = parseInt(document.getElementById('periodInput').value);
+            const windowSize = parseInt(document.getElementById('windowSizeInput').value);
+            const minOccurrences = parseInt(document.getElementById('minOccurrencesInput').value);
+            const similarityThreshold = parseInt(document.getElementById('similarityThreshold').value);
+
+            // Show loading
+            document.getElementById('discoveryLoading').classList.add('active');
+
+            try {
+                // Fetch data from yfinance
+                const data = await fetchYahooFinanceData(symbol, period, timeframe);
+                historicalData = data;
+
+                // Discover patterns
+                const patterns = discoverRecurringPatterns(
+                    data.close,
+                    windowSize,
+                    minOccurrences,
+                    similarityThreshold
+                );
+
+                discoveredPatterns = patterns;
+
+                // Display results
+                displayDiscoveredPatterns(patterns, data);
+
+                showAlert(`Discovered ${patterns.length} recurring patterns in ${symbol}`, 'success');
+            } catch (error) {
+                showAlert(`Error: ${error.message}`, 'danger');
+                console.error(error);
+            } finally {
+                document.getElementById('discoveryLoading').classList.remove('active');
+            }
+        }
+
+        // Fetch Yahoo Finance data
+        async function fetchYahooFinanceData(symbol, days, interval = '1d') {
+            // Calculate date range
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+
+            // Format dates for Yahoo Finance
+            const start = Math.floor(startDate.getTime() / 1000);
+            const end = Math.floor(endDate.getTime() / 1000);
+
+            // Yahoo Finance API endpoint (using query1.finance.yahoo.com)
+            const url = `http://localhost:5002/api/yahoo/chart/${symbol}?period1=${start}&period2=${end}&interval=${interval}`;
+
+            try {
+                const response = await fetch(url);
+                const json = await response.json();
+
+                if (json.chart.error) {
+                    throw new Error(json.chart.error.description);
+                }
+
+                const result = json.chart.result[0];
+                const timestamps = result.timestamp;
+                const quotes = result.indicators.quote[0];
+
+                return {
+                    symbol: symbol,
+                    timestamps: timestamps.map(t => new Date(t * 1000)),
+                    open: quotes.open,
+                    high: quotes.high,
+                    low: quotes.low,
+                    close: quotes.close,
+                    volume: quotes.volume
+                };
+            } catch (error) {
+                throw new Error(`Failed to fetch data for ${symbol}: ${error.message}`);
+            }
+        }
+
+        // Discover recurring patterns using sliding window
+        function discoverRecurringPatterns(prices, windowSize, minOccurrences, similarityThreshold) {
+            const patterns = [];
+            const allWindows = [];
+            const threshold = 100 - similarityThreshold; // Convert to distance threshold
+
+            // Extract all windows
+            for (let i = 0; i <= prices.length - windowSize; i++) {
+                const window = prices.slice(i, i + windowSize);
+                const normalized = normalizePattern(window);
+                allWindows.push({
+                    pattern: normalized,
+                    startIndex: i,
+                    endIndex: i + windowSize - 1,
+                    rawPattern: window
+                });
+            }
+
+            // Find similar patterns
+            const processed = new Set();
+
+            for (let i = 0; i < allWindows.length; i++) {
+                if (processed.has(i)) continue;
+
+                const matches = [];
+                const targetPattern = allWindows[i].pattern;
+
+                for (let j = 0; j < allWindows.length; j++) {
+                    if (Math.abs(i - j) < windowSize / 2) continue; // Avoid overlapping patterns
+
+                    const distance = euclideanDistance(targetPattern, allWindows[j].pattern);
+                    const similarity = Math.max(0, 100 - distance);
+
+                    if (distance < threshold) {
+                        matches.push({
+                            ...allWindows[j],
+                            similarity: similarity
+                        });
+                        processed.add(j);
+                    }
+                }
+
+                if (matches.length >= minOccurrences - 1) { // -1 because we don't count the original
+                    patterns.push({
+                        id: patterns.length,
+                        pattern: targetPattern,
+                        rawPattern: allWindows[i].rawPattern,
+                        matches: matches,
+                        count: matches.length + 1,
+                        avgSimilarity: matches.reduce((sum, m) => sum + m.similarity, 0) / matches.length,
+                        firstOccurrence: allWindows[i].startIndex
+                    });
+                }
+            }
+
+            // Sort by count and similarity
+            patterns.sort((a, b) => {
+                if (b.count !== a.count) return b.count - a.count;
+                return b.avgSimilarity - a.avgSimilarity;
+            });
+
+            return patterns.slice(0, 20); // Return top 20 patterns
+        }
+
+        // Normalize pattern to 0-100 scale
+        function normalizePattern(data) {
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const range = max - min;
+
+            if (range === 0) return data.map(() => 50);
+
+            return data.map(val => ((val - min) / range) * 100);
+        }
+
+        // Euclidean distance
+        function euclideanDistance(a, b) {
+            if (a.length !== b.length) return Infinity;
+
+            let sum = 0;
+            for (let i = 0; i < a.length; i++) {
+                sum += Math.pow(a[i] - b[i], 2);
+            }
+            return Math.sqrt(sum);
+        }
+
+        // Display discovered patterns
+        function displayDiscoveredPatterns(patterns, data) {
+            const section = document.getElementById('discoveryResultsSection');
+            const statsDiv = document.getElementById('discoveryStats');
+            const patternsDiv = document.getElementById('discoveredPatterns');
+
+            // Show section
+            section.style.display = 'block';
+
+            // Calculate statistics
+            const totalOccurrences = patterns.reduce((sum, p) => sum + p.count, 0);
+            const avgSimilarity = patterns.reduce((sum, p) => sum + p.avgSimilarity, 0) / patterns.length;
+            const avgOccurrences = totalOccurrences / patterns.length;
+
+            // Display stats
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <h3>Patterns Found</h3>
+                    <div class="value">${patterns.length}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Occurrences</h3>
+                    <div class="value">${totalOccurrences}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Similarity</h3>
+                    <div class="value">${avgSimilarity.toFixed(1)}%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Occurrences</h3>
+                    <div class="value">${avgOccurrences.toFixed(1)}</div>
+                </div>
+            `;
+
+            // Display patterns
+            patternsDiv.innerHTML = '';
+            patterns.forEach(pattern => {
+                const patternCard = createPatternCard(pattern, data);
+                patternsDiv.appendChild(patternCard);
+            });
+
+            // Backtest best pattern
+            if (patterns.length > 0) {
+                backtestPattern(patterns[0], data);
+            }
+        }
+
+        // Create pattern card
+        function createPatternCard(pattern, data) {
+            const card = document.createElement('div');
+            card.className = 'pattern-card';
+
+            // Create mini chart
+            const chartCanvas = document.createElement('canvas');
+            chartCanvas.className = 'mini-chart';
+            chartCanvas.width = 350;
+            chartCanvas.height = 80;
+
+            card.innerHTML = `
+                <h4>Pattern #${pattern.id + 1}</h4>
+                <div class="pattern-info">
+                    <div class="pattern-stat">
+                        <div class="pattern-stat-label">Occurrences</div>
+                        <div class="pattern-stat-value">${pattern.count}</div>
+                    </div>
+                    <div class="pattern-stat">
+                        <div class="pattern-stat-label">Avg Similarity</div>
+                        <div class="pattern-stat-value">${pattern.avgSimilarity.toFixed(1)}%</div>
+                    </div>
+                </div>
+            `;
+
+            card.appendChild(chartCanvas);
+
+            // Draw mini chart
+            drawMiniChart(chartCanvas, pattern.pattern);
+
+            // Add backtest button
+            const backtestBtn = document.createElement('button');
+            backtestBtn.textContent = '📈 Backtest This Pattern';
+            backtestBtn.style.width = '100%';
+            backtestBtn.style.marginTop = '15px';
+            backtestBtn.onclick = () => backtestPattern(pattern, data);
+            card.appendChild(backtestBtn);
+
+            return card;
+        }
+
+        // Draw mini chart
+        function drawMiniChart(canvas, pattern) {
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 10;
+
+            ctx.fillStyle = '#050b14';
+            ctx.fillRect(0, 0, width, height);
+
+            const xStep = (width - 2 * padding) / (pattern.length - 1);
+            const yScale = (height - 2 * padding) / 100;
+
+            ctx.strokeStyle = '#DC143C';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            pattern.forEach((value, i) => {
+                const x = padding + i * xStep;
+                const y = height - padding - value * yScale;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+
+            ctx.stroke();
+        }
+
+        // Backtest pattern
+        function backtestPattern(pattern, data) {
+            const forwardLook = parseInt(document.getElementById('forwardLookInput').value);
+            const matches = [pattern.firstOccurrence, ...pattern.matches.map(m => m.startIndex)];
+
+            let wins = 0;
+            let losses = 0;
+            let totalReturn = 0;
+            const returns = [];
+            const dates = [];
+
+            matches.forEach(startIdx => {
+                const endIdx = startIdx + pattern.pattern.length;
+                const futureIdx = endIdx + forwardLook;
+
+                if (futureIdx < data.close.length) {
+                    const entryPrice = data.close[endIdx - 1];
+                    const exitPrice = data.close[futureIdx];
+                    const returnPct = ((exitPrice - entryPrice) / entryPrice) * 100;
+
+                    totalReturn += returnPct;
+                    returns.push(returnPct);
+                    dates.push(data.timestamps[endIdx]);
+
+                    if (returnPct > 0) {
+                        wins++;
+                    } else {
+                        losses++;
+                    }
+                }
+            });
+
+            const occurrences = returns.length;
+            const successRate = occurrences > 0 ? (wins / occurrences) * 100 : 0;
+            const avgReturn = occurrences > 0 ? totalReturn / occurrences : 0;
+            const winLossRatio = losses > 0 ? wins / losses : wins;
+
+            // Display results
+            document.getElementById('backtestSection').style.display = 'block';
+            document.getElementById('backtestOccurrences').textContent = occurrences;
+            document.getElementById('backtestSuccessRate').textContent = successRate.toFixed(1) + '%';
+            document.getElementById('backtestAvgReturn').textContent = avgReturn.toFixed(2) + '%';
+            document.getElementById('backtestWinLoss').textContent = winLossRatio.toFixed(2);
+
+            // Update change indicators
+            const successChange = document.getElementById('backtestSuccessChange');
+            successChange.textContent = `${wins} wins / ${losses} losses`;
+            successChange.className = 'change ' + (successRate >= 50 ? 'positive' : 'negative');
+
+            const returnChange = document.getElementById('backtestReturnChange');
+            returnChange.textContent = avgReturn >= 0 ? '↑ Positive' : '↓ Negative';
+            returnChange.className = 'change ' + (avgReturn >= 0 ? 'positive' : 'negative');
+
+            // Create return distribution chart
+            createBacktestChart(returns);
+
+            // Create performance over time chart
+            createPerformanceChart(dates, returns);
+
+            // Scroll to backtest section
+            document.getElementById('backtestSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Create backtest chart
+        function createBacktestChart(returns) {
+            const ctx = document.getElementById('backtestChart').getContext('2d');
+
+            if (backtestChart) {
+                backtestChart.destroy();
+            }
+
+            // Create histogram bins
+            const bins = 10;
+            const min = Math.min(...returns);
+            const max = Math.max(...returns);
+            const binSize = (max - min) / bins;
+            const histogram = new Array(bins).fill(0);
+            const labels = [];
+
+            for (let i = 0; i < bins; i++) {
+                const binStart = min + i * binSize;
+                const binEnd = binStart + binSize;
+                labels.push(`${binStart.toFixed(1)}% to ${binEnd.toFixed(1)}%`);
+
+                histogram[i] = returns.filter(r => r >= binStart && r < binEnd).length;
+            }
+
+            backtestChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Frequency',
+                        data: histogram,
+                        backgroundColor: 'rgba(220, 20, 60, 0.6)',
+                        borderColor: '#DC143C',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Return Distribution',
+                            color: '#DC143C',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#b0b8c8'
+                            },
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#b0b8c8',
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create performance chart
+        function createPerformanceChart(dates, returns) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+
+            if (performanceChart) {
+                performanceChart.destroy();
+            }
+
+            // Calculate cumulative returns
+            const cumulative = [];
+            let sum = 0;
+            returns.forEach(r => {
+                sum += r;
+                cumulative.push(sum);
+            });
+
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates.map(d => d.toLocaleDateString()),
+                    datasets: [{
+                        label: 'Cumulative Return (%)',
+                        data: cumulative,
+                        borderColor: '#DC143C',
+                        backgroundColor: 'rgba(220, 20, 60, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#b0b8c8'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Cumulative Performance',
+                            color: '#DC143C',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#b0b8c8',
+                                callback: function(value) {
+                                    return value.toFixed(1) + '%';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#b0b8c8',
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Find matching patterns
+        async function findMatchingPatterns() {
+            if (drawnPattern.length < 10) {
+                showAlert('Please draw a pattern first (at least 10 points).', 'warning');
+                return;
+            }
+
+            const symbol = document.getElementById('symbolSelect').value;
+            const period = parseInt(document.getElementById('periodInput').value);
+            const similarityThreshold = parseInt(document.getElementById('similarityThreshold').value);
+
+            // Show loading
+            document.getElementById('matchingLoading').classList.add('active');
+
+            try {
+                // Fetch data if not already loaded
+                if (!historicalData || historicalData.symbol !== symbol) {
+                    const data = await fetchYahooFinanceData(symbol, period, '1d');
+                    historicalData = data;
+                }
+
+                // Normalize drawn pattern
+                const normalized = normalizeDrawnPattern(drawnPattern);
+
+                // Find matches
+                const matches = findMatches(normalized, historicalData, similarityThreshold);
+
+                // Display matches
+                displayMatches(matches, historicalData);
+
+                showAlert(`Found ${matches.length} similar patterns`, 'success');
+            } catch (error) {
+                showAlert(`Error: ${error.message}`, 'danger');
+                console.error(error);
+            } finally {
+                document.getElementById('matchingLoading').classList.remove('active');
+            }
+        }
+
+        // Normalize drawn pattern
+        function normalizeDrawnPattern(points) {
+            // Sample points to fixed length
+            const targetLength = 20;
+            const sampled = [];
+            const step = points.length / targetLength;
+
+            for (let i = 0; i < targetLength; i++) {
+                const idx = Math.floor(i * step);
+                sampled.push(points[idx].y);
+            }
+
+            // Normalize to 0-100
+            return normalizePattern(sampled);
+        }
+
+        // Find matches in historical data
+        function findMatches(targetPattern, data, similarityThreshold) {
+            const matches = [];
+            const windowSize = targetPattern.length;
+            const threshold = 100 - similarityThreshold;
+
+            for (let i = 0; i <= data.close.length - windowSize; i++) {
+                const window = data.close.slice(i, i + windowSize);
+                const normalized = normalizePattern(window);
+                const distance = euclideanDistance(targetPattern, normalized);
+                const similarity = Math.max(0, 100 - distance);
+
+                if (distance < threshold) {
+                    matches.push({
+                        startIndex: i,
+                        endIndex: i + windowSize - 1,
+                        similarity: similarity,
+                        pattern: normalized,
+                        rawPattern: window
+                    });
+                }
+            }
+
+            // Sort by similarity
+            matches.sort((a, b) => b.similarity - a.similarity);
+
+            return matches.slice(0, 50); // Top 50 matches
+        }
+
+        // Display matches
+        function displayMatches(matches, data) {
+            const section = document.getElementById('matchesSection');
+            const statsDiv = document.getElementById('matchStats');
+            const matchesDiv = document.getElementById('patternMatches');
+
+            section.style.display = 'block';
+
+            // Calculate stats
+            const avgSimilarity = matches.reduce((sum, m) => sum + m.similarity, 0) / matches.length;
+            const topSimilarity = matches.length > 0 ? matches[0].similarity : 0;
+
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <h3>Matches Found</h3>
+                    <div class="value">${matches.length}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Top Similarity</h3>
+                    <div class="value">${topSimilarity.toFixed(1)}%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Similarity</h3>
+                    <div class="value">${avgSimilarity.toFixed(1)}%</div>
+                </div>
+            `;
+
+            // Display matches
+            matchesDiv.innerHTML = '';
+            matches.forEach((match, idx) => {
+                const matchItem = document.createElement('div');
+                matchItem.className = 'match-item';
+
+                const startDate = data.timestamps[match.startIndex].toLocaleDateString();
+                const endDate = data.timestamps[match.endIndex].toLocaleDateString();
+                const startPrice = data.close[match.startIndex].toFixed(2);
+                const endPrice = data.close[match.endIndex].toFixed(2);
+                const priceChange = ((endPrice - startPrice) / startPrice * 100).toFixed(2);
+
+                matchItem.innerHTML = `
+                    <div class="match-header">
+                        <div class="match-date">${startDate} → ${endDate}</div>
+                        <div class="match-similarity">${match.similarity.toFixed(1)}% match</div>
+                    </div>
+                    <div class="match-details">
+                        <div class="match-detail">
+                            <strong>Start:</strong> $${startPrice}
+                        </div>
+                        <div class="match-detail">
+                            <strong>End:</strong> $${endPrice}
+                        </div>
+                        <div class="match-detail">
+                            <strong>Change:</strong>
+                            <span class="${priceChange >= 0 ? 'positive' : 'negative'}">
+                                ${priceChange}%
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                matchesDiv.appendChild(matchItem);
+            });
+
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Correlation analysis
+        async function analyzeCorrelation() {
+            const symbol1 = document.getElementById('correlationSymbol1').value;
+            const symbol2 = document.getElementById('correlationSymbol2').value;
+            const lag = parseInt(document.getElementById('correlationLag').value);
+            const period = 365;
+
+            document.getElementById('correlationLoading').classList.add('active');
+
+            try {
+                // Fetch data for both symbols
+                const data1 = await fetchYahooFinanceData(symbol1, period, '1d');
+                const data2 = await fetchYahooFinanceData(symbol2, period, '1d');
+
+                // Calculate correlation
+                const correlation = calculateCorrelation(data1.close, data2.close, lag);
+
+                // Display results
+                displayCorrelation(correlation, data1, data2, lag);
+
+                showAlert(`Correlation: ${correlation.coefficient.toFixed(3)}`, 'success');
+            } catch (error) {
+                showAlert(`Error: ${error.message}`, 'danger');
+                console.error(error);
+            } finally {
+                document.getElementById('correlationLoading').classList.remove('active');
+            }
+        }
+
+        // Calculate correlation
+        function calculateCorrelation(series1, series2, lag) {
+            // Align series with lag
+            let x, y;
+            if (lag >= 0) {
+                x = series1.slice(0, series1.length - lag);
+                y = series2.slice(lag);
+            } else {
+                x = series1.slice(-lag);
+                y = series2.slice(0, series2.length + lag);
+            }
+
+            const n = Math.min(x.length, y.length);
+            x = x.slice(0, n);
+            y = y.slice(0, n);
+
+            // Calculate Pearson correlation
+            const meanX = x.reduce((sum, val) => sum + val, 0) / n;
+            const meanY = y.reduce((sum, val) => sum + val, 0) / n;
+
+            let numerator = 0;
+            let denomX = 0;
+            let denomY = 0;
+
+            for (let i = 0; i < n; i++) {
+                const dx = x[i] - meanX;
+                const dy = y[i] - meanY;
+                numerator += dx * dy;
+                denomX += dx * dx;
+                denomY += dy * dy;
+            }
+
+            const coefficient = numerator / Math.sqrt(denomX * denomY);
+
+            return {
+                coefficient,
+                aligned: { x, y },
+                n
+            };
+        }
+
+        // Display correlation
+        function displayCorrelation(correlation, data1, data2, lag) {
+            const section = document.getElementById('correlationSection');
+            const statsDiv = document.getElementById('correlationStats');
+
+            section.style.display = 'block';
+
+            const strength = Math.abs(correlation.coefficient);
+            let interpretation = '';
+            if (strength > 0.8) interpretation = 'Very Strong';
+            else if (strength > 0.6) interpretation = 'Strong';
+            else if (strength > 0.4) interpretation = 'Moderate';
+            else if (strength > 0.2) interpretation = 'Weak';
+            else interpretation = 'Very Weak';
+
+            const direction = correlation.coefficient >= 0 ? 'Positive' : 'Negative';
+
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <h3>Correlation</h3>
+                    <div class="value">${correlation.coefficient.toFixed(3)}</div>
+                    <div class="change ${correlation.coefficient >= 0 ? 'positive' : 'negative'}">
+                        ${direction}
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>Strength</h3>
+                    <div class="value">${interpretation}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Sample Size</h3>
+                    <div class="value">${correlation.n}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Lag Period</h3>
+                    <div class="value">${lag} days</div>
+                </div>
+            `;
+
+            createCorrelationChart(correlation.aligned, data1.symbol, data2.symbol);
+
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Create correlation chart
+        function createCorrelationChart(aligned, symbol1, symbol2) {
+            const ctx = document.getElementById('correlationChart').getContext('2d');
+
+            if (correlationChart) {
+                correlationChart.destroy();
+            }
+
+            // Normalize both series to 0-100 for visualization
+            const norm1 = normalizePattern(aligned.x);
+            const norm2 = normalizePattern(aligned.y);
+
+            const labels = Array.from({ length: norm1.length }, (_, i) => i + 1);
+
+            correlationChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: symbol1,
+                            data: norm1,
+                            borderColor: '#DC143C',
+                            backgroundColor: 'rgba(220, 20, 60, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.4
+                        },
+                        {
+                            label: symbol2,
+                            data: norm2,
+                            borderColor: '#0096FF',
+                            backgroundColor: 'rgba(0, 150, 255, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#b0b8c8',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Normalized Price Comparison',
+                            color: '#DC143C',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#b0b8c8'
+                            },
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#b0b8c8'
+                            },
+                            grid: {
+                                color: 'rgba(30, 58, 95, 0.3)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Pattern Discovery Terminal initialized');
+            showAlert('Pattern Discovery Terminal ready. Select a symbol and discover patterns!', 'info');
+        });
+    </script>
+</body>
+</html>

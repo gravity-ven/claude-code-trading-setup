@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "smart_mode": {
+    "enabled": true,
+    "autonomy_level": "maximum",
+    "interpret_vague_prompts": true,
+    "auto_expand_scope": true,
+    "parallel_execution": true,
+    "proactive_improvements": true
+  },
+  "defaults": {
+    "include_tests": true,
+    "include_docs": true,
+    "production_ready": true,
+    "fix_errors_automatically": true
+  },
+  "autonomy": {
+    "level": "maximum",
+    "interpretVaguePrompts": true,
+    "autoExpand": true,
+    "parallelExecution": true,
+    "assumeIntent": true,
+    "proactive": true
+  },
+  "intelligence": {
+    "inferRequirements": true,
+    "addBestPractices": true,
+    "includeTesting": true,
+    "addDocumentation": true,
+    "errorRecovery": "automatic",
+    "optimizeByDefault": true
+  },
+  "execution": {
+    "maxParallelTasks": 5,
+    "autoCommit": false,
+    "autoTest": true,
+    "autoFix": true,
+    "continueOnError": true
+  },
+  "prompts": {
+    "expandShortPrompts": true,
+    "addContext": true,
+    "inferScope": true,
+    "completionCriteria": "production-ready"
+  },
+  "stop_conditions": {
+    "only_for": [
+      "api_keys_needed",
+      "external_credentials",
+      "design_decisions_requiring_user_input",
+      "breaking_changes_to_existing_features"
+    ],
+    "dont_stop_for": [
+      "implementation_details",
+      "technology_choices",
+      "code_structure_decisions",
+      "error_resolution",
+      "test_failures",
+      "optimization_opportunities"
+    ]
+  }
+}

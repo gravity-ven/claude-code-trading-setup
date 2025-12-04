@@ -1,0 +1,197 @@
+========================================================================
+SPARTAN LABS - COT DAILY EMAIL QUICK START
+========================================================================
+
+🎯 WHAT YOU GET:
+   Daily email at 8:00 AM with COT infographic showing extreme
+   positioning across 40+ futures markets (Bitcoin, Gold, Oil, etc.)
+
+========================================================================
+⚡ 3-STEP SETUP (10 minutes)
+========================================================================
+
+STEP 1: GET GMAIL APP PASSWORD (5 min)
+----------------------------------------
+⚠️  CRITICAL: You CANNOT use regular Gmail password!
+
+1. Go to: https://myaccount.google.com/security
+2. Enable "2-Step Verification" (if not already on)
+3. Search for "App passwords"
+4. Create password for "Mail"
+5. COPY the 16-character code (example: abcd efgh ijkl mnop)
+
+STEP 2: UPDATE .ENV FILE (2 min)
+---------------------------------
+1. Open: C:\Users\Quantum\Downloads\Spartan_Labs\website\.env
+
+2. Find line 24:
+   SMTP_PASSWORD=YOUR_16_CHAR_APP_PASSWORD_HERE
+
+3. Replace with your App Password (remove spaces):
+   SMTP_PASSWORD=abcdefghijklmnop
+
+4. Save the file
+
+STEP 3: RUN SETUP SCRIPT (3 min)
+---------------------------------
+WINDOWS:
+   1. Right-click: SETUP_COT_DAILY_EMAIL.bat
+   2. Select: "Run as administrator"
+   3. Press Enter when asked for time (uses 08:00 AM default)
+   4. Done!
+
+LINUX/WSL:
+   1. Open terminal
+   2. cd /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website
+   3. bash setup_cot_daily_email.sh
+   4. Press Enter when asked for time (uses 08:00 AM default)
+   5. Done!
+
+========================================================================
+🧪 TEST IT NOW
+========================================================================
+
+Don't wait for tomorrow! Test immediately:
+
+WINDOWS:
+   cd C:\Users\Quantum\Downloads\Spartan_Labs\website
+   python cot_daily_emailer.py
+
+LINUX/WSL:
+   cd /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website
+   python3 cot_daily_emailer.py
+
+✅ You should see:
+   - "✅ Email sent successfully!"
+   - Email arrives at: naga.kvv@gmail.com
+
+========================================================================
+✅ CATCH-UP FEATURE (Computer Off Protection)
+========================================================================
+
+WINDOWS:
+   ✅ If computer is OFF at 8:00 AM, the task will run automatically
+      when you turn on the computer (Windows Task Scheduler handles this)
+
+LINUX/WSL:
+   ✅ Cron checks every 3 hours - if report wasn't sent today, it sends
+      it when computer is on (only sends ONCE per day)
+
+========================================================================
+📊 UNDERSTANDING THE REPORT
+========================================================================
+
+COT INDEX:
+   95-100% = 🔺 EXTREME LONG (Commercials bullish) → BUY SIGNAL
+   0-5%    = 🔻 EXTREME SHORT (Commercials bearish) → SELL SIGNAL
+   6-94%   = Neutral (no extreme positioning)
+
+EXAMPLE:
+   Natural Gas: 100% → Commercials max long → Contrarian BUY
+   5-Year Note: 0%   → Commercials max short → Contrarian SELL
+
+========================================================================
+❌ TROUBLESHOOTING
+========================================================================
+
+ERROR: "SMTP Authentication failed"
+   → You used regular password instead of App Password
+   → Go back to STEP 1 and create App Password
+
+ERROR: "No module named 'matplotlib'"
+   → Run: pip install matplotlib pandas numpy requests python-dotenv
+
+ERROR: "SMTP_PASSWORD not set"
+   → Go back to STEP 2 and update .env file
+
+EMAIL NOT ARRIVING:
+   → Check spam folder
+   → Verify App Password is correct (no spaces)
+   → Test manually: python cot_daily_emailer.py
+   → Check log: cot_daily_emailer.log
+
+========================================================================
+📁 FILES CREATED
+========================================================================
+
+cot_daily_emailer.py              - Main script
+SETUP_COT_DAILY_EMAIL.bat         - Windows setup
+setup_cot_daily_email.sh          - Linux setup
+COT_QUICK_START.txt               - This file
+COT_DAILY_EMAIL_SETUP_GUIDE.md    - Full guide
+.env                               - Email credentials
+cot_reports/                       - Generated infographics
+cot_daily_emailer.log             - Execution log
+
+========================================================================
+🔐 SECURITY
+========================================================================
+
+✅ App Password is SAFER than regular password
+✅ Can be revoked anytime at: https://myaccount.google.com/security
+✅ Never share your App Password
+✅ .env file contains your password - don't commit to Git
+
+========================================================================
+⚙️ MANAGE SCHEDULE
+========================================================================
+
+CHANGE EMAIL TIME:
+
+   Windows:
+   1. Open Task Scheduler (search in Windows)
+   2. Find: SpartanLabs_COT_Daily
+   3. Right-click → Properties → Triggers
+   4. Edit time
+
+   Linux/WSL:
+   1. crontab -e
+   2. Change: 0 8 * * * (hour is second number)
+   3. Save and exit
+
+DISABLE:
+
+   Windows:
+   1. Task Scheduler → SpartanLabs_COT_Daily
+   2. Right-click → Disable
+
+   Linux/WSL:
+   1. crontab -e
+   2. Delete lines with "run_cot_daily.sh"
+   3. Save and exit
+
+========================================================================
+📞 SUPPORT
+========================================================================
+
+Check logs:
+   cot_daily_emailer.log           - Main script log
+   cot_daily_cron.log              - Cron log (Linux only)
+
+Test manually:
+   python cot_daily_emailer.py
+
+Verify schedule:
+   Windows: Task Scheduler → SpartanLabs_COT_Daily
+   Linux:   crontab -l
+
+========================================================================
+✅ CHECKLIST
+========================================================================
+
+[ ] Created Gmail App Password (16 characters)
+[ ] Updated .env with SMTP_PASSWORD
+[ ] Ran setup script (Windows .bat OR Linux .sh)
+[ ] Tested manually: python cot_daily_emailer.py
+[ ] Received test email at naga.kvv@gmail.com
+[ ] Verified scheduled task/cron job
+[ ] Checked that catch-up feature is enabled
+
+🎉 YOU'RE ALL SET!
+
+You'll receive daily COT reports at 8:00 AM (or whenever computer turns on)
+
+========================================================================
+Last Updated: November 24, 2025
+Version: 1.0.0
+========================================================================

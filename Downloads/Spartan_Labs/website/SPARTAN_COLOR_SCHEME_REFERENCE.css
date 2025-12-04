@@ -1,0 +1,393 @@
+/**
+ * SPARTAN RESEARCH STATION - OFFICIAL COLOR SCHEME
+ *
+ * This is the canonical color scheme for all pages on the Spartan Research Station website.
+ * Use these CSS variables consistently across all HTML pages.
+ *
+ * Theme: Dark trading terminal with Spartan crimson/red accents
+ * Font: Inter (primary), Segoe UI (fallback)
+ *
+ * Status: PRODUCTION STANDARD ✅
+ * Last Updated: 2025-11-16
+ */
+
+:root {
+    /* ===================================
+       PRIMARY BRAND COLORS (SPARTAN RED)
+       =================================== */
+    --primary-color: #8B0000;        /* Dark Red - Main brand color, backgrounds */
+    --secondary-color: #B22222;      /* Firebrick - Secondary brand accent */
+    --accent-color: #DC143C;         /* Crimson - Primary accent color (titles, borders) */
+    --accent-2-color: #FF5252;       /* Bright Red - Highlights and alerts */
+    --accent-3-color: #FF6B6B;       /* Light Red - Softer accents */
+
+    /* ===================================
+       BACKGROUND COLORS (NAVY/DARK)
+       =================================== */
+    --bg-dark: #0a1628;              /* Primary dark background (body) */
+    --bg-darker: #050b14;            /* Darkest background (navigation, footer) */
+    --bg-card: #12203a;              /* Card/panel background */
+    --bg-hover: rgba(139, 0, 0, 0.1); /* Hover background tint (red) */
+
+    /* ===================================
+       TEXT COLORS
+       =================================== */
+    --text-primary: #ffffff;         /* White - Primary text */
+    --text-secondary: #b0b8c8;       /* Light Gray - Secondary text */
+    --text-muted: #7a8a9a;           /* Muted Gray - Less important text */
+    --text-dark: #000000;            /* Black - For light backgrounds */
+
+    /* ===================================
+       UI ELEMENT COLORS
+       =================================== */
+    --border-color: #1e3a5f;         /* Border color for panels and cards */
+    --hover-glow: rgba(139, 0, 0, 0.3); /* Red glow for hover effects */
+
+    /* ===================================
+       STATUS/SEMANTIC COLORS
+       =================================== */
+    --success-color: #00ff88;        /* Bright Green - Success, positive values */
+    --warning-color: #ff9500;        /* Orange - Warnings, caution */
+    --danger-color: #FF5252;         /* Red - Danger, negative values */
+    --info-color: #0096FF;           /* Blue - Info, neutral status */
+
+    /* ===================================
+       LEGACY COMPATIBILITY
+       (Some older pages use these names)
+       =================================== */
+    --gold: #DC143C;                 /* Alias for accent-color */
+    --green: #228B22;                /* Forest Green (alternative success) */
+    --blue: #000080;                 /* Navy Blue (alternative info) */
+    --spartan-red: #DC143C;          /* Alias for accent-color */
+    --spartan-red-dark: #C62828;     /* Darker crimson variant */
+    --spartan-red-light: #FF5252;    /* Lighter crimson variant */
+    --navy-dark: #0a1628;            /* Alias for bg-dark */
+    --navy-medium: #12203a;          /* Alias for bg-card */
+    --navy-light: #1e3a5f;           /* Alias for border-color */
+
+    /* ===================================
+       CHART COLORS (TradingView/Plotly)
+       =================================== */
+    --chart-green: #00ff88;          /* Bullish, positive */
+    --chart-red: #FF5252;            /* Bearish, negative */
+    --chart-blue: #0096FF;           /* Neutral, info */
+    --chart-orange: #ff9500;         /* Warning, volume */
+    --chart-purple: #9d4edd;         /* VIX, volatility */
+    --chart-grid: #1e3a5f;           /* Grid lines */
+    --chart-bg: #0a1628;             /* Chart background */
+
+    /* ===================================
+       SHADOWS
+       =================================== */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 15px rgba(139, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px rgba(220, 20, 60, 0.3);
+    --shadow-xl: 0 20px 40px rgba(139, 0, 0, 0.15);
+    --shadow-glow: 0 0 20px rgba(220, 20, 60, 0.5);
+
+    /* ===================================
+       TRANSITIONS
+       =================================== */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    --transition-bounce: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   TYPOGRAPHY
+   =================================== */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                 Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* ===================================
+   UTILITY CLASSES
+   =================================== */
+
+/* Text Colors */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-success { color: var(--success-color); }
+.text-danger { color: var(--danger-color); }
+.text-warning { color: var(--warning-color); }
+.text-info { color: var(--info-color); }
+.text-accent { color: var(--accent-color); }
+
+/* Background Colors */
+.bg-dark { background: var(--bg-dark); }
+.bg-darker { background: var(--bg-darker); }
+.bg-card { background: var(--bg-card); }
+.bg-primary { background: var(--primary-color); }
+.bg-accent { background: var(--accent-color); }
+
+/* Borders */
+.border-accent { border-color: var(--accent-color); }
+.border-primary { border-color: var(--primary-color); }
+.border-default { border-color: var(--border-color); }
+
+/* ===================================
+   SPARTAN LOGO INTEGRATION
+   =================================== */
+.spartan-logo {
+    height: 35px;
+    width: auto;
+    filter: brightness(1.1);
+    transition: var(--transition-normal);
+}
+
+.spartan-logo:hover {
+    filter: brightness(1.3);
+}
+
+/* ===================================
+   STANDARD COMPONENT STYLING
+   =================================== */
+
+/* Navigation Bar */
+.spartan-nav {
+    background: var(--bg-darker);
+    border-bottom: 2px solid var(--accent-color);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-md);
+}
+
+/* Cards/Panels */
+.spartan-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition-normal);
+}
+
+.spartan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--accent-color);
+}
+
+/* Buttons */
+.spartan-button {
+    background: var(--primary-color);
+    color: var(--text-primary);
+    border: 1px solid var(--primary-color);
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.spartan-button:hover {
+    background: var(--secondary-color);
+    border-color: var(--accent-color);
+    box-shadow: var(--shadow-glow);
+}
+
+/* Headers */
+.spartan-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.spartan-header h1 {
+    color: var(--accent-color);
+    font-size: 2.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Tables */
+.spartan-table thead {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+.spartan-table th {
+    color: var(--text-primary);
+    padding: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.spartan-table td {
+    padding: 12px 15px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Tabs */
+.spartan-tab-button {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 15px 30px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition-normal);
+    border-radius: 8px 8px 0 0;
+}
+
+.spartan-tab-button:hover {
+    background: var(--bg-darker);
+    color: var(--text-primary);
+}
+
+.spartan-tab-button.active {
+    background: var(--primary-color);
+    color: var(--text-primary);
+    border-color: var(--primary-color);
+    box-shadow: 0 -3px 10px rgba(220, 20, 60, 0.3);
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+
+@keyframes shimmer {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===================================
+   RESPONSIVE BREAKPOINTS
+   =================================== */
+
+/* Large Desktop */
+@media (min-width: 1920px) {
+    .spartan-header h1 { font-size: 3.2rem; }
+}
+
+/* Desktop */
+@media (max-width: 1400px) {
+    .spartan-header h1 { font-size: 2.4rem; }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .spartan-header h1 { font-size: 2rem; }
+    .spartan-card { padding: 20px; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .spartan-header h1 { font-size: 1.6rem; }
+    .spartan-nav { padding: 10px 0; }
+    .spartan-logo { height: 28px; }
+}
+
+/* ===================================
+   USAGE EXAMPLES
+   ===================================== */
+
+/*
+Example 1: Standard Card with Hover Effect
+-------------------------------------------
+<div class="spartan-card">
+    <h3 style="color: var(--accent-color);">Market Analysis</h3>
+    <p class="text-secondary">Your content here...</p>
+    <div class="text-success">+5.2% Change</div>
+</div>
+
+Example 2: Navigation with Logo
+-------------------------------
+<nav class="spartan-nav">
+    <img src="spartan_logo.png" alt="Spartan" class="spartan-logo">
+    <span>Spartan Research Station</span>
+</nav>
+
+Example 3: Button with Glow Effect
+----------------------------------
+<button class="spartan-button">Analyze Symbol</button>
+
+Example 4: Colored Value Display
+--------------------------------
+<div class="metric-value positive" style="color: var(--success-color);">
+    +$1,234.56
+</div>
+
+Example 5: Status Badge
+-----------------------
+<span style="background: var(--success-color); color: var(--text-dark);
+             padding: 4px 12px; border-radius: 12px; font-weight: 600;">
+    Active
+</span>
+
+*/
+
+/* ===================================
+   CHART LIBRARY THEMING
+   =================================== */
+
+/* Plotly.js Theme */
+.plotly-chart {
+    background: var(--bg-card) !important;
+}
+
+.plotly-chart .gtitle {
+    fill: var(--accent-color) !important;
+}
+
+.plotly-chart .xtick text,
+.plotly-chart .ytick text {
+    fill: var(--text-secondary) !important;
+}
+
+/* TradingView Theme Variables (if using TradingView widgets) */
+.tradingview-widget-container {
+    --tv-color-platform-background: #0a1628;
+    --tv-color-pane-background: #12203a;
+    --tv-color-toolbar-button-text: #ffffff;
+    --tv-color-toolbar-button-background-hover: #DC143C;
+    --tv-color-item-active-text: #DC143C;
+}
+
+/* ===================================
+   END OF SPARTAN COLOR SCHEME
+   =================================== */

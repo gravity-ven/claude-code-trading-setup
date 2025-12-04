@@ -1,0 +1,201 @@
+# Website Monitor Agent Configuration
+# Monitors Spartan Research Station on Docker Desktop and autonomously fixes issues
+
+agent_name: website_monitor
+version: "1.0.0"
+description: "Autonomous Docker health monitoring with self-healing capabilities"
+
+# Monitoring Configuration
+monitoring:
+  interval_seconds: 30  # Check every 30 seconds
+  health_check_timeout: 10  # Timeout for health checks
+
+  # Containers to monitor
+  containers:
+    - name: spartan-research-station
+      health_endpoint: "http://localhost:8888/health"
+      critical: true
+      auto_restart: true
+      max_restarts_per_hour: 3
+
+    - name: spartan-postgres
+      health_endpoint: null  # Use Docker health check
+      critical: true
+      auto_restart: true
+      max_restarts_per_hour: 2
+
+    - name: spartan-redis
+      health_endpoint: null
+      critical: false
+      auto_restart: true
+      max_restarts_per_hour: 5
+
+    - name: spartan-correlation-api
+      health_endpoint: "http://localhost:5004/health"
+      critical: false
+      auto_restart: true
+      max_restarts_per_hour: 3
+
+    - name: spartan-daily-planet-api
+      health_endpoint: "http://localhost:5000/health"
+      critical: false
+      auto_restart: true
+      max_restarts_per_hour: 3
+
+    - name: spartan-swing-api
+      health_endpoint: "http://localhost:5002/health"
+      critical: false
+      auto_restart: true
+      max_restarts_per_hour: 3
+
+    - name: spartan-garp-api
+      health_endpoint: "http://localhost:5003/health"
+      critical: false
+      auto_restart: true
+      max_restarts_per_hour: 3
+
+# Claude AI Configuration
+claude:
+  enabled: true
+  model: "claude-sonnet-4-5-20250929"
+  use_for_diagnosis: true
+  use_for_healing: true
+  max_tokens: 4096
+
+# Autonomous Healing Rules
+healing:
+  auto_heal_enabled: true
+
+  # What to auto-fix without asking
+  auto_fix_actions:
+    - container_restart
+    - clear_cache
+    - reset_connections
+    - garbage_collection
+
+  # What requires approval (user notification)
+  manual_approval_required:
+    - database_migration
+    - configuration_change
+    - volume_deletion
+    - network_reset
+
+  # Healing strategies by error type
+  strategies:
+    container_stopped:
+      - action: restart_container
+        max_attempts: 3
+        backoff_seconds: 10
+
+    container_unhealthy:
+      - action: check_logs
+      - action: diagnose_with_claude
+      - action: restart_container
+
+    high_memory_usage:
+      - action: garbage_collection
+      - action: restart_if_above_threshold
+        threshold_percent: 90
+
+    database_connection_error:
+      - action: check_postgres_container
+      - action: reset_connection_pool
+      - action: restart_postgres_if_needed
+
+    api_timeout:
+      - action: check_network
+      - action: clear_cache
+      - action: restart_container
+
+    rate_limit_error:
+      - action: enable_fallback_data_source
+      - action: log_and_wait
+      - action: notify_admin
+
+# Alerting Configuration
+alerts:
+  enabled: true
+
+  # Alert channels
+  channels:
+    console: true
+    log_file: true
+    web_dashboard: true
+    email: false  # Set to true and configure SMTP
+    slack: false  # Set to true and configure webhook
+
+  # Alert severity levels
+  severity_levels:
+    critical:  # System down, data loss risk
+      - all_containers_down
+      - database_corruption
+      - security_breach
+
+    warning:  # Degraded performance
+      - container_restarted
+      - high_error_rate
+      - slow_response_time
+
+    info:  # Normal operations
+      - container_started
+      - auto_heal_success
+      - health_check_passed
+
+# PostgreSQL Database (Incident Tracking)
+database:
+  enabled: true
+  connection_string: "postgresql://spartan:spartan@localhost:5432/spartan_research_db"
+
+  # Tables to create/use
+  tables:
+    incidents: "monitor_incidents"
+    health_metrics: "monitor_health_metrics"
+    healing_actions: "monitor_healing_actions"
+    container_stats: "monitor_container_stats"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "structured"  # structured or text
+  output:
+    console: true
+    file: "logs/website_monitor.log"
+    rotate_mb: 100
+    backup_count: 5
+
+# Performance Metrics
+metrics:
+  collect_enabled: true
+  prometheus_port: 9090
+
+  # Metrics to collect
+  track:
+    - container_uptime
+    - health_check_response_time
+    - restart_count
+    - error_rate
+    - memory_usage
+    - cpu_usage
+    - network_io
+    - disk_io
+
+# Advanced Features
+advanced:
+  # NESTED Learning
+  nested_learning:
+    enabled: true
+    outer_layer_update_hours: 24  # Update general patterns daily
+    inner_layer_update_seconds: 300  # Update specific patterns every 5 min
+
+  # Predictive Maintenance
+  predictive:
+    enabled: true
+    forecast_horizon_hours: 4
+    anomaly_detection: true
+
+  # Self-Optimization
+  optimize:
+    enabled: true
+    adjust_check_intervals: true  # Speed up if errors detected
+    learn_normal_patterns: true
+    reduce_false_positives: true

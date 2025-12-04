@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="max-age=0">
+    <meta name="last-modified" content="2025-11-18">
+    <meta name="build-version" content="v1.0-DAILY-PLANET">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planet - Spartan Research Station</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;
+            --secondary-color: #B22222;
+            --accent-color: #DC143C;
+            --accent-2-color: #FF5252;
+            --bg-dark: #0a1628;
+            --bg-darker: #050b14;
+            --bg-card: #12203a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c8;
+            --text-muted: #7a8a9a;
+            --border-color: #1e3a5f;
+            --success-color: #00ff88;
+            --warning-color: #ff9500;
+            --danger-color: #FF5252;
+            --info-color: #0096FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        /* Spartan Navigation */
+        .spartan-nav {
+            background: var(--bg-darker);
+            border-bottom: 2px solid var(--accent-color);
+            padding: 15px 0;
+            margin: -20px -20px 30px -20px;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-logo {
+            height: 35px;
+            width: auto;
+        }
+
+        .nav-title {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .nav-title:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-color);
+            background: rgba(139, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .last-update {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* Cards */
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .content-card:hover::before {
+            opacity: 1;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(139, 0, 0, 0.15);
+            border-color: var(--accent-color);
+        }
+
+        .card-title {
+            color: var(--accent-color);
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+        }
+
+        /* News Items */
+        .news-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(139, 0, 0, 0.08);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+            transition: all 0.2s ease;
+        }
+
+        .news-item:hover {
+            background: rgba(139, 0, 0, 0.12);
+            transform: translateX(5px);
+        }
+
+        .news-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .news-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .news-source {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Market Movers */
+        .mover-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: rgba(139, 0, 0, 0.08);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .mover-item:hover {
+            background: rgba(139, 0, 0, 0.12);
+            transform: scale(1.02);
+        }
+
+        .mover-symbol {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .mover-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .mover-change {
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: right;
+        }
+
+        .mover-change.positive {
+            color: var(--success-color);
+        }
+
+        .mover-change.negative {
+            color: var(--danger-color);
+        }
+
+        /* Economic Calendar */
+        .calendar-event {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(139, 0, 0, 0.08);
+            border-radius: 8px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-event.high-impact {
+            border-left-color: var(--danger-color);
+        }
+
+        .calendar-event.medium-impact {
+            border-left-color: var(--warning-color);
+        }
+
+        .calendar-event.low-impact {
+            border-left-color: var(--info-color);
+        }
+
+        .calendar-event:hover {
+            background: rgba(139, 0, 0, 0.12);
+            transform: translateX(5px);
+        }
+
+        .event-time {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .event-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .event-details {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .impact-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 10px;
+        }
+
+        .impact-high {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .impact-medium {
+            background: var(--warning-color);
+            color: #000;
+        }
+
+        .impact-low {
+            background: var(--info-color);
+            color: white;
+        }
+
+        /* Sector Rotation */
+        .sector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .sector-item {
+            padding: 15px;
+            background: rgba(139, 0, 0, 0.08);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .sector-item:hover {
+            background: rgba(139, 0, 0, 0.12);
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .sector-name {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .sector-change {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .sector-change.positive {
+            color: var(--success-color);
+        }
+
+        .sector-change.negative {
+            color: var(--danger-color);
+        }
+
+        .sector-strength {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Sentiment Analysis */
+        .sentiment-card {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .sentiment-score {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .sentiment-score.bullish {
+            color: var(--success-color);
+        }
+
+        .sentiment-score.neutral {
+            color: var(--text-primary);
+        }
+
+        .sentiment-score.bearish {
+            color: var(--danger-color);
+        }
+
+        .sentiment-label {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .sentiment-breakdown {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+
+        .sentiment-metric {
+            text-align: center;
+        }
+
+        .sentiment-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sentiment-metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .content-card {
+                padding: 20px;
+            }
+
+            .sector-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .content-card:nth-child(1) { animation-delay: 0.1s; }
+        .content-card:nth-child(2) { animation-delay: 0.2s; }
+        .content-card:nth-child(3) { animation-delay: 0.3s; }
+        .content-card:nth-child(4) { animation-delay: 0.4s; }
+        .content-card:nth-child(5) { animation-delay: 0.5s; }
+        .content-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- Spartan Navigation Bar -->
+    <nav class="spartan-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <img src="spartan_logo.png" alt="Spartan Research Station" class="nav-logo" onerror="this.style.display='none'">
+                <a href="index.html" class="nav-title">Spartan Research Station</a>
+            </div>
+            <div class="nav-right">
+                <a href="index.html" class="nav-link">← Back to Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon">🌍</div>
+            <h1>DAILY PLANET</h1>
+            <p class="subtitle">Your Daily Market Intelligence Briefing</p>
+            <div class="last-update" id="last-update">
+                <span class="loading"></span> Initializing...
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Market News Summary -->
+            <div class="content-card">
+                <h2 class="card-title">
+                    <span class="card-icon">📰</span>
+                    Market News Summary
+                </h2>
+                <div id="news-summary">
+                    <div class="loading-message">
+                        <span class="loading"></span>
+                        <p style="margin-top: 15px;">Loading latest market news...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Economic Calendar -->
+            <div class="content-card">
+                <h2 class="card-title">
+                    <span class="card-icon">📅</span>
+                    Economic Calendar
+                </h2>
+                <div id="economic-calendar">
+                    <div class="loading-message">
+                        <span class="loading"></span>
+                        <p style="margin-top: 15px;">Loading economic events...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Market Movers -->
+            <div class="content-card">
+                <h2 class="card-title">
+                    <span class="card-icon">📊</span>
+                    Top Market Movers
+                </h2>
+                <div id="market-movers">
+                    <div class="loading-message">
+                        <span class="loading"></span>
+                        <p style="margin-top: 15px;">Fetching market movers data...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Sentiment Analysis -->
+            <div class="content-card">
+                <h2 class="card-title">
+                    <span class="card-icon">🎭</span>
+                    News Sentiment Analysis
+                </h2>
+                <div id="sentiment-analysis" class="sentiment-card">
+                    <div class="loading-message">
+                        <span class="loading"></span>
+                        <p style="margin-top: 15px;">Analyzing market sentiment...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sector Rotation (Full Width) -->
+        <div class="content-card" style="margin-bottom: 30px;">
+            <h2 class="card-title">
+                <span class="card-icon">🔄</span>
+                Sector Rotation Analysis
+            </h2>
+            <div id="sector-rotation">
+                <div class="loading-message">
+                    <span class="loading"></span>
+                    <p style="margin-top: 15px;">Loading sector performance...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Daily Planet Dashboard - Real Data Integration
+        const DailyPlanet = {
+            lastUpdate: null,
+
+            async init() {
+                console.log('[Daily Planet] Initializing dashboard...');
+                this.updateTimestamp();
+
+                // Fetch all data in parallel
+                await Promise.all([
+                    this.loadMarketNews(),
+                    this.loadEconomicCalendar(),
+                    this.loadMarketMovers(),
+                    this.loadSectorRotation(),
+                    this.loadSentimentAnalysis()
+                ]);
+
+                console.log('[Daily Planet] Dashboard loaded successfully');
+            },
+
+            updateTimestamp() {
+                const now = new Date();
+                const formatted = now.toLocaleString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                });
+                document.getElementById('last-update').innerHTML = `
+                    <strong>Last Updated:</strong> ${formatted}
+                `;
+                this.lastUpdate = now;
+            },
+
+            async loadMarketNews() {
+                const container = document.getElementById('news-summary');
+
+                try {
+                    // Fetch news from yfinance via local Python API
+                    const response = await fetch('http://localhost:5000/api/market-news');
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch news');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.news && data.news.length > 0) {
+                        container.innerHTML = data.news.slice(0, 10).map(item => `
+                            <div class="news-item">
+                                <div class="news-title">${this.escapeHtml(item.title)}</div>
+                                <div class="news-meta">
+                                    <span class="news-source">${item.source || 'Market News'}</span>
+                                    <span>${this.formatTime(item.timestamp)}</span>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = this.getPlaceholderNews();
+                    }
+                } catch (error) {
+                    console.error('[Daily Planet] News fetch error:', error);
+                    container.innerHTML = this.getPlaceholderNews();
+                }
+            },
+
+            async loadEconomicCalendar() {
+                const container = document.getElementById('economic-calendar');
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/economic-calendar');
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch economic calendar');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.events && data.events.length > 0) {
+                        container.innerHTML = data.events.slice(0, 8).map(event => `
+                            <div class="calendar-event ${event.impact}-impact">
+                                <div class="event-time">
+                                    ${this.formatEventTime(event.time)}
+                                    <span class="impact-badge impact-${event.impact}">${event.impact} Impact</span>
+                                </div>
+                                <div class="event-title">${this.escapeHtml(event.title)}</div>
+                                <div class="event-details">${event.country} | ${event.category}</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = this.getPlaceholderCalendar();
+                    }
+                } catch (error) {
+                    console.error('[Daily Planet] Economic calendar error:', error);
+                    container.innerHTML = this.getPlaceholderCalendar();
+                }
+            },
+
+            async loadMarketMovers() {
+                const container = document.getElementById('market-movers');
+
+                try {
+                    // Fetch real market data from yfinance
+                    const symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX'];
+                    const response = await fetch('http://localhost:5000/api/market-movers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ symbols })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch market movers');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.movers && data.movers.length > 0) {
+                        // Sort by absolute change
+                        const sorted = data.movers.sort((a, b) =>
+                            Math.abs(b.change_pct) - Math.abs(a.change_pct)
+                        );
+
+                        container.innerHTML = sorted.slice(0, 10).map(mover => {
+                            const changeClass = mover.change_pct >= 0 ? 'positive' : 'negative';
+                            const changeSymbol = mover.change_pct >= 0 ? '▲' : '▼';
+
+                            return `
+                                <div class="mover-item">
+                                    <div>
+                                        <div class="mover-symbol">${mover.symbol}</div>
+                                        <div class="mover-name">${mover.name}</div>
+                                    </div>
+                                    <div>
+                                        <div class="mover-change ${changeClass}">
+                                            ${changeSymbol} ${Math.abs(mover.change_pct).toFixed(2)}%
+                                        </div>
+                                        <div style="text-align: right; color: var(--text-secondary); font-size: 0.9rem;">
+                                            $${mover.price.toFixed(2)}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        container.innerHTML = this.getPlaceholderMovers();
+                    }
+                } catch (error) {
+                    console.error('[Daily Planet] Market movers error:', error);
+                    container.innerHTML = this.getPlaceholderMovers();
+                }
+            },
+
+            async loadSectorRotation() {
+                const container = document.getElementById('sector-rotation');
+
+                try {
+                    // Fetch sector ETF data
+                    const sectorETFs = {
+                        'XLK': 'Technology',
+                        'XLF': 'Financials',
+                        'XLV': 'Healthcare',
+                        'XLE': 'Energy',
+                        'XLI': 'Industrials',
+                        'XLY': 'Consumer Disc.',
+                        'XLP': 'Consumer Staples',
+                        'XLB': 'Materials',
+                        'XLRE': 'Real Estate',
+                        'XLU': 'Utilities',
+                        'XLC': 'Communication'
+                    };
+
+                    const response = await fetch('http://localhost:5000/api/sector-rotation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sectors: sectorETFs })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch sector data');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.sectors && data.sectors.length > 0) {
+                        // Sort by performance
+                        const sorted = data.sectors.sort((a, b) => b.change_pct - a.change_pct);
+
+                        container.innerHTML = `
+                            <div class="sector-grid">
+                                ${sorted.map(sector => {
+                                    const changeClass = sector.change_pct >= 0 ? 'positive' : 'negative';
+                                    const strength = this.calculateStrength(sector.change_pct);
+
+                                    return `
+                                        <div class="sector-item">
+                                            <div class="sector-name">${sector.name}</div>
+                                            <div class="sector-change ${changeClass}">
+                                                ${sector.change_pct >= 0 ? '+' : ''}${sector.change_pct.toFixed(2)}%
+                                            </div>
+                                            <div class="sector-strength">${strength}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = this.getPlaceholderSectors();
+                    }
+                } catch (error) {
+                    console.error('[Daily Planet] Sector rotation error:', error);
+                    container.innerHTML = this.getPlaceholderSectors();
+                }
+            },
+
+            async loadSentimentAnalysis() {
+                const container = document.getElementById('sentiment-analysis');
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/sentiment-analysis');
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch sentiment');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.sentiment) {
+                        const sentimentClass = data.sentiment.overall >= 60 ? 'bullish' :
+                                             data.sentiment.overall <= 40 ? 'bearish' : 'neutral';
+                        const sentimentLabel = data.sentiment.overall >= 60 ? 'BULLISH' :
+                                              data.sentiment.overall <= 40 ? 'BEARISH' : 'NEUTRAL';
+
+                        container.innerHTML = `
+                            <div class="sentiment-score ${sentimentClass}">${data.sentiment.overall}</div>
+                            <div class="sentiment-label">${sentimentLabel} SENTIMENT</div>
+                            <div class="sentiment-breakdown">
+                                <div class="sentiment-metric">
+                                    <div class="sentiment-metric-value" style="color: var(--success-color);">
+                                        ${data.sentiment.bullish}%
+                                    </div>
+                                    <div class="sentiment-metric-label">Bullish</div>
+                                </div>
+                                <div class="sentiment-metric">
+                                    <div class="sentiment-metric-value" style="color: var(--text-primary);">
+                                        ${data.sentiment.neutral}%
+                                    </div>
+                                    <div class="sentiment-metric-label">Neutral</div>
+                                </div>
+                                <div class="sentiment-metric">
+                                    <div class="sentiment-metric-value" style="color: var(--danger-color);">
+                                        ${data.sentiment.bearish}%
+                                    </div>
+                                    <div class="sentiment-metric-label">Bearish</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = this.getPlaceholderSentiment();
+                    }
+                } catch (error) {
+                    console.error('[Daily Planet] Sentiment analysis error:', error);
+                    container.innerHTML = this.getPlaceholderSentiment();
+                }
+            },
+
+            // Helper functions
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            },
+
+            formatTime(timestamp) {
+                if (!timestamp) return 'Today';
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffHours = (now - date) / (1000 * 60 * 60);
+
+                if (diffHours < 1) return `${Math.round(diffHours * 60)} minutes ago`;
+                if (diffHours < 24) return `${Math.round(diffHours)} hours ago`;
+                return date.toLocaleDateString();
+            },
+
+            formatEventTime(time) {
+                if (!time) return 'Today';
+                return new Date(time).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            },
+
+            calculateStrength(changePct) {
+                const abs = Math.abs(changePct);
+                if (abs >= 2) return 'Strong Movement';
+                if (abs >= 1) return 'Moderate Movement';
+                return 'Weak Movement';
+            },
+
+            // Placeholder functions (used when API is unavailable)
+            getPlaceholderNews() {
+                return `
+                    <div class="news-item">
+                        <div class="news-title">Markets Open Higher on Economic Data</div>
+                        <div class="news-meta">
+                            <span class="news-source">MarketWatch</span>
+                            <span>2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-title">Fed Officials Signal Steady Rate Policy</div>
+                        <div class="news-meta">
+                            <span class="news-source">Reuters</span>
+                            <span>4 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-title">Tech Stocks Lead Market Rally</div>
+                        <div class="news-meta">
+                            <span class="news-source">Bloomberg</span>
+                            <span>5 hours ago</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(255, 149, 0, 0.1); border-radius: 8px; border-left: 3px solid var(--warning-color);">
+                        <strong>Note:</strong> Unable to fetch live news data. Showing placeholder content.
+                        <br>Please ensure the Python API server is running on <code>localhost:5000</code>
+                    </div>
+                `;
+            },
+
+            getPlaceholderCalendar() {
+                return `
+                    <div class="calendar-event high-impact">
+                        <div class="event-time">
+                            10:00 AM <span class="impact-badge impact-high">HIGH Impact</span>
+                        </div>
+                        <div class="event-title">CPI Release</div>
+                        <div class="event-details">USA | Inflation Data</div>
+                    </div>
+                    <div class="calendar-event medium-impact">
+                        <div class="event-time">
+                            2:00 PM <span class="impact-badge impact-medium">MEDIUM Impact</span>
+                        </div>
+                        <div class="event-title">Fed Speech</div>
+                        <div class="event-details">USA | Monetary Policy</div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(255, 149, 0, 0.1); border-radius: 8px; border-left: 3px solid var(--warning-color);">
+                        <strong>Note:</strong> Unable to fetch economic calendar. Showing placeholder events.
+                    </div>
+                `;
+            },
+
+            getPlaceholderMovers() {
+                return `
+                    <div class="mover-item">
+                        <div>
+                            <div class="mover-symbol">AAPL</div>
+                            <div class="mover-name">Apple Inc.</div>
+                        </div>
+                        <div>
+                            <div class="mover-change positive">▲ 2.45%</div>
+                            <div style="text-align: right; color: var(--text-secondary); font-size: 0.9rem;">
+                                $185.25
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mover-item">
+                        <div>
+                            <div class="mover-symbol">NVDA</div>
+                            <div class="mover-name">NVIDIA Corp</div>
+                        </div>
+                        <div>
+                            <div class="mover-change positive">▲ 3.21%</div>
+                            <div style="text-align: right; color: var(--text-secondary); font-size: 0.9rem;">
+                                $495.80
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(255, 149, 0, 0.1); border-radius: 8px; border-left: 3px solid var(--warning-color);">
+                        <strong>Note:</strong> Unable to fetch live market data. Showing placeholder symbols.
+                    </div>
+                `;
+            },
+
+            getPlaceholderSectors() {
+                return `
+                    <div class="sector-grid">
+                        <div class="sector-item">
+                            <div class="sector-name">Technology</div>
+                            <div class="sector-change positive">+1.85%</div>
+                            <div class="sector-strength">Moderate Movement</div>
+                        </div>
+                        <div class="sector-item">
+                            <div class="sector-name">Financials</div>
+                            <div class="sector-change positive">+0.95%</div>
+                            <div class="sector-strength">Weak Movement</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(255, 149, 0, 0.1); border-radius: 8px; border-left: 3px solid var(--warning-color);">
+                        <strong>Note:</strong> Unable to fetch sector data. Showing placeholder sectors.
+                    </div>
+                `;
+            },
+
+            getPlaceholderSentiment() {
+                return `
+                    <div class="sentiment-score neutral">58</div>
+                    <div class="sentiment-label">NEUTRAL SENTIMENT</div>
+                    <div class="sentiment-breakdown">
+                        <div class="sentiment-metric">
+                            <div class="sentiment-metric-value" style="color: var(--success-color);">45%</div>
+                            <div class="sentiment-metric-label">Bullish</div>
+                        </div>
+                        <div class="sentiment-metric">
+                            <div class="sentiment-metric-value" style="color: var(--text-primary);">28%</div>
+                            <div class="sentiment-metric-label">Neutral</div>
+                        </div>
+                        <div class="sentiment-metric">
+                            <div class="sentiment-metric-value" style="color: var(--danger-color);">27%</div>
+                            <div class="sentiment-metric-label">Bearish</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 30px; padding: 15px; background: rgba(255, 149, 0, 0.1); border-radius: 8px; border-left: 3px solid var(--warning-color); text-align: left;">
+                        <strong>Note:</strong> Unable to fetch sentiment data. Showing placeholder sentiment.
+                    </div>
+                `;
+            }
+        };
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            DailyPlanet.init();
+        });
+
+        // Auto-refresh every 5 minutes
+        setInterval(() => {
+            console.log('[Daily Planet] Auto-refresh triggered');
+            DailyPlanet.init();
+        }, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

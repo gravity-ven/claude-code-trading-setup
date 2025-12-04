@@ -1,0 +1,145 @@
+# Spartan Research Station - Project Configuration
+
+[project]
+name = "spartan-research-station"
+version = "2.0.0"
+description = "Autonomous, self-healing financial intelligence platform"
+authors = [{name = "Spartan Labs"}]
+requires-python = ">=3.13"
+
+[tool.pyrefly]
+# Enable strict type checking for production-grade code
+strict = true
+
+# Python version
+python_version = "3.13"
+
+# Include patterns
+include = [
+    "src/**/*.py",
+    "*.py",
+    "agents/**/*.py",
+    "js/**/*.js"  # Pyrefly can lint JS too
+]
+
+# Exclude patterns
+exclude = [
+    "venv/**",
+    "build/**",
+    "dist/**",
+    "__pycache__/**",
+    "*.pyc",
+    ".pytest_cache/**",
+    "logs/**",
+    "db/**/*.sql"
+]
+
+# Strict type checking settings
+[tool.pyrefly.lint]
+# Require return type annotations
+require_return_annotations = true
+
+# Disallow untyped function definitions
+disallow_untyped_defs = true
+
+# Disallow untyped calls
+disallow_untyped_calls = false  # Set to true when ready for full strictness
+
+# Check that functions without return annotations don't return values
+check_untyped_defs = true
+
+# Warn about unused ignores
+warn_unused_ignores = true
+
+# Warn about redundant casts
+warn_redundant_casts = true
+
+# Error on unreachable code
+warn_unreachable = true
+
+# Critical for financial data integrity
+[tool.pyrefly.financial]
+# Ensure Decimal type usage for money calculations
+prefer_decimal_for_money = true
+
+# Warn on float usage in financial calculations
+warn_float_in_financial = true
+
+# Performance settings
+[tool.pyrefly.performance]
+# Enable parallel type checking
+parallel = true
+
+# Number of workers (auto-detect CPU cores)
+workers = 0  # 0 = auto
+
+# Cache type checking results
+cache_dir = ".pyrefly_cache"
+
+# Project-specific paths
+[tool.pyrefly.paths]
+# Source root
+source_root = "."
+
+# Type stubs location
+stubs_dir = "typings"
+
+# Ignore specific errors (use sparingly)
+[tool.pyrefly.ignores]
+# Example: ignore missing type stubs for third-party libraries
+# "yfinance.*" = ["import-untyped"]
+# "pandas.*" = ["import-untyped"]
+
+# API endpoint type checking
+[tool.pyrefly.api]
+# Ensure all API endpoints have proper type annotations
+check_api_endpoints = true
+
+# Validate request/response types
+validate_http_types = true
+
+# Database query type checking
+[tool.pyrefly.database]
+# Check SQL query parameter types
+check_sql_params = true
+
+# Validate PostgreSQL connection types
+check_db_connections = true
+
+# Redis cache type checking
+[tool.pyrefly.cache]
+# Ensure cache keys and values are properly typed
+check_cache_operations = true
+
+# Validate serialization types (JSON, pickle)
+check_serialization = true
+
+# CI/CD Integration
+[tool.pyrefly.ci]
+# Fail on any type errors (for CI pipelines)
+strict_ci_mode = true
+
+# Generate JUnit XML report for CI
+junit_xml = "pyrefly-report.xml"
+
+# Generate HTML report
+html_report = "pyrefly-report.html"
+
+# VS Code integration settings
+[tool.pyrefly.editor]
+# Enable real-time type checking in editor
+enable_live_checking = true
+
+# Show type information on hover
+show_hover_info = true
+
+# Enable auto-completion
+enable_completion = true
+
+# Show inline error messages
+inline_errors = true
+
+# Diagnostic severity levels
+error_severity = "error"
+warning_severity = "warning"
+hint_severity = "information"

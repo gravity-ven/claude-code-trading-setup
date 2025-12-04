@@ -1,0 +1,187 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                                                                          ║
+║              ALPHASTREAM OMNI-TERMINAL - QUICK REFERENCE                 ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ SETUP AUTO-START (3 STEPS)                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+
+1. Press Win + R
+2. Type: shell:startup
+3. Copy this file into the Startup folder:
+   START_ALPHASTREAM_TERMINAL_SILENT.vbs
+
+✓ Done! Opens automatically on boot (silent, no command window)
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ FILE LOCATIONS                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Main Terminal:
+C:\Users\Quantum\Downloads\Spartan_Labs\website\alphastream_terminal.html
+
+Silent Launcher:
+C:\Users\Quantum\Downloads\Spartan_Labs\website\START_ALPHASTREAM_TERMINAL_SILENT.vbs
+
+Visible Launcher:
+C:\Users\Quantum\Downloads\Spartan_Labs\website\START_ALPHASTREAM_TERMINAL.bat
+
+Full Guide:
+C:\Users\Quantum\Downloads\Spartan_Labs\website\ALPHASTREAM_STARTUP_GUIDE.md
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ FIRST-TIME CONFIGURATION                                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+1. Double-click: alphastream_terminal.html
+2. Click: "SYSTEM SETTINGS" (top right)
+3. Get free API key: https://www.alphavantage.co/support/#api-key
+4. Paste key, click "SAVE & REBOOT"
+5. Done! TradFi data now active
+
+NOTE: Crypto data works immediately (no key required)
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ FEATURES                                                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+✓ MARKET WATCH
+  - S&P 500 (SPY) real-time sentiment
+  - Bitcoin (BTC) price & 24h change
+  - US 10Y Treasury Yield
+  - Fear & Greed Index (crypto)
+
+✓ MACRO CYCLE
+  - Economic phase detector (Recovery/Boom/Slowdown/Recession)
+  - Asset allocation recommendations
+  - Real-time yield curve analysis
+
+✓ VENTURE LAB
+  - Startup lifecycle tracker (Pre-Seed → IPO)
+  - Valuation ranges per stage
+  - Founder dilution calculator
+
+✓ STRATEGY HUB
+  - Multi-timeframe planner (Tactical/Seasonal/Macro)
+  - Real-data logic checks
+  - Risk-adjusted allocation engine
+
+✓ ROUTINE PROTOCOL
+  - Daily trading checklist
+  - Weekly review tracker
+  - Progress bar with completion %
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ TROUBLESHOOTING                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+PROBLEM: Terminal doesn't auto-start
+FIX: Verify .vbs file in shell:startup folder, check Task Manager → Startup
+
+PROBLEM: Crypto data shows "API ERROR"
+FIX: Wait 60s and refresh, check internet connection
+
+PROBLEM: TradFi shows "WAITING FOR KEY"
+FIX: Add AlphaVantage API key in SYSTEM SETTINGS
+
+PROBLEM: TradFi shows "API LIMIT"
+FIX: Free tier = 5 calls/min. Wait 60s or upgrade to premium.
+
+PROBLEM: Windows blocks .vbs file
+FIX: Right-click file → Properties → Unblock → Apply → OK
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ API DETAILS                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+
+CoinGecko (Crypto - Public, No Key)
+├─ Endpoint: https://api.coingecko.com/api/v3/simple/price
+├─ Rate Limit: ~50 calls/min
+└─ Data: BTC price, 24h change
+
+AlphaVantage (TradFi - Free Tier)
+├─ Endpoint: https://www.alphavantage.co/query
+├─ Rate Limit: 5 calls/min, 500/day
+├─ Sign Up: https://www.alphavantage.co/support/#api-key
+└─ Data: SPY quote, Treasury yields
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ADVANCED OPTIONS                                                         │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Open in specific browser:
+  Edit .bat file, replace 'start' with:
+  - Chrome:   start chrome "path\to\file.html"
+  - Firefox:  start firefox "path\to\file.html"
+  - Edge:     start msedge "path\to\file.html"
+
+Fullscreen (Kiosk Mode):
+  start chrome --kiosk "path\to\file.html"
+
+Delay startup by 30 seconds:
+  Add before 'start' command: timeout /t 30 /nobreak >nul
+
+Clear all saved data:
+  Open terminal → SYSTEM SETTINGS → WIPE DATA → Refresh
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ KEYBOARD SHORTCUTS                                                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+F12             Open Developer Tools (check console for errors)
+Ctrl + R        Refresh page
+Ctrl + Shift + I  Open Inspector
+Ctrl + F5       Hard refresh (clear cache)
+F11             Fullscreen mode
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ DATA PRIVACY                                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+✓ API key stored locally (localStorage, never transmitted)
+✓ Checklist progress stored locally
+✓ No tracking, no cookies, no analytics
+✓ All data stays on your computer
+✓ No external accounts required (except API key)
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ REMOVE AUTO-START                                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+1. Win + R
+2. Type: shell:startup
+3. Delete the .vbs or .bat shortcut
+4. Done - won't auto-start anymore
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ LINKS                                                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+AlphaVantage Free API Key:
+https://www.alphavantage.co/support/#api-key
+
+CoinGecko API Docs:
+https://www.coingecko.com/en/api/documentation
+
+Chart.js Documentation:
+https://www.chartjs.org/docs/
+
+Tailwind CSS:
+https://tailwindcss.com/
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ VERSION INFO                                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Version: 1.0.0
+Released: November 29, 2025
+Status: Production Ready
+Dependencies: None (all CDN-based)
+
+═══════════════════════════════════════════════════════════════════════════
+
+For detailed instructions, see: ALPHASTREAM_STARTUP_GUIDE.md
+
+═══════════════════════════════════════════════════════════════════════════

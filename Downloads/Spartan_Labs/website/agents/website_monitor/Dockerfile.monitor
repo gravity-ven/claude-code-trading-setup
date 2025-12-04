@@ -1,0 +1,45 @@
+# Spartan Labs Website Monitor Agent
+# Mojo-based autonomous monitoring with Claude AI
+# Cross-platform: Works on Linux, macOS, Windows WSL
+
+FROM modular/mojo:latest
+
+LABEL maintainer="Spartan Labs"
+LABEL description="Autonomous website monitor with self-healing capabilities"
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    curl \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies (for Docker SDK and Claude)
+COPY requirements_monitor.txt /tmp/
+RUN pip3 install --no-cache-dir -r /tmp/requirements_monitor.txt
+
+# Create app directory
+WORKDIR /app/agents/website_monitor
+
+# Copy agent files
+COPY agents/website_monitor/website_monitor.mojo ./
+COPY agents/website_monitor/website_monitor.py ./
+COPY agents/website_monitor/config.yaml ./
+
+# Copy shared utilities
+COPY config/ /app/config/
+COPY db/ /app/db/
+
+# Compile Mojo code for maximum performance
+RUN mojo build -O3 --target-cpu=native website_monitor.mojo -o website_monitor_mojo
+
+# Health check
+HEALTHCHECK --interval=60s --timeout=5s --retries=3 \
+    CMD curl -f http://localhost:8888/health || exit 1
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV MOJO_ENABLE_SIMD=1
+
+# Run the monitor (fallback to Python if Mojo binary fails)
+CMD ["sh", "-c", "./website_monitor_mojo || python3 website_monitor.py"]

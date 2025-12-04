@@ -1,0 +1,539 @@
+/*
+==============================================================================
+SPARTAN RESEARCH STATION - Theme CSS
+==============================================================================
+Color Scheme Extracted from Spartan_Logo.png:
+- Dark Navy Blue: #0f2742 (background, primary)
+- Spartan Red: #c83737 (helmet, accents, critical alerts)
+- Complementary Colors: Derived from core palette
+==============================================================================
+*/
+
+/* ==============================================================================
+   ROOT VARIABLES - Color Palette
+   ============================================================================== */
+
+:root {
+  /* Primary Colors (from Spartan_Logo.png) */
+  --spartan-navy: #0f2742;
+  --spartan-red: #c83737;
+
+  /* Derived Navy Variations */
+  --spartan-navy-darker: #081624;
+  --spartan-navy-dark: #0a1d32;
+  --spartan-navy-medium: #163655;
+  --spartan-navy-light: #1e4568;
+  --spartan-navy-lighter: #2d5a84;
+
+  /* Derived Red Variations */
+  --spartan-red-darker: #a12929;
+  --spartan-red-dark: #b43030;
+  --spartan-red-light: #d14545;
+  --spartan-red-lighter: #e16060;
+
+  /* Neutral Colors */
+  --spartan-white: #ffffff;
+  --spartan-off-white: #f5f5f5;
+  --spartan-light-gray: #e0e0e0;
+  --spartan-gray: #9e9e9e;
+  --spartan-dark-gray: #424242;
+  --spartan-almost-black: #1a1a1a;
+
+  /* Functional Colors */
+  --spartan-success: #4caf50;
+  --spartan-warning: #ff9800;
+  --spartan-danger: var(--spartan-red);
+  --spartan-info: #2196f3;
+
+  /* Chart Colors (Navy + Red + Complementary) */
+  --chart-color-1: var(--spartan-red);
+  --chart-color-2: var(--spartan-navy-light);
+  --chart-color-3: #4caf50;  /* Green */
+  --chart-color-4: #ff9800;  /* Orange */
+  --chart-color-5: #2196f3;  /* Blue */
+  --chart-color-6: #9c27b0;  /* Purple */
+  --chart-color-7: #00bcd4;  /* Cyan */
+
+  /* Typography */
+  --font-primary: 'Roboto', 'Segoe UI', 'Arial', sans-serif;
+  --font-monospace: 'Roboto Mono', 'Courier New', monospace;
+  --font-heading: 'Roboto Condensed', 'Arial Narrow', sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-round: 50%;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(15, 39, 66, 0.1);
+  --shadow-md: 0 4px 8px rgba(15, 39, 66, 0.15);
+  --shadow-lg: 0 8px 16px rgba(15, 39, 66, 0.2);
+  --shadow-xl: 0 12px 24px rgba(15, 39, 66, 0.25);
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+}
+
+/* ==============================================================================
+   GLOBAL STYLES
+   ============================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-primary);
+  background: linear-gradient(135deg, var(--spartan-navy-darker) 0%, var(--spartan-navy) 100%);
+  color: var(--spartan-off-white);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--spartan-red);
+  color: var(--spartan-white);
+}
+
+/* ==============================================================================
+   TYPOGRAPHY
+   ============================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-md);
+  color: var(--spartan-white);
+}
+
+h1 {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+h2 {
+  font-size: 2rem;
+  border-bottom: 3px solid var(--spartan-red);
+  padding-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: var(--spartan-red);
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+}
+
+a {
+  color: var(--spartan-red-light);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--spartan-red-lighter);
+  text-decoration: underline;
+}
+
+code {
+  font-family: var(--font-monospace);
+  background: var(--spartan-navy-darker);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+
+/* ==============================================================================
+   HEADER & BRANDING
+   ============================================================================== */
+
+.spartan-header {
+  background: linear-gradient(to right, var(--spartan-navy-darker), var(--spartan-navy));
+  border-bottom: 4px solid var(--spartan-red);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.spartan-logo {
+  max-height: 60px;
+  filter: drop-shadow(0 4px 8px rgba(200, 55, 55, 0.3));
+}
+
+.spartan-title {
+  background: linear-gradient(135deg, var(--spartan-white), var(--spartan-red-lighter));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ==============================================================================
+   CARDS & CONTAINERS
+   ============================================================================== */
+
+.spartan-card {
+  background: linear-gradient(135deg, var(--spartan-navy-medium) 0%, var(--spartan-navy-dark) 100%);
+  border: 1px solid var(--spartan-navy-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+}
+
+.spartan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--spartan-red);
+}
+
+.spartan-card-header {
+  border-bottom: 2px solid var(--spartan-red);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.spartan-card-title {
+  color: var(--spartan-red-light);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.spartan-card-body {
+  padding: var(--spacing-md) 0;
+}
+
+/* ==============================================================================
+   BUTTONS
+   ============================================================================== */
+
+.spartan-btn {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-block;
+  text-align: center;
+}
+
+.spartan-btn-primary {
+  background: linear-gradient(135deg, var(--spartan-red), var(--spartan-red-darker));
+  color: var(--spartan-white);
+  box-shadow: var(--shadow-md);
+}
+
+.spartan-btn-primary:hover {
+  background: linear-gradient(135deg, var(--spartan-red-light), var(--spartan-red));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.spartan-btn-secondary {
+  background: linear-gradient(135deg, var(--spartan-navy-light), var(--spartan-navy-medium));
+  color: var(--spartan-white);
+  box-shadow: var(--shadow-md);
+}
+
+.spartan-btn-secondary:hover {
+  background: linear-gradient(135deg, var(--spartan-navy-lighter), var(--spartan-navy-light));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.spartan-btn-outline {
+  background: transparent;
+  color: var(--spartan-red);
+  border: 2px solid var(--spartan-red);
+}
+
+.spartan-btn-outline:hover {
+  background: var(--spartan-red);
+  color: var(--spartan-white);
+}
+
+/* ==============================================================================
+   TABLES
+   ============================================================================== */
+
+.spartan-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--spartan-navy-dark);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.spartan-table thead {
+  background: linear-gradient(135deg, var(--spartan-navy-medium), var(--spartan-navy-light));
+}
+
+.spartan-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--spartan-red-light);
+  border-bottom: 3px solid var(--spartan-red);
+}
+
+.spartan-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--spartan-navy-medium);
+}
+
+.spartan-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.spartan-table tbody tr:hover {
+  background: var(--spartan-navy-medium);
+}
+
+.spartan-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==============================================================================
+   CHARTS & VISUALIZATIONS
+   ============================================================================== */
+
+.spartan-chart-container {
+  background: var(--spartan-navy-dark);
+  border: 1px solid var(--spartan-navy-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.spartan-chart-title {
+  color: var(--spartan-red-light);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--spartan-red);
+  padding-bottom: var(--spacing-sm);
+}
+
+/* ==============================================================================
+   METRICS & STATS
+   ============================================================================== */
+
+.spartan-metric {
+  background: linear-gradient(135deg, var(--spartan-navy-medium), var(--spartan-navy-dark));
+  border-left: 4px solid var(--spartan-red);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+  transition: all var(--transition-normal);
+}
+
+.spartan-metric:hover {
+  border-left-width: 8px;
+  transform: translateX(4px);
+}
+
+.spartan-metric-label {
+  color: var(--spartan-gray);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.spartan-metric-value {
+  color: var(--spartan-white);
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-monospace);
+}
+
+.spartan-metric-change {
+  font-size: 1rem;
+  margin-top: var(--spacing-xs);
+}
+
+.spartan-metric-change.positive {
+  color: var(--spartan-success);
+}
+
+.spartan-metric-change.negative {
+  color: var(--spartan-danger);
+}
+
+/* ==============================================================================
+   BADGES & LABELS
+   ============================================================================== */
+
+.spartan-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.spartan-badge-success {
+  background: var(--spartan-success);
+  color: var(--spartan-white);
+}
+
+.spartan-badge-warning {
+  background: var(--spartan-warning);
+  color: var(--spartan-almost-black);
+}
+
+.spartan-badge-danger {
+  background: var(--spartan-danger);
+  color: var(--spartan-white);
+}
+
+.spartan-badge-info {
+  background: var(--spartan-info);
+  color: var(--spartan-white);
+}
+
+/* ==============================================================================
+   ALERTS
+   ============================================================================== */
+
+.spartan-alert {
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  border-left: 4px solid;
+}
+
+.spartan-alert-success {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: var(--spartan-success);
+  color: var(--spartan-success);
+}
+
+.spartan-alert-warning {
+  background: rgba(255, 152, 0, 0.1);
+  border-color: var(--spartan-warning);
+  color: var(--spartan-warning);
+}
+
+.spartan-alert-danger {
+  background: rgba(200, 55, 55, 0.1);
+  border-color: var(--spartan-danger);
+  color: var(--spartan-red-lighter);
+}
+
+.spartan-alert-info {
+  background: rgba(33, 150, 243, 0.1);
+  border-color: var(--spartan-info);
+  color: var(--spartan-info);
+}
+
+/* ==============================================================================
+   LOADING & SPINNERS
+   ============================================================================== */
+
+.spartan-spinner {
+  border: 4px solid var(--spartan-navy-light);
+  border-top: 4px solid var(--spartan-red);
+  border-radius: var(--radius-round);
+  width: 50px;
+  height: 50px;
+  animation: spartan-spin 1s linear infinite;
+}
+
+@keyframes spartan-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================== */
+
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+
+  .spartan-header {
+    padding: var(--spacing-md);
+  }
+
+  .spartan-card {
+    padding: var(--spacing-md);
+  }
+
+  .spartan-metric-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* ==============================================================================
+   UTILITIES
+   ============================================================================== */
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+.p-xs { padding: var(--spacing-xs); }
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-xl { padding: var(--spacing-xl); }
+
+.spartan-navy-bg { background: var(--spartan-navy); }
+.spartan-red-bg { background: var(--spartan-red); }
+.spartan-white-text { color: var(--spartan-white); }
+.spartan-red-text { color: var(--spartan-red); }
+
+/* ==============================================================================
+   END OF SPARTAN THEME
+   ============================================================================== */

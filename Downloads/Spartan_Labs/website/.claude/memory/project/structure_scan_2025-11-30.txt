@@ -1,0 +1,179 @@
+╔═══════════════════════════════════════════════════════════════════════╗
+║           SPARTAN RESEARCH STATION - PROJECT STRUCTURE SCAN           ║
+║                      Timestamp: 2025-11-30 10:50 UTC                  ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+📊 PROJECT METRICS
+─────────────────────────────────────────────────────────────────────────
+Total Size:              550 MB
+Working Directory:       /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website
+Root-level Files:        320 project files
+HTML Dashboards:         58 files
+Python Scripts:          78 files
+Main Subdirectories:     29 directories
+
+🗂️  DIRECTORY STRUCTURE
+─────────────────────────────────────────────────────────────────────────
+📁 agents/                    - Autonomous agents & COT system
+   ├── cot_agents/            - Commitment of Traders agents (multi-tier)
+   ├── website_monitor/       - Website health monitoring
+   ├── logs/                  - Agent execution logs
+   └── skills/                - Agent skill library
+
+📁 api/                       - API microservices
+   ├── correlation_api/       - Market correlation analysis
+   ├── swing_api/             - Swing trading timeframes
+   ├── garp_api/              - GARP stock screener
+   └── daily_planet_api/      - News & insights aggregator
+
+📁 src/                       - Core Python source code
+   ├── data_preloader.py      - Main data loader (57K - critical)
+   ├── data_validation_monitor.py - Health monitoring (22K)
+   ├── claude_code_bridge.py  - Claude integration (15K)
+   ├── polygon_symbol_sync.py - Symbol database sync (15K)
+   ├── autonomous_healing/    - Self-repair modules
+   ├── api/                   - API utilities
+   ├── core/                  - Core trading logic
+   ├── data/                  - Data connectors
+   ├── execution/             - Trade execution
+   └── preloader/             - Preloader modules
+
+📁 js/                        - Frontend JavaScript
+   ├── spartan-preloader.js   - Client-side cache system
+   ├── composite_score_engine.js - Indicator calculations
+   ├── fred_api_client.js     - FRED economic data
+   ├── capital_flow_visualizer.js - Global capital flows
+   └── 20+ specialized modules
+
+📁 css/                       - Stylesheets
+   └── Spartan color scheme (dark theme, neon accents)
+
+📁 db/                        - Database configuration
+   ├── init/                  - SQL initialization scripts
+   └── backups/               - Database backups
+
+📁 docs/                      - Documentation
+   ├── quickstart.md
+   ├── architecture.md
+   ├── development-guide.md
+   ├── troubleshooting.md
+   └── agent-integration.md
+
+📁 logs/                      - Runtime logs
+   ├── autonomous_healing_*.log
+   ├── data_validation_*.log
+   └── trigger_claude_data_fix.json (agent escalations)
+
+📁 config/                    - Configuration files
+   └── API keys, settings, environment configs
+
+📁 .claude/                   - Claude Code settings
+   ├── memory/                - Session memory & learning
+   ├── skills/                - Custom Claude skills
+   └── settings.local.json    - Local configuration
+
+📁 monitoring/                - Observability stack
+   ├── grafana/               - Dashboards & visualizations
+   └── prometheus/            - Metrics collection
+
+📁 research-agent-24-7/       - Continuous research system
+   ├── research_reports/
+   ├── research_logs/
+   └── research_alerts/
+
+📁 cot_reports/               - COT analysis reports
+📁 screenshots_inspection/    - Visual testing artifacts
+📁 backups/                   - File backups
+📁 output/                    - Generated reports
+
+🌐 KEY HTML DASHBOARDS (Root Level)
+─────────────────────────────────────────────────────────────────────────
+alphastream_terminal.html         33K  - Omni-terminal interface
+index.html                        ???  - Main dashboard (2,051 lines)
+bitcoin_intelligence.html        108K  - Bitcoin analysis
+bond_intelligence.html           108K  - Treasury bond analysis
+copper_intelligence.html          82K  - Copper/commodities
+COMPREHENSIVE_TRADING_JOURNAL     77K  - Trade journal
+breakthrough_insights.html        49K  - Pattern discovery
+daily_planet.html                 39K  - Daily market insights
+complete_cftc_cot_terminal.html   41K  - COT data terminal
+barometers.html                   44K  - Market health indicators
+correlation_matrix.html           23K  - Asset correlations
+bitcoin_correlations.html         28K  - Bitcoin correlation matrix
+crypto_composite.html             18K  - Crypto analysis
+
+🐍 CORE PYTHON FILES (src/)
+─────────────────────────────────────────────────────────────────────────
+data_preloader.py                 57K  - **CRITICAL** - Main data loader
+data_validation_monitor.py        22K  - Health monitoring agent
+claude_code_bridge.py             15K  - Claude integration
+polygon_symbol_sync.py            15K  - Symbol database sync
+data_refresh_scheduler.py        2.0K  - 15-min refresh scheduler
+
+🤖 AGENT SYSTEM FILES
+─────────────────────────────────────────────────────────────────────────
+website_data_validator_agent.py        - Autonomous data validation
+composite_data_refresh_agent.py        - Data refresh automation
+website_monitor/website_monitor.py     - Website health monitor
+tier1/market_agents.py                 - Market analysis agents
+cot_agents/                            - Multi-tier COT analysis
+
+🚀 STARTUP SCRIPTS (Root Level)
+─────────────────────────────────────────────────────────────────────────
+✅ START_ALPHASTREAM_TERMINAL_SILENT.bat  - Silent launcher (ACTIVE)
+✅ START_ALPHASTREAM_TERMINAL_SILENT.ps1  - PowerShell script
+✅ START_ALPHASTREAM_TERMINAL.bat         - Visible launcher
+✅ DIAGNOSE_STARTUP_ISSUES.bat/ps1        - Diagnostic tool
+   start_server.py                        - Main web server
+   START_SPARTAN_AUTONOMOUS.sh            - Full autonomous mode
+   START_SPARTAN_DEV.sh                   - Development mode
+   START_COT_AGENTS.sh                    - COT agents startup
+
+📖 DOCUMENTATION FILES (Root Level)
+─────────────────────────────────────────────────────────────────────────
+CLAUDE.md                         - Claude Code instructions (main)
+WINDOWS_STARTUP_GUIDE.md          - Windows startup complete guide
+VBS_FIX_SUMMARY.md                - VBScript fix documentation
+QUICK_FIX_CARD.txt                - Quick reference card
+DATA_PRELOADER_GUIDE.md           - Preloader architecture
+WEBSITE_MONITOR_QUICKSTART.md     - Monitor agent setup
+DEPLOYMENT_GUIDE.md               - Production deployment
++ 50+ other specialized docs
+
+🔧 TECH STACK
+─────────────────────────────────────────────────────────────────────────
+Backend:         Python 3.13, Flask, asyncio
+Database:        PostgreSQL 13+ (MANDATORY - No SQLite)
+Cache:           Redis (15-min TTL)
+Frontend:        Vanilla JavaScript, HTML5, Tailwind CSS
+Data Sources:    yfinance, FRED, Polygon.io, CoinGecko, CFTC.gov
+Deployment:      Docker (9 containers) + Native development
+Monitoring:      Prometheus + Grafana
+Agents:          Autonomous healing system (Python)
+
+🎯 ARCHITECTURE PATTERNS
+─────────────────────────────────────────────────────────────────────────
+1. Data Preloader Gate (blocks startup until data validated)
+2. Three-tier cache (IndexedDB → Redis → PostgreSQL)
+3. Autonomous healing (95% issues auto-resolved)
+4. Microservices (9 specialized APIs)
+5. NO FAKE DATA policy (return null on API failure)
+
+📊 FILE TYPE BREAKDOWN
+─────────────────────────────────────────────────────────────────────────
+.html files:     58   (dashboards, terminals, reports)
+.py files:       78   (core logic, agents, APIs)
+.js files:       ~30  (frontend modules)
+.sh files:       ~25  (startup/deployment scripts)
+.bat files:      ~15  (Windows launchers)
+.ps1 files:      ~5   (PowerShell automation)
+.md files:       ~60  (documentation)
+
+🔒 CRITICAL RULES ENFORCED
+─────────────────────────────────────────────────────────────────────────
+1. NO FAKE DATA - Return null on API failure, never generate mock data
+2. PostgreSQL ONLY - No SQLite, ever (production-grade requirement)
+3. Preserve index.html structure (2,051 lines, complete navigation)
+4. Rate limiting on all API calls (prevent blocks)
+5. Three-tier cache pattern (IndexedDB → Redis → PostgreSQL)
+

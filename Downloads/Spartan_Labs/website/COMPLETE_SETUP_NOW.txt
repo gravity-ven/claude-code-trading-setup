@@ -1,0 +1,165 @@
+========================================================================
+✅ ALMOST DONE! COMPLETE SETUP IN 5 MINUTES
+========================================================================
+
+GOOD NEWS:
+✅ All Python packages installed
+✅ COT script tested and working
+✅ Infographic generated successfully (391 KB)
+   Location: cot_reports/COT_Report_2025-11-24.png
+
+WHAT'S LEFT:
+❌ Gmail App Password not configured
+
+========================================================================
+🚨 ACTION REQUIRED: CREATE GMAIL APP PASSWORD (5 minutes)
+========================================================================
+
+STEP 1: OPEN YOUR BROWSER
+--------------------------
+Go to: https://myaccount.google.com/security
+
+STEP 2: ENABLE 2-STEP VERIFICATION (if not already on)
+-------------------------------------------------------
+1. Scroll down to "How you sign in to Google"
+2. Click "2-Step Verification"
+3. Follow prompts (you'll need your phone)
+4. Click "Turn On"
+
+STEP 3: CREATE APP PASSWORD
+----------------------------
+1. In the search bar at top, type: App passwords
+2. Click "App passwords" in results
+3. You may need to sign in again
+4. Select app: Mail
+5. Select device: Windows Computer (or "Other" → "COT Emailer")
+6. Click "Generate"
+7. YOU'LL SEE A 16-CHARACTER PASSWORD LIKE:
+
+   ┌─────────────────────────────┐
+   │  abcd efgh ijkl mnop       │
+   └─────────────────────────────┘
+
+8. COPY THIS EXACTLY (you can copy with or without spaces)
+9. Click "Done"
+
+STEP 4: UPDATE .ENV FILE
+-------------------------
+1. Open this file in any text editor:
+
+   C:\Users\Quantum\Downloads\Spartan_Labs\website\.env
+
+   Or on WSL:
+
+   /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website/.env
+
+2. Find line 24:
+
+   SMTP_PASSWORD=YOUR_16_CHAR_APP_PASSWORD_HERE
+
+3. Replace with your App Password (remove spaces):
+
+   BEFORE:
+   SMTP_PASSWORD=YOUR_16_CHAR_APP_PASSWORD_HERE
+
+   AFTER:
+   SMTP_PASSWORD=abcdefghijklmnop
+
+   ⚠️  NO SPACES in the password!
+
+4. Save the file
+
+STEP 5: TEST AGAIN
+------------------
+Open terminal/command prompt:
+
+   cd C:\Users\Quantum\Downloads\Spartan_Labs\website
+   python cot_daily_emailer.py
+
+YOU SHOULD SEE:
+   ✅ Email sent successfully!
+
+CHECK YOUR EMAIL:
+   naga.kvv@gmail.com
+
+========================================================================
+🤖 AUTOMATE IT (FINAL STEP)
+========================================================================
+
+WINDOWS:
+--------
+1. Right-click: SETUP_COT_DAILY_EMAIL.bat
+2. Select: "Run as administrator"
+3. Press Enter when asked for time (uses 08:00 AM)
+4. Done!
+
+LINUX/WSL:
+----------
+   cd /mnt/c/Users/Quantum/Downloads/Spartan_Labs/website
+   bash setup_cot_daily_email.sh
+
+========================================================================
+📊 WHAT HAPPENS NEXT
+========================================================================
+
+✅ You'll receive an email EVERY MORNING at 8:00 AM
+✅ If computer is OFF at 8 AM, email sends when computer turns ON
+✅ Email includes:
+   - Professional COT infographic (40+ futures)
+   - List of extreme long signals (≥95%)
+   - List of extreme short signals (≤5%)
+   - Trading strategy explanation
+
+========================================================================
+❓ NEED HELP?
+========================================================================
+
+Can't find App Passwords option?
+   → Make sure 2-Step Verification is ON first
+
+Getting "Authentication failed" error?
+   → You copied your regular password instead of App Password
+   → Go back to STEP 3 and create new App Password
+
+Email still not sending?
+   → Check spam folder
+   → Verify no spaces in SMTP_PASSWORD
+   → Make sure you saved .env file
+
+========================================================================
+📞 QUICK COMMANDS
+========================================================================
+
+Test email:
+   python cot_daily_emailer.py
+
+Check infographic:
+   ls -lh cot_reports/
+
+View log:
+   cat cot_daily_emailer.log
+
+Edit .env:
+   nano .env         (Linux)
+   notepad .env      (Windows)
+
+========================================================================
+✅ CHECKLIST
+========================================================================
+
+[ ] Went to https://myaccount.google.com/security
+[ ] Enabled 2-Step Verification
+[ ] Created App Password for Mail
+[ ] Copied 16-character password
+[ ] Opened .env file
+[ ] Updated SMTP_PASSWORD line (removed spaces)
+[ ] Saved .env file
+[ ] Ran: python cot_daily_emailer.py
+[ ] Received test email at naga.kvv@gmail.com
+[ ] Ran setup script (Windows .bat OR Linux .sh)
+
+🎉 WHEN ALL BOXES CHECKED: YOU'RE DONE!
+
+========================================================================
+Last Updated: November 24, 2025
+========================================================================

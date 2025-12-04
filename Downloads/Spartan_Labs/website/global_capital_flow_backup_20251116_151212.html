@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="max-age=0">
+    <meta name="last-modified" content="2025-11-13 21:45:00">
+    <meta name="build-version" content="v2.4-GLOBAL-CAPITAL-FLOW-ADDED">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spartan Research Station - Global Capital Flow Dashboard</title>
+    
+    <!-- Intermarket Barometer Ticker -->
+    <link rel="stylesheet" href="intermarket_ticker.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="spartan_theme.css">
+
+    <!-- Spartan Theme Override -->
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;        /* Spartan Red */
+            --secondary-color: #B22222;      /* Spartan Firebrick */
+            --accent-color: #DC143C;         /* Spartan Crimson */
+            --accent-2-color: #FF5252;       /* Bright Red */
+            --accent-3-color: #FF6B6B;       /* Light Red */
+            --bg-dark: #0a1628;              /* Main Background */
+            --bg-darker: #050b14;            /* Darker Background */
+            --bg-card: #12203a;              /* Card Background */
+            --text-primary: #ffffff;         /* White Text */
+            --text-secondary: #b0b8c8;       /* Gray Text */
+            --text-muted: #7a8a9a;           /* Muted Gray */
+            --border-color: #1e3a5f;         /* Border Color */
+            --success-color: #00ff88;        /* Success Green */
+            --warning-color: #ff9500;        /* Warning Orange */
+            --danger-color: #FF5252;         /* Danger Red */
+            --info-color: #0096FF;           /* Info Blue */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        /* Spartan Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        /* Spartan Cards */
+        .flow-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(139, 0, 0, 0.15);
+            border-color: var(--accent-color);
+        }
+
+        .metric-title {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            margin: 0 0 20px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .metric-value.positive {
+            color: var(--success-color);
+        }
+
+        .metric-value.negative {
+            color: var(--danger-color);
+        }
+
+        .metric-value.neutral {
+            color: var(--text-primary);
+        }
+
+        .metric-change {
+            font-size: 1.1rem;
+            margin: 8px 0;
+            font-weight: 500;
+        }
+
+        .metric-source {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Spartan Charts */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(650px, 1fr));
+            gap: 35px;
+            margin-bottom: 50px;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .chart-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, transparent 50%, var(--accent-color) 50%);
+            border-radius: 0 12px 0 12px;
+            opacity: 0.8;
+        }
+
+        .chart-title {
+            font-size: 1.6rem;
+            color: var(--accent-color);
+            margin: 0 0 25px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Spartan Regional Cards */
+        .region-flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .region-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .region-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-color), var(--accent-2-color));
+            border-radius: 12px 0 0 12px;
+        }
+
+        .region-title {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            margin: 0 0 20px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .flow-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0;
+            padding: 12px 15px;
+            background: rgba(139, 0, 0, 0.08);
+            border-radius: 8px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .flow-item:hover {
+            background: rgba(139, 0, 0, 0.12);
+            border-left-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .flow-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .flow-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .flow-value.neutral {
+            color: var(--text-primary);
+        }
+
+        .flow-value.positive {
+            color: var(--success-color);
+        }
+
+        .flow-value.negative {
+            color: var(--danger-color);
+        }
+
+        /* Spartan Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spartan-spin 1s linear infinite;
+        }
+
+        @keyframes spartan-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Spartan Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 10px;
+            position: relative;
+        }
+
+        .status-indicator::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .status-indicator.valid {
+            background: var(--success-color);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .status-indicator.invalid {
+            background: var(--danger-color);
+            box-shadow: 0 0 10px rgba(255, 82, 82, 0.5);
+        }
+
+        .status-indicator.pending {
+            background: var(--warning-color);
+            box-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
+        }
+
+        /* Spartan Validation Messages */
+        .validation-message {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(139, 0, 0, 0.08);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .validation-message.success {
+            border-left-color: var(--success-color);
+            background: rgba(0, 255, 136, 0.08);
+            color: var(--success-color);
+        }
+
+        .validation-message.error {
+            border-left-color: var(--danger-color);
+            background: rgba(255, 82, 82, 0.08);
+            color: var(--danger-color);
+        }
+
+        /* Spartan Hover Effects */
+        .spartan-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .spartan-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .flow-metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .metric-value {
+                font-size: 2.2rem;
+            }
+            
+            .flow-metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .region-flow-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metric-card,
+            .chart-card,
+            .region-card {
+                padding: 20px;
+            }
+        }
+
+        /* Spartan Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .metric-card {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .metric-card:nth-child(1) { animation-delay: 0.1s; }
+        .metric-card:nth-child(2) { animation-delay: 0.2s; }
+        .metric-card:nth-child(3) { animation-delay: 0.3s; }
+        .metric-card:nth-child(4) { animation-delay: 0.4s; }
+        .metric-card:nth-child(5) { animation-delay: 0.5s; }
+        .metric-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Spartan Custom Scrollbar */
+        *::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+            border-radius: 5px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-2-color);
+        }
+
+        /* Loading Spinner - Spartan Style */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-indicator.valid {
+            background: var(--success-color);
+            box-shadow: 0 0 8px var(--success-color);
+        }
+
+        .status-indicator.invalid {
+            background: var(--danger-color);
+            box-shadow: 0 0 8px var(--danger-color);
+        }
+    </style>
+</style>
+    
+    <!-- Spartan Navigation Styles -->
+    <style>
+        .spartan-nav {
+            background: var(--bg-darker);
+            border-bottom: 2px solid var(--accent-color);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+        }
+        
+        .nav-container {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .nav-logo {
+            height: 35px;
+            width: auto;
+            filter: brightness(1.1);
+        }
+        
+        .nav-title {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-title:hover {
+            color: var(--accent-color);
+        }
+        
+        .nav-center {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-item {
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 16px;
+            border: 1px solid var(--accent-color);
+            border-radius: 6px;
+        }
+        
+        .nav-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-color);
+            background: rgba(139, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .header-icon {
+            font-size: 3.5rem;
+            filter: drop-shadow(2px 2px 4px rgba(220, 20, 60, 0.3));
+        }
+        
+        .header-text {
+            flex: 1;
+        }
+        
+        .header-subtitle {
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .header-spacer {
+            width: 100px;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin: 30px 0;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .tab-button:hover {
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: var(--primary-color);
+            color: var(--text-primary);
+            border-color: var(--primary-color);
+            box-shadow: 0 -3px 10px rgba(220, 20, 60, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Symbol Analysis Table */
+        .symbol-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .symbol-table thead {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .symbol-table th {
+            padding: 15px;
+            text-align: left;
+            color: var(--text-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .symbol-table td {
+            padding: 12px 15px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .symbol-table tbody tr {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .symbol-table tbody tr:hover {
+            background: var(--bg-darker);
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.2);
+        }
+
+        .symbol-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-stock {
+            background: var(--info-color);
+            color: white;
+        }
+
+        .badge-crypto {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .badge-futures {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .badge-forex {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .badge-etf {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .highlight {
+            background: var(--accent-color);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Recommendation Badges */
+        .badge-buy {
+            background: var(--success-color);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .badge-sell {
+            background: var(--danger-color);
+            color: white;
+            font-weight: 700;
+        }
+
+        .badge-hold {
+            background: var(--warning-color);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .badge-high {
+            background: var(--success-color);
+            color: #000;
+        }
+
+        .badge-medium {
+            background: var(--info-color);
+            color: white;
+        }
+
+        .badge-low {
+            background: var(--text-muted);
+            color: white;
+        }
+
+        /* Sortable Headers */
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .sortable-header:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .sort-indicator {
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+
+        /* Composite Score Display */
+        .composite-score-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-darker));
+            padding: 40px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-color);
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(220, 20, 60, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Spartan Navigation Bar -->
+    <nav class="spartan-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <img src="spartan_logo.png" alt="Spartan Research Station" class="nav-logo">
+                <a href="index.html" class="nav-title">Spartan Research Station</a>
+            </div>
+            <div class="nav-center">
+                <div class="nav-item active">Global Capital Flow</div>
+            </div>
+            <div class="nav-right">
+                <a href="index.html" class="nav-link">← Back</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Spartan Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="header-icon">🌐</div>
+                <div class="header-text">
+                    <h1>GLOBAL CAPITAL FLOW</h1>
+                    <p>Real-Time Tracking of Capital Movement Across Global Markets</p>
+                    <div class="header-subtitle">
+                        <span id="last-update">
+                            <span class="status-indicator pending"></span>
+                            Initializing dashboard...
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-spacer"></div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('capital-flow')">
+                🌐 Capital Flow Dashboard
+            </button>
+            <button class="tab-button" onclick="switchTab('global-symbols')">
+                📊 Global Symbols Database
+            </button>
+            <button class="tab-button" onclick="switchTab('market-intelligence')">
+                📚 Market Intelligence
+            </button>
+            <button class="tab-button" onclick="switchTab('symbol-analysis')">
+                💡 AI Recommendations
+            </button>
+        </div>
+
+        <!-- TAB 1: Capital Flow Dashboard -->
+        <div id="capital-flow-tab" class="tab-content active">
+
+        <!-- Real-Time Composite Score -->
+        <div class="composite-score-card" style="margin-bottom: 40px;"
+             data-hideable="true"
+             data-section-id="composite-score"
+             data-section-name="Market Health Composite Score">
+            <h2 style="color: var(--accent-color); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px;">
+                📊 Market Health Composite Score (Real-Time)
+            </h2>
+            <div id="composite-score-value" style="margin: 30px 0;">
+                <span class="loading"></span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px;">
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 8px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 5px;">Growth Score</div>
+                    <div id="growth-score-value" style="font-size: 1.5rem; font-weight: 700; color: var(--info-color);">-/-</div>
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 8px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 5px;">Inflation Score</div>
+                    <div id="inflation-score-value" style="font-size: 1.5rem; font-weight: 700; color: var(--info-color);">-/-</div>
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 8px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 5px;">Liquidity Score</div>
+                    <div id="liquidity-score-value" style="font-size: 1.5rem; font-weight: 700; color: var(--info-color);">-/-</div>
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 8px;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 5px;">Market Score</div>
+                    <div id="market-score-value" style="font-size: 1.5rem; font-weight: 700; color: var(--info-color);">-/-</div>
+                </div>
+            </div>
+            <div id="score-last-update" style="margin-top: 20px; color: var(--text-muted); font-size: 0.9rem;">
+                Fetching real-time data from FRED API...
+            </div>
+        </div>
+
+        <!-- Data Provenance - Shows data source, quality, and freshness -->
+        <div id="data-provenance" style="margin-bottom: 40px;">
+            <!-- Populated by composite_score_engine.js -->
+            <div style="
+                background: rgba(220, 20, 60, 0.1);
+                border: 1px solid rgba(220, 20, 60, 0.3);
+                border-radius: 8px;
+                padding: 15px 20px;
+                text-align: center;
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 0.9rem;
+            ">
+                <span class="loading"></span> Loading data provenance...
+            </div>
+        </div>
+
+        <!-- Key Flow Metrics -->
+        <div class="flow-metrics-grid">
+            <div class="metric-card"
+                 data-hideable="true"
+                 data-section-id="us-market-flow"
+                 data-section-name="US Market Flow">
+                <h3 class="metric-title">US Market Flow</h3>
+                <div class="metric-value neutral" id="us-flow">
+                    <span class="loading"></span>
+                </div>
+                <div class="metric-change" id="us-change"></div>
+                <div class="metric-source">Source: Yahoo Finance (Real Market Data)</div>
+                <div class="validation-message" id="us-validation">
+                    Validating data source...
+                </div>
+            </div>
+
+            <div class="metric-card"
+                 data-hideable="true"
+                 data-section-id="eu-market-flow"
+                 data-section-name="European Market Flow">
+                <h3 class="metric-title">European Market Flow</h3>
+                <div class="metric-value neutral" id="eu-flow">
+                    <span class="loading"></span>
+                </div>
+                <div class="metric-change" id="eu-change"></div>
+                <div class="metric-source">Source: Yahoo Finance (Real Market Data)</div>
+                <div class="validation-message" id="eu-validation">
+                    Validating data source...
+                </div>
+            </div>
+
+            <div class="metric-card"
+                 data-hideable="true"
+                 data-section-id="asia-market-flow"
+                 data-section-name="Asian Market Flow">
+                <h3 class="metric-title">Asian Market Flow</h3>
+                <div class="metric-value neutral" id="asia-flow">
+                    <span class="loading"></span>
+                </div>
+                <div class="metric-change" id="asia-change"></div>
+                <div class="metric-source">Source: Yahoo Finance (Real Market Data)</div>
+                <div class="validation-message" id="asia-validation">
+                    Validating data source...
+                </div>
+            </div>
+
+            <div class="metric-card"
+                 data-hideable="true"
+                 data-section-id="em-market-flow"
+                 data-section-name="Emerging Market Flow">
+                <h3 class="metric-title">Emerging Market Flow</h3>
+                <div class="metric-value neutral" id="em-flow">
+                    <span class="loading"></span>
+                </div>
+                <div class="metric-change" id="em-change"></div>
+                <div class="metric-source">Source: Yahoo Finance (Real Market Data)</div>
+                <div class="validation-message" id="em-validation">
+                    Validating data source...
+                </div>
+            </div>
+
+            <div class="metric-card"
+                 data-hideable="true"
+                 data-section-id="currency-flow"
+                 data-section-name="Currency Flow (USD Index)">
+                <h3 class="metric-title">Currency Flow (USD Index)</h3>
+                <div class="metric-value neutral" id="dxy-flow">
+                    <span class="loading"></span>
+                </div>
+                <div class="metric-change" id="dxy-change"></div>
+                <div class="metric-source">Source: Financial Modeling Prep (UUP)</div>
+                <div class="validation-message" id="dxy-validation">
+                    Validating data source...
+                </div>
+            </div>
+
+            <div class="metric-card"
+                 data-hideable="true"
+                 data-section-id="commodity-flow"
+                 data-section-name="Commodity Flow">
+                <h3 class="metric-title">Commodity Flow</h3>
+                <div class="metric-value neutral" id="commodity-flow">
+                    <span class="loading"></span>
+                </div>
+                <div class="metric-change" id="commodity-change"></div>
+                <div class="metric-source">Source: Financial Modeling Prep (GLD)</div>
+                <div class="validation-message" id="commodity-validation">
+                    Validating data source...
+                </div>
+            </div>
+        </div>
+
+        <!-- Regional Flow Details -->
+        <div class="region-flow-grid">
+            <div class="region-card">
+                <h4 class="region-title">North America</h4>
+                <div class="flow-item">
+                    <span class="flow-label">S&P 500</span>
+                    <span class="flow-value" id="sp500-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">NASDAQ 100</span>
+                    <span class="flow-value" id="ndx-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Dow Jones</span>
+                    <span class="flow-value" id="dji-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="validation-message" id="na-validation">
+                    Validating North American markets...
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">Europe</h4>
+                <div class="flow-item">
+                    <span class="flow-label">Euro Stoxx 50</span>
+                    <span class="flow-value" id="stoxx-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">FTSE 100</span>
+                    <span class="flow-value" id="ftse-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">DAX</span>
+                    <span class="flow-value" id="dax-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="validation-message" id="eu-validation-detail">
+                    Validating European markets...
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">Asia Pacific</h4>
+                <div class="flow-item">
+                    <span class="flow-label">Nikkei 225</span>
+                    <span class="flow-value" id="nikkei-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Hang Seng</span>
+                    <span class="flow-value" id="hsi-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">ASX 200</span>
+                    <span class="flow-value" id="asx-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="validation-message" id="asia-validation-detail">
+                    Validating Asia Pacific markets...
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">Emerging Markets</h4>
+                <div class="flow-item">
+                    <span class="flow-label">Sensex</span>
+                    <span class="flow-value" id="sensex-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Shanghai</span>
+                    <span class="flow-value" id="shanghai-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Bovespa</span>
+                    <span class="flow-value" id="bovespa-value">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="validation-message" id="em-validation-detail">
+                    Validating Emerging markets...
+                </div>
+            </div>
+        </div>
+
+        </div>
+        <!-- END TAB 1: Capital Flow Dashboard -->
+
+        <!-- TAB 2: Global Symbols Database -->
+        <div id="global-symbols-tab" class="tab-content">
+
+        <div class="header" style="margin-top: 0;">
+            <div class="header-content">
+                <div class="header-icon">🌍</div>
+                <div class="header-text">
+                    <h1>GLOBAL SYMBOLS DATABASE</h1>
+                    <p>12,444+ Instruments Across 25+ International Exchanges</p>
+                    <div class="header-subtitle">
+                        <span id="db-last-update">
+                            <span class="loading"></span> Loading database statistics...
+                        </span>
+                    </div>
+                </div>
+                <div class="header-spacer"></div>
+            </div>
+        </div>
+
+        <!-- Database Statistics Cards -->
+        <div class="flow-metrics-grid">
+            <div class="metric-card">
+                <h3 class="metric-title">📊 Total Instruments</h3>
+                <div class="metric-value neutral" id="total-instruments">12,444</div>
+                <div class="metric-change">
+                    <span id="total-breakdown">Stocks, Futures, Forex, Crypto</span>
+                </div>
+                <p class="metric-source">Real-time database aggregation</p>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">🇺🇸 USA Stocks</h3>
+                <div class="metric-value neutral" id="usa-stocks">11,989</div>
+                <div class="metric-change">
+                    NASDAQ + NYSE (Official FTP)
+                </div>
+                <p class="metric-source">Source: ftp.nasdaqtrader.com</p>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">🌍 International</h3>
+                <div class="metric-value neutral" id="intl-stocks">133</div>
+                <div class="metric-change">
+                    UK + Europe + China/HK
+                </div>
+                <p class="metric-source">25+ Exchanges Worldwide</p>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">📈 Coverage</h3>
+                <div class="metric-value positive">100%</div>
+                <div class="metric-change">
+                    Official Exchange Data Only
+                </div>
+                <p class="metric-source">No fake/mock data - Production ready</p>
+            </div>
+        </div>
+
+        <!-- Regional Database Breakdown -->
+        <h2 style="color: var(--accent-color); text-align: center; margin: 50px 0 30px 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 2px;">
+            🗺️ REGIONAL COVERAGE BREAKDOWN
+        </h2>
+
+        <div class="region-flow-grid">
+            <div class="region-card">
+                <h4 class="region-title">🇬🇧 United Kingdom</h4>
+                <div class="flow-item">
+                    <span class="flow-label">Stocks Listed</span>
+                    <span class="flow-value neutral" id="uk-count">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Exchange</span>
+                    <span class="flow-value">LSE (London)</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Key Stocks</span>
+                    <span class="flow-value" style="font-size: 0.85rem;">SHEL.L, HSBA.L, AZN.L</span>
+                </div>
+                <div class="validation-message" id="uk-validation">
+                    Loading UK market data...
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">🇪🇺 Continental Europe</h4>
+                <div class="flow-item">
+                    <span class="flow-label">Stocks Listed</span>
+                    <span class="flow-value neutral" id="europe-count">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Exchanges</span>
+                    <span class="flow-value" style="font-size: 0.85rem;">DAX, CAC, AEX, SMI</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Key Stocks</span>
+                    <span class="flow-value" style="font-size: 0.85rem;">SAP.DE, MC.PA, ASML.AS</span>
+                </div>
+                <div class="validation-message" id="europe-validation">
+                    Loading European market data...
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">🇨🇳 China & Hong Kong</h4>
+                <div class="flow-item">
+                    <span class="flow-label">Stocks Listed</span>
+                    <span class="flow-value neutral" id="china-count">
+                        <span class="loading"></span>
+                    </span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Exchanges</span>
+                    <span class="flow-value" style="font-size: 0.85rem;">HKEX, SSE, SZSE</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Key Stocks</span>
+                    <span class="flow-value" style="font-size: 0.85rem;">0700.HK, 9988.HK, BABA</span>
+                </div>
+                <div class="validation-message" id="china-validation">
+                    Loading China/HK market data...
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">💱 Other Asset Classes</h4>
+                <div class="flow-item">
+                    <span class="flow-label">Futures Contracts</span>
+                    <span class="flow-value neutral">39</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Forex Pairs</span>
+                    <span class="flow-value neutral">33</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Cryptocurrencies</span>
+                    <span class="flow-value neutral">250</span>
+                </div>
+                <div class="validation-message success">
+                    <span class="status-indicator valid"></span>
+                    Multi-asset class coverage complete
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Stocks by Region Section -->
+        <h2 style="color: var(--accent-color); text-align: center; margin: 50px 0 30px 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 2px;">
+            ⭐ TOP STOCKS BY REGION
+        </h2>
+
+        <div class="charts-container">
+            <!-- UK Top Stocks -->
+            <div class="chart-card">
+                <h3 class="chart-title">🇬🇧 United Kingdom - FTSE 100</h3>
+                <div id="uk-top-stocks" style="max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px;">
+                        <span class="loading"></span> Loading top UK stocks...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Europe Top Stocks -->
+            <div class="chart-card">
+                <h3 class="chart-title">🇪🇺 Europe - Major Indices</h3>
+                <div id="europe-top-stocks" style="max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px;">
+                        <span class="loading"></span> Loading top European stocks...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <!-- China/HK Top Stocks -->
+            <div class="chart-card">
+                <h3 class="chart-title">🇨🇳 China & Hong Kong</h3>
+                <div id="china-top-stocks" style="max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px;">
+                        <span class="loading"></span> Loading China/HK stocks...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Search -->
+            <div class="chart-card">
+                <h3 class="chart-title">🔍 Global Symbol Search</h3>
+                <input type="text" id="global-symbol-search"
+                    placeholder="Search 12,444+ symbols (e.g., AAPL, SHEL.L, SAP.DE)..."
+                    style="width: 100%; padding: 15px; margin-bottom: 20px; background: var(--bg-darker);
+                           border: 1px solid var(--border-color); color: var(--text-primary);
+                           border-radius: 8px; font-size: 1rem; font-family: 'Inter', sans-serif;">
+                <div id="search-results" style="max-height: 340px; overflow-y: auto;">
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px;">
+                        Type to search across all global exchanges
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+        <!-- END TAB 2: Global Symbols Database -->
+
+        <!-- TAB 3: Market Intelligence -->
+        <div id="market-intelligence-tab" class="tab-content">
+
+        <div class="header" style="margin-top: 0;">
+            <div class="header-content">
+                <div class="header-icon">📚</div>
+                <div class="header-text">
+                    <h1>CAPITAL MARKETS INTELLIGENCE</h1>
+                    <p>Comprehensive Guide to Global Market Regimes & Investment Strategies</p>
+                    <div class="header-subtitle">
+                        <span style="color: var(--text-secondary);">
+                            Understanding the $100+ Trillion Global Capital Markets
+                        </span>
+                    </div>
+                </div>
+                <div class="header-spacer"></div>
+            </div>
+        </div>
+
+        <!-- Market Health Composite Score -->
+        <h2 style="color: var(--accent-color); text-align: center; margin: 50px 0 30px 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 2px;">
+            📊 MARKET HEALTH COMPOSITE SCORE
+        </h2>
+
+        <div class="flow-metrics-grid">
+            <div class="metric-card">
+                <h3 class="metric-title">📈 Growth Score</h3>
+                <div class="metric-value neutral">0-30 pts</div>
+                <div class="metric-change" style="font-size: 0.9rem; line-height: 1.6;">
+                    <strong>Measures:</strong> GDP, Employment, PMI<br>
+                    <strong>30 pts:</strong> Expansion (GDP >3%)<br>
+                    <strong>20 pts:</strong> Recovery (GDP 1-3%)<br>
+                    <strong>10 pts:</strong> Slowdown (GDP 0-1%)<br>
+                    <strong>0 pts:</strong> Recession (GDP negative)
+                </div>
+                <p class="metric-source">Economic expansion indicator</p>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">💰 Inflation Score</h3>
+                <div class="metric-value neutral">0-30 pts</div>
+                <div class="metric-change" style="font-size: 0.9rem; line-height: 1.6;">
+                    <strong>Measures:</strong> CPI, Core CPI, PCE<br>
+                    <strong>30 pts:</strong> Target (1.5-2.5%)<br>
+                    <strong>20 pts:</strong> Low (0-1.5%)<br>
+                    <strong>10 pts:</strong> Elevated (2.5-4%)<br>
+                    <strong>0 pts:</strong> High (>4%)
+                </div>
+                <p class="metric-source">Price stability indicator</p>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">💧 Liquidity Score</h3>
+                <div class="metric-value neutral">0-20 pts</div>
+                <div class="metric-change" style="font-size: 0.9rem; line-height: 1.6;">
+                    <strong>Measures:</strong> Fed Policy, M2 Supply<br>
+                    <strong>20 pts:</strong> Easing (QE, rate cuts)<br>
+                    <strong>10 pts:</strong> Neutral (on hold)<br>
+                    <strong>0 pts:</strong> Tightening (QT, hikes)
+                </div>
+                <p class="metric-source">Central bank policy indicator</p>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">📉 Market Score</h3>
+                <div class="metric-value neutral">0-20 pts</div>
+                <div class="metric-change" style="font-size: 0.9rem; line-height: 1.6;">
+                    <strong>Measures:</strong> VIX, Sentiment<br>
+                    <strong>20 pts:</strong> Risk-On (VIX <15)<br>
+                    <strong>10 pts:</strong> Neutral (VIX 15-20)<br>
+                    <strong>0 pts:</strong> Risk-Off (VIX >20)
+                </div>
+                <p class="metric-source">Investor sentiment indicator</p>
+            </div>
+        </div>
+
+        <!-- Score Interpretation Table -->
+        <div class="chart-card" style="margin-bottom: 40px;">
+            <h3 class="chart-title">🎯 Score Interpretation Guide</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; color: var(--text-primary);">
+                    <thead>
+                        <tr style="background: var(--bg-darker); border-bottom: 2px solid var(--accent-color);">
+                            <th style="padding: 15px; text-align: left; font-weight: 700;">Score Range</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 700;">Market Conditions</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 700;">Recommended Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px;"><span style="color: var(--success-color); font-weight: 700;">90-100</span></td>
+                            <td style="padding: 12px;">Perfect Conditions (Rare)</td>
+                            <td style="padding: 12px;">Aggressively buy stocks (80% allocation)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px;"><span style="color: var(--success-color); font-weight: 700;">80-90</span></td>
+                            <td style="padding: 12px;">Reflation (Commodities Shine)</td>
+                            <td style="padding: 12px;">Buy energy, materials, gold (60% stocks)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px;"><span style="color: var(--warning-color); font-weight: 700;">60-80</span></td>
+                            <td style="padding: 12px;">Mixed Signals</td>
+                            <td style="padding: 12px;">Balanced portfolio (50% stocks, 30% bonds)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px;"><span style="color: var(--warning-color); font-weight: 700;">50-60</span></td>
+                            <td style="padding: 12px;">Caution - Headwinds Emerging</td>
+                            <td style="padding: 12px;">Reduce risk (30% stocks, 40% bonds)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px;"><span style="color: var(--danger-color); font-weight: 700;">25-50</span></td>
+                            <td style="padding: 12px;">Crisis Unfolding</td>
+                            <td style="padding: 12px;">Defensive (10% stocks, 60% bonds, 15% gold)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;"><span style="color: var(--danger-color); font-weight: 700;">0-25</span></td>
+                            <td style="padding: 12px;">Full Crisis Mode</td>
+                            <td style="padding: 12px;">Maximum defense (70% bonds, 20% gold)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- The Four Macro Regimes -->
+        <h2 style="color: var(--accent-color); text-align: center; margin: 50px 0 30px 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 2px;">
+            🔄 THE FOUR MACRO REGIMES
+        </h2>
+
+        <div class="region-flow-grid">
+            <div class="region-card">
+                <h4 class="region-title">🚀 EXPANSION (Goldilocks)</h4>
+                <div class="flow-item">
+                    <span class="flow-label">GDP Growth</span>
+                    <span class="flow-value positive">3%+</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Unemployment</span>
+                    <span class="flow-value positive"><4%</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Inflation</span>
+                    <span class="flow-value positive">Near 2%</span>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: rgba(0, 255, 136, 0.1); border-radius: 6px; border-left: 3px solid var(--success-color);">
+                    <strong style="color: var(--success-color);">Best Assets:</strong><br>
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                        Tech stocks, consumer discretionary, small-caps, emerging markets
+                    </span>
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">🔄 RECOVERY (Early Cycle)</h4>
+                <div class="flow-item">
+                    <span class="flow-label">GDP Turning</span>
+                    <span class="flow-value positive">Positive</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Unemployment</span>
+                    <span class="flow-value warning">Falling</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Fed Policy</span>
+                    <span class="flow-value positive">Still Easing</span>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: rgba(0, 255, 136, 0.1); border-radius: 6px; border-left: 3px solid var(--success-color);">
+                    <strong style="color: var(--success-color);">Best Assets:</strong><br>
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                        Cyclicals (banks, industrials), small-caps, high-yield bonds
+                    </span>
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">⚠️ SLOWDOWN (Late Cycle)</h4>
+                <div class="flow-item">
+                    <span class="flow-label">GDP Growth</span>
+                    <span class="flow-value warning">Decelerating</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Inflation</span>
+                    <span class="flow-value warning">Elevated</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Fed Policy</span>
+                    <span class="flow-value negative">Tightening</span>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: rgba(255, 149, 0, 0.1); border-radius: 6px; border-left: 3px solid var(--warning-color);">
+                    <strong style="color: var(--warning-color);">Best Assets:</strong><br>
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                        Defensive stocks (utilities, staples), cash, short-duration bonds
+                    </span>
+                </div>
+            </div>
+
+            <div class="region-card">
+                <h4 class="region-title">📉 RECESSION (Contraction)</h4>
+                <div class="flow-item">
+                    <span class="flow-label">GDP</span>
+                    <span class="flow-value negative">Negative 2Q+</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Unemployment</span>
+                    <span class="flow-value negative">Rising Sharply</span>
+                </div>
+                <div class="flow-item">
+                    <span class="flow-label">Credit</span>
+                    <span class="flow-value negative">Stress</span>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: rgba(255, 82, 82, 0.1); border-radius: 6px; border-left: 3px solid var(--danger-color);">
+                    <strong style="color: var(--danger-color);">Best Assets:</strong><br>
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                        Government bonds (Treasuries), cash, gold, defensive stocks
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practical Buy/Sell Playbook -->
+        <h2 style="color: var(--accent-color); text-align: center; margin: 50px 0 30px 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 2px;">
+            💼 PRACTICAL BUY/SELL PLAYBOOK
+        </h2>
+
+        <div class="charts-container">
+            <!-- Money Flowing IN (BUY) -->
+            <div class="chart-card">
+                <h3 class="chart-title" style="color: var(--success-color);">✅ CAPITAL INFLOWS (BUY Signal)</h3>
+                <div style="line-height: 1.8;">
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        When money flows INTO a country, follow this 3-step strategy:
+                    </p>
+
+                    <div style="background: var(--bg-darker); padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--success-color);">
+                        <h4 style="color: var(--success-color); margin: 0 0 10px 0; font-size: 1.1rem;">Step 1: Buy Country ETF (Easiest)</h4>
+                        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+                            <strong>Examples:</strong> EWA (Australia), EWC (Canada), INDA (India), EWZ (Brazil)<br>
+                            <strong>Expected Return:</strong> 20-40% over 12 months<br>
+                            <strong>Risk:</strong> Moderate (diversified across 50-200 companies)<br>
+                            <strong>Allocation:</strong> 50% of country allocation
+                        </p>
+                    </div>
+
+                    <div style="background: var(--bg-darker); padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--success-color);">
+                        <h4 style="color: var(--success-color); margin: 0 0 10px 0; font-size: 1.1rem;">Step 2: Buy Top Companies (Higher Reward)</h4>
+                        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+                            <strong>Example (Australia):</strong> BHP, RIO, FMG, CBA, WDS<br>
+                            <strong>Expected Return:</strong> 30-60% over 12 months<br>
+                            <strong>Risk:</strong> High (sector concentration)<br>
+                            <strong>Allocation:</strong> 30% of country allocation (split across 5-7 stocks)
+                        </p>
+                    </div>
+
+                    <div style="background: var(--bg-darker); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success-color);">
+                        <h4 style="color: var(--success-color); margin: 0 0 10px 0; font-size: 1.1rem;">Step 3: Buy Currency (Advanced)</h4>
+                        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+                            <strong>Examples:</strong> AUD/USD (FXA), CAD/USD (FXC), INR/USD<br>
+                            <strong>Expected Return:</strong> 10-25% over 6-12 months<br>
+                            <strong>Risk:</strong> Low-Moderate (less volatile than stocks)<br>
+                            <strong>Allocation:</strong> 20% of country allocation
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Money Flowing OUT (SELL) -->
+            <div class="chart-card">
+                <h3 class="chart-title" style="color: var(--danger-color);">❌ CAPITAL OUTFLOWS (SELL Signal)</h3>
+                <div style="line-height: 1.8;">
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        When money flows OUT of a country, protect your capital:
+                    </p>
+
+                    <div style="background: var(--bg-darker); padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--danger-color);">
+                        <h4 style="color: var(--danger-color); margin: 0 0 10px 0; font-size: 1.1rem;">Conservative Approach (Recommended)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.95rem; color: var(--text-secondary);">
+                            <li><strong>SELL</strong> if you own: Exit country ETF immediately</li>
+                            <li><strong>AVOID</strong> new investments in that country</li>
+                            <li><strong>WAIT</strong> until capital flow reverses (score >70)</li>
+                        </ul>
+                        <p style="margin: 10px 0 0 0; font-size: 0.95rem; color: var(--text-secondary);">
+                            <strong>Expected Result:</strong> Avoid 20-40% losses
+                        </p>
+                    </div>
+
+                    <div style="background: var(--bg-darker); padding: 20px; border-radius: 8px; border-left: 4px solid var(--danger-color);">
+                        <h4 style="color: var(--danger-color); margin: 0 0 10px 0; font-size: 1.1rem;">Aggressive Approach (Advanced Only)</h4>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.95rem; color: var(--text-secondary);">
+                            <li><strong>Put Options:</strong> Buy EWJ puts (Japan), 6-12 month expiry</li>
+                            <li><strong>Inverse ETFs:</strong> EWV (-1x Japan), EEV (-1x EM)</li>
+                        </ul>
+                        <p style="margin: 10px 0 0 0; font-size: 0.95rem; color: var(--text-secondary);">
+                            <strong>Expected Return:</strong> 50-100%+ if market falls 20-30%<br>
+                            <strong>Risk:</strong> VERY HIGH - can lose 100% of investment
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capital Flow Trading Rules -->
+        <div class="chart-card" style="margin-bottom: 40px;">
+            <h3 class="chart-title">📋 Capital Flow Trading Rules</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+                <div>
+                    <h4 style="color: var(--success-color); margin: 0 0 15px 0;">✅ Entry Rules</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="padding: 10px; margin-bottom: 8px; background: rgba(0, 255, 136, 0.05); border-left: 3px solid var(--success-color); border-radius: 4px;">
+                            Wait for capital flow score >70/100
+                        </li>
+                        <li style="padding: 10px; margin-bottom: 8px; background: rgba(0, 255, 136, 0.05); border-left: 3px solid var(--success-color); border-radius: 4px;">
+                            Confirm with multiple indicators (ETF flows, currency)
+                        </li>
+                        <li style="padding: 10px; background: rgba(0, 255, 136, 0.05); border-left: 3px solid var(--success-color); border-radius: 4px;">
+                            Start small (2-3%), scale in if confirmed
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 style="color: var(--danger-color); margin: 0 0 15px 0;">❌ Exit Rules</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="padding: 10px; margin-bottom: 8px; background: rgba(255, 82, 82, 0.05); border-left: 3px solid var(--danger-color); border-radius: 4px;">
+                            Exit when score drops below 50
+                        </li>
+                        <li style="padding: 10px; margin-bottom: 8px; background: rgba(255, 82, 82, 0.05); border-left: 3px solid var(--danger-color); border-radius: 4px;">
+                            Exit if no improvement after 3 months
+                        </li>
+                        <li style="padding: 10px; background: rgba(255, 82, 82, 0.05); border-left: 3px solid var(--danger-color); border-radius: 4px;">
+                            Exit immediately if regime changes (recession)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="chart-card" style="background: linear-gradient(135deg, var(--bg-card), var(--bg-darker)); border: 2px solid var(--accent-color);">
+            <h3 class="chart-title">🏆 THE 10 COMMANDMENTS OF CAPITAL MARKETS</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">1.</strong> Follow the smart money - Capital flows predict 6-18 months ahead
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">2.</strong> Know your regime - Different environments need different strategies
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">3.</strong> Think globally - Opportunities exist worldwide
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">4.</strong> Respect the score - Don't fight the composite indicators
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">5.</strong> Position size matters - Even great ideas fail with improper sizing
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">6.</strong> Cut losers quickly - 15-20% stop-loss, no exceptions
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">7.</strong> Let winners run - Trail your stops, don't exit too early
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">8.</strong> Diversify across regimes - Don't bet everything on one outcome
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">9.</strong> Respect central banks - Fed policy determines 70% of returns
+                </div>
+                <div style="background: var(--bg-darker); padding: 15px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">10.</strong> Be contrarian at extremes - Buy panic (<30), sell euphoria (>95)
+                </div>
+            </div>
+        </div>
+
+        </div>
+        <!-- END TAB 3: Market Intelligence -->
+
+        <!-- TAB 4: Symbol Analysis with Buy/Sell/Hold Recommendations -->
+        <div id="symbol-analysis-tab" class="tab-content">
+            <div class="header" style="margin-top: 0;">
+                <div class="header-content">
+                    <div class="header-icon">💡</div>
+                    <div class="header-text">
+                        <h1>SYMBOL RECOMMENDATIONS</h1>
+                        <p>AI-Powered Buy/Sell/Hold Analysis for 50+ Top Symbols</p>
+                        <div class="header-subtitle">
+                            <span style="color: var(--text-secondary);">
+                                Based on real-time composite score and market regime analysis
+                            </span>
+                        </div>
+                    </div>
+                    <div class="header-spacer"></div>
+                </div>
+            </div>
+
+            <!-- Information Card -->
+            <div class="metric-card" style="margin-bottom: 30px;">
+                <h3 class="metric-title">📊 How Recommendations Work</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div style="background: var(--bg-darker); padding: 15px; border-radius: 8px; border-left: 3px solid var(--success-color);">
+                        <strong style="color: var(--success-color);">📈 BUY</strong>
+                        <div style="margin-top: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                            Positive outlook based on market regime, sector strength, and growth indicators
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-darker); padding: 15px; border-radius: 8px; border-left: 3px solid var(--warning-color);">
+                        <strong style="color: var(--warning-color);">⏸️ HOLD</strong>
+                        <div style="margin-top: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                            Neutral positioning - wait for clearer signals or maintain existing positions
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-darker); padding: 15px; border-radius: 8px; border-left: 3px solid var(--danger-color);">
+                        <strong style="color: var(--danger-color);">📉 SELL</strong>
+                        <div style="margin-top: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                            Risk-off signal - sector weakness, unfavorable regime, or downside risk
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: var(--bg-darker); border-radius: 6px; font-size: 0.9rem; color: var(--text-muted);">
+                    💡 <strong>Tip:</strong> Click column headers to sort. Click any row to view detailed symbol research.
+                    Recommendations auto-update every 5 minutes based on real-time FRED economic data.
+                </div>
+            </div>
+
+            <!-- Recommendations Table -->
+            <div class="table-container">
+                <table class="symbol-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">#</th>
+                            <th class="sortable-header" data-column="symbol" style="width: 120px;">Symbol</th>
+                            <th style="min-width: 200px;">Company Name</th>
+                            <th class="sortable-header" data-column="type" style="width: 100px;">Type</th>
+                            <th class="sortable-header" data-column="sector" style="width: 140px;">Sector</th>
+                            <th class="sortable-header" data-column="recommendation" style="width: 120px;">Action</th>
+                            <th class="sortable-header" data-column="confidence" style="width: 120px;">Confidence</th>
+                            <th style="width: 120px;">Risk Level</th>
+                            <th style="width: 120px;">Target Return</th>
+                            <th style="min-width: 250px;">Rationale</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recommendations-table-body">
+                        <tr>
+                            <td colspan="10" style="text-align: center; padding: 60px; color: var(--text-muted);">
+                                <div style="font-size: 3rem; margin-bottom: 20px;">⏳</div>
+                                <div style="font-size: 1.2rem; margin-bottom: 10px;">Generating AI recommendations...</div>
+                                <div style="font-size: 0.9rem;">Analyzing market regime and 50+ symbols</div>
+                                <div style="margin-top: 20px;">
+                                    <span class="loading"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Legend and Stats -->
+            <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: var(--bg-card); padding: 20px; border-radius: 8px; border-left: 3px solid var(--info-color);">
+                    <strong style="color: var(--info-color);">ℹ️ Data Sources:</strong>
+                    <div style="margin-top: 10px; font-size: 0.9rem; line-height: 1.8;">
+                        • <strong>FRED API:</strong> GDP, Unemployment, CPI, Fed Funds<br>
+                        • <strong>Market Data:</strong> VIX, Yield Curve, Liquidity<br>
+                        • <strong>Database:</strong> 12,444+ global symbols<br>
+                        • <strong>Composite Score:</strong> Real-time 0-100 calculation
+                    </div>
+                </div>
+                <div style="background: var(--bg-card); padding: 20px; border-radius: 8px; border-left: 3px solid var(--accent-color);">
+                    <strong style="color: var(--accent-color);">⚠️ Disclaimer:</strong>
+                    <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.6; color: var(--text-muted);">
+                        These are AI-generated recommendations for educational purposes only.
+                        Not financial advice. Past performance does not guarantee future results.
+                        Always conduct your own research and consult a financial advisor before making investment decisions.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END TAB 4: Symbol Analysis -->
+
+    </div>
+
+    <!-- Tab Switching Script -->
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            const selectedTab = document.getElementById(tabName + '-tab');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            // Highlight selected button
+            const selectedButton = event.target;
+            if (selectedButton && selectedButton.classList.contains('tab-button')) {
+                selectedButton.classList.add('active');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+
+    <script src="js/data_validation_middleware.js"></script>
+    <!-- Section Visibility Manager (Hide/Show sections with persistence) -->
+    <script src="js/section_visibility_manager.js"></script>
+    <!-- Use the fixed version with local API -->
+    <script src="js/global_capital_flow_fixed.js"></script>
+    <!-- Global Symbols Database Loader (PostgreSQL) -->
+    <script src="js/global_symbols_database_loader.js"></script>
+    <!-- Composite Score Engine (Real-time FRED API) -->
+    <script src="js/composite_score_engine.js"></script>
+    <!-- Symbol Recommendations Engine (AI Buy/Sell/Hold) -->
+    <script src="js/symbol_recommendations.js"></script>
+</body>
+</html>

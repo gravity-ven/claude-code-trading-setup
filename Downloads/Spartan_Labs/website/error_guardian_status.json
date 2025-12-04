@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-12-01T08:58:22.974478",
+  "total_fixes_applied": 3,
+  "total_errors_detected": 2,
+  "recent_fixes": [
+    "Created missing CSS: intermarket_ticker.css",
+    "Created missing CSS: spartan_theme.css",
+    "Created missing CSS: js/spartan_ticker.css"
+  ],
+  "active_errors": [
+    "34 flashcards need role='button' attribute",
+    "Duplicate ID: ${id} (2 occurrences)"
+  ],
+  "status": "NEEDS_ATTENTION"
+}

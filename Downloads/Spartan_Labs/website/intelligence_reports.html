@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spartan Research Station - Market Intelligence Reports</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #8B0000;
+            --secondary-color: #B22222;
+            --accent-color: #DC143C;
+            --gold-color: #FFD700;
+            --bg-dark: #0a1628;
+            --bg-darker: #050b14;
+            --bg-card: #12203a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c8;
+            --border-color: #1e3a5f;
+            --success-color: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--gold-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            color: var(--gold-color);
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 30px;
+            background: rgba(220, 20, 60, 0.15);
+            color: var(--accent-color);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid var(--accent-color);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .intelligence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .intelligence-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 35px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intelligence-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--gold-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .intelligence-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(220, 20, 60, 0.3);
+            border-color: var(--accent-color);
+        }
+
+        .intelligence-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--gold-color);
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .card-features li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-features li:before {
+            content: '✓';
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .card-status {
+            display: inline-block;
+            padding: 6px 15px;
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--success-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .coming-soon {
+            background: rgba(255, 149, 0, 0.15);
+            color: #ff9500;
+        }
+
+        @media (max-width: 768px) {
+            .intelligence-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Main Hub</a>
+
+        <div class="header">
+            <h1>⚔️ Market Intelligence Reports</h1>
+            <p>Deep-Dive Research & Strategic Analysis Across All Asset Classes</p>
+        </div>
+
+        <div class="intelligence-grid">
+            <!-- Gold Intelligence -->
+            <div class="intelligence-card" onclick="window.location.href='gold_intelligence.html'">
+                <span class="card-icon">🥇</span>
+                <h2 class="card-title">Gold Intelligence</h2>
+                <p class="card-description">
+                    Comprehensive gold market analysis with real-time pricing, historical trends,
+                    correlation matrices, and strategic positioning insights.
+                </p>
+                <ul class="card-features">
+                    <li>Real-time gold prices (XAU/USD)</li>
+                    <li>Multi-timeframe technical analysis</li>
+                    <li>Gold/Dollar correlation tracking</li>
+                    <li>Central bank gold reserves</li>
+                    <li>Mining sector analysis</li>
+                </ul>
+                <span class="card-status">✅ LIVE</span>
+            </div>
+
+            <!-- Bitcoin Intelligence -->
+            <div class="intelligence-card" onclick="window.location.href='bitcoin_intelligence.html'">
+                <span class="card-icon">₿</span>
+                <h2 class="card-title">Bitcoin Intelligence</h2>
+                <p class="card-description">
+                    Complete Bitcoin ecosystem analysis including on-chain metrics, whale activity,
+                    exchange flows, and institutional adoption tracking.
+                </p>
+                <ul class="card-features">
+                    <li>Real-time BTC/USD pricing</li>
+                    <li>On-chain metrics (active addresses, hash rate)</li>
+                    <li>Exchange inflows/outflows</li>
+                    <li>Whale wallet monitoring</li>
+                    <li>Institutional holdings tracker</li>
+                </ul>
+                <span class="card-status">✅ LIVE</span>
+            </div>
+
+            <!-- Oil Intelligence -->
+            <div class="intelligence-card" onclick="window.location.href='oil_intelligence.html'">
+                <span class="card-icon">🛢️</span>
+                <h2 class="card-title">Oil Intelligence</h2>
+                <p class="card-description">
+                    Crude oil market intelligence covering WTI/Brent spreads, inventory levels,
+                    OPEC+ decisions, and global supply-demand dynamics.
+                </p>
+                <ul class="card-features">
+                    <li>WTI & Brent crude prices</li>
+                    <li>WTI/Brent spread analysis</li>
+                    <li>EIA inventory reports</li>
+                    <li>OPEC+ production tracking</li>
+                    <li>Refinery utilization rates</li>
+                </ul>
+                <span class="card-status">✅ LIVE</span>
+            </div>
+
+            <!-- Bond Intelligence -->
+            <div class="intelligence-card" onclick="window.location.href='bond_intelligence.html'">
+                <span class="card-icon">📈</span>
+                <h2 class="card-title">Bond Intelligence</h2>
+                <p class="card-description">
+                    U.S. Treasury market analysis with yield curve monitoring, credit spreads,
+                    and Federal Reserve policy impact assessment.
+                </p>
+                <ul class="card-features">
+                    <li>Yield curve (2Y, 10Y, 30Y)</li>
+                    <li>Yield curve inversions</li>
+                    <li>Credit spreads (IG, HY)</li>
+                    <li>Fed funds rate tracking</li>
+                    <li>Treasury auction results</li>
+                </ul>
+                <span class="card-status">✅ LIVE</span>
+            </div>
+
+            <!-- Copper Intelligence -->
+            <div class="intelligence-card" onclick="window.location.href='copper_intelligence.html'">
+                <span class="card-icon">🔶</span>
+                <h2 class="card-title">Copper Intelligence</h2>
+                <p class="card-description">
+                    Dr. Copper economic barometer with global demand indicators, mining supply,
+                    China consumption, and industrial production correlations.
+                </p>
+                <ul class="card-features">
+                    <li>Real-time copper futures (HG)</li>
+                    <li>LME warehouse inventories</li>
+                    <li>China PMI correlation</li>
+                    <li>Global production/consumption</li>
+                    <li>Economic recession signals</li>
+                </ul>
+                <span class="card-status">✅ LIVE</span>
+            </div>
+
+            <!-- Silver Intelligence (Bonus) -->
+            <div class="intelligence-card" onclick="window.location.href='silver_intelligence.html'">
+                <span class="card-icon">🥈</span>
+                <h2 class="card-title">Silver Intelligence</h2>
+                <p class="card-description">
+                    Silver market analysis covering industrial demand, gold/silver ratio,
+                    mining supply, and dual monetary/industrial value tracking.
+                </p>
+                <ul class="card-features">
+                    <li>Real-time silver prices (XAG/USD)</li>
+                    <li>Gold/Silver ratio analysis</li>
+                    <li>Industrial vs. monetary demand</li>
+                    <li>Solar panel demand tracking</li>
+                    <li>Mining supply dynamics</li>
+                </ul>
+                <span class="card-status coming-soon">🚧 COMING SOON</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

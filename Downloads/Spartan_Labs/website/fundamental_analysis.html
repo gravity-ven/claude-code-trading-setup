@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Cache Prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="max-age=0">
+    <meta name="last-modified" content="2025-11-18 00:00:00">
+    <meta name="build-version" content="v1.0-FUNDAMENTAL-ANALYSIS">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spartan Research Station - Fundamental Analysis</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            /* Spartan Color Palette */
+            --primary-color: #8B0000;        /* Spartan Red */
+            --secondary-color: #B22222;      /* Spartan Firebrick */
+            --accent-color: #DC143C;         /* Spartan Crimson */
+            --accent-2-color: #FF5252;       /* Bright Red */
+            --accent-3-color: #FF6B6B;       /* Light Red */
+            --bg-dark: #0a1628;              /* Main Background */
+            --bg-darker: #050b14;            /* Darker Background */
+            --bg-card: #12203a;              /* Card Background */
+            --text-primary: #ffffff;         /* White Text */
+            --text-secondary: #b0b8c8;       /* Gray Text */
+            --text-muted: #7a8a9a;           /* Muted Gray */
+            --border-color: #1e3a5f;         /* Border Color */
+            --success-color: #00ff88;        /* Success Green */
+            --warning-color: #ff9500;        /* Warning Orange */
+            --danger-color: #FF5252;         /* Danger Red */
+            --info-color: #0096FF;           /* Info Blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        /* Spartan Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-section h2 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+
+        .search-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-section input {
+            flex: 1;
+            padding: 15px 20px;
+            background: var(--bg-darker);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .search-section input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+        }
+
+        .search-section button {
+            padding: 15px 40px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .search-section button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220, 20, 60, 0.4);
+        }
+
+        .search-section button:active {
+            transform: translateY(0);
+        }
+
+        /* Section Container */
+        .section {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin: 20px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Company Overview */
+        .company-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .overview-item {
+            background: var(--bg-darker);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .overview-item label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .overview-item .value {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .company-description {
+            background: var(--bg-darker);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* Key Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: var(--bg-darker);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.2);
+        }
+
+        .metric-card h3 {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .metric-card .value {
+            color: var(--accent-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .metric-card .trend {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .metric-card .trend.positive {
+            color: var(--success-color);
+        }
+
+        .metric-card .trend.negative {
+            color: var(--danger-color);
+        }
+
+        /* Financial Tables */
+        .financial-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .financial-table table {
+            width: 100%;
+            min-width: 800px;
+        }
+
+        .financial-table th {
+            background: var(--bg-darker);
+            color: var(--accent-color);
+            padding: 15px;
+            text-align: right;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .financial-table th:first-child {
+            text-align: left;
+        }
+
+        .financial-table td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .financial-table td:first-child {
+            text-align: left;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .financial-table tr:hover {
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+        .financial-table .total-row td {
+            font-weight: 700;
+            color: var(--accent-color);
+            border-top: 2px solid var(--accent-color);
+            padding-top: 15px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+            background: var(--bg-darker);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* Ratio Analysis Grid */
+        .ratios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .ratio-category {
+            background: var(--bg-darker);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .ratio-category h3 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin: 0 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .ratio-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ratio-item:last-child {
+            border-bottom: none;
+        }
+
+        .ratio-item label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .ratio-item .ratio-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        /* Health Score */
+        .health-score-container {
+            text-align: center;
+            padding: 40px;
+            background: var(--bg-darker);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--accent-color) 0deg,
+                var(--accent-color) var(--score-deg),
+                var(--border-color) var(--score-deg),
+                var(--border-color) 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            width: 170px;
+            height: 170px;
+            background: var(--bg-darker);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .score-label {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .score-component {
+            background: rgba(220, 20, 60, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .score-component h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .score-component .component-score {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .score-component .component-max {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Growth Stats */
+        .growth-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .growth-item {
+            background: var(--bg-darker);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .growth-item label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .growth-item .growth-value {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .growth-item .growth-value.positive {
+            color: var(--success-color);
+        }
+
+        .growth-item .growth-value.negative {
+            color: var(--danger-color);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(255, 82, 82, 0.1);
+            border: 2px solid var(--danger-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            color: var(--danger-color);
+            text-align: center;
+        }
+
+        .error-message h3 {
+            color: var(--danger-color);
+            margin-bottom: 10px;
+        }
+
+        /* Hidden Class */
+        .hidden {
+            display: none;
+        }
+
+        /* Valuation Models */
+        .valuation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .valuation-card {
+            background: var(--bg-darker);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .valuation-card h3 {
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .valuation-result {
+            text-align: center;
+            padding: 20px;
+            background: rgba(220, 20, 60, 0.05);
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .valuation-result .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .valuation-result .value {
+            color: var(--accent-color);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .valuation-assumptions {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Peer Comparison */
+        .peer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .peer-card {
+            background: var(--bg-darker);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .peer-card .peer-symbol {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .peer-metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .peer-metric label {
+            color: var(--text-muted);
+        }
+
+        .peer-metric .value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+        .tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .search-input-group {
+                flex-direction: column;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>💼 FUNDAMENTAL ANALYSIS</h1>
+            <p>Company Financials & Valuation Metrics</p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">Real-time data powered by Yahoo Finance API</p>
+            <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <h2>🔍 Company Search</h2>
+            <div class="search-input-group">
+                <input type="text" id="symbolInput" placeholder="Enter Symbol (e.g., AAPL, MSFT, GOOGL)" autocomplete="off">
+                <button onclick="analyzeCompany()">Analyze Company</button>
+            </div>
+            <div style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">
+                <strong>Popular:</strong>
+                <span style="color: var(--accent-color); cursor: pointer; margin: 0 5px;" onclick="loadSymbol('AAPL')">AAPL</span> |
+                <span style="color: var(--accent-color); cursor: pointer; margin: 0 5px;" onclick="loadSymbol('MSFT')">MSFT</span> |
+                <span style="color: var(--accent-color); cursor: pointer; margin: 0 5px;" onclick="loadSymbol('GOOGL')">GOOGL</span> |
+                <span style="color: var(--accent-color); cursor: pointer; margin: 0 5px;" onclick="loadSymbol('TSLA')">TSLA</span> |
+                <span style="color: var(--accent-color); cursor: pointer; margin: 0 5px;" onclick="loadSymbol('NVDA')">NVDA</span> |
+                <span style="color: var(--accent-color); cursor: pointer; margin: 0 5px;" onclick="loadSymbol('JPM')">JPM</span>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <div id="mainContent" class="hidden">
+
+            <!-- Company Overview Section -->
+            <div class="section">
+                <h2>🏢 Company Overview</h2>
+                <div class="company-overview">
+                    <div class="overview-item">
+                        <label>Company Name</label>
+                        <div class="value" id="companyName">-</div>
+                    </div>
+                    <div class="overview-item">
+                        <label>Symbol</label>
+                        <div class="value" id="companySymbol">-</div>
+                    </div>
+                    <div class="overview-item">
+                        <label>Sector</label>
+                        <div class="value" id="companySector">-</div>
+                    </div>
+                    <div class="overview-item">
+                        <label>Industry</label>
+                        <div class="value" id="companyIndustry">-</div>
+                    </div>
+                    <div class="overview-item">
+                        <label>Market Cap</label>
+                        <div class="value" id="marketCap">-</div>
+                    </div>
+                    <div class="overview-item">
+                        <label>Current Price</label>
+                        <div class="value" id="currentPrice">-</div>
+                    </div>
+                    <div class="overview-item">
+                        <label>52-Week Range</label>
+                        <div class="value" id="weekRange">-</div>
+                    </div>
+                    <div class="overview-item">
+                        <label>Average Volume</label>
+                        <div class="value" id="avgVolume">-</div>
+                    </div>
+                </div>
+                <div class="company-description" id="companyDescription">
+                    Loading company description...
+                </div>
+            </div>
+
+            <!-- Key Metrics Dashboard -->
+            <div class="section">
+                <h2>📊 Key Metrics Dashboard</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>P/E Ratio</h3>
+                        <div class="value" id="peRatio">-</div>
+                        <div class="trend" id="peTrend">vs Industry</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>P/B Ratio</h3>
+                        <div class="value" id="pbRatio">-</div>
+                        <div class="trend" id="pbTrend">Price to Book</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>PEG Ratio</h3>
+                        <div class="value" id="pegRatio">-</div>
+                        <div class="trend" id="pegTrend">Growth Adjusted</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Dividend Yield</h3>
+                        <div class="value" id="divYield">-</div>
+                        <div class="trend" id="divTrend">Annual Yield</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>ROE</h3>
+                        <div class="value" id="roeMetric">-</div>
+                        <div class="trend" id="roeTrend">Return on Equity</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>ROA</h3>
+                        <div class="value" id="roaMetric">-</div>
+                        <div class="trend" id="roaTrend">Return on Assets</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Profit Margin</h3>
+                        <div class="value" id="profitMarginMetric">-</div>
+                        <div class="trend" id="profitMarginTrend">Net Margin</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Debt/Equity</h3>
+                        <div class="value" id="debtEquityMetric">-</div>
+                        <div class="trend" id="debtEquityTrend">Leverage Ratio</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>EPS (TTM)</h3>
+                        <div class="value" id="epsMetric">-</div>
+                        <div class="trend" id="epsTrend">Earnings per Share</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Beta</h3>
+                        <div class="value" id="betaMetric">-</div>
+                        <div class="trend" id="betaTrend">Market Volatility</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Statements Tabs -->
+            <div class="section">
+                <h2>📋 Financial Statements</h2>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab(event, 'income')">Income Statement</button>
+                    <button class="tab" onclick="switchTab(event, 'balance')">Balance Sheet</button>
+                    <button class="tab" onclick="switchTab(event, 'cashflow')">Cash Flow</button>
+                </div>
+
+                <!-- Income Statement Tab -->
+                <div id="income" class="tab-content active">
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="financial-table">
+                        <table id="incomeTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th id="incomeYear1">Year 1</th>
+                                    <th id="incomeYear2">Year 2</th>
+                                    <th id="incomeYear3">Year 3</th>
+                                    <th id="incomeYear4">Year 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incomeTableBody">
+                                <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">Loading data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Balance Sheet Tab -->
+                <div id="balance" class="tab-content">
+                    <div class="chart-container">
+                        <canvas id="assetsChart"></canvas>
+                    </div>
+                    <div class="financial-table">
+                        <table id="balanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th id="balanceYear1">Year 1</th>
+                                    <th id="balanceYear2">Year 2</th>
+                                    <th id="balanceYear3">Year 3</th>
+                                    <th id="balanceYear4">Year 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="balanceTableBody">
+                                <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">Loading data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Cash Flow Tab -->
+                <div id="cashflow" class="tab-content">
+                    <div class="chart-container">
+                        <canvas id="cashFlowChart"></canvas>
+                    </div>
+                    <div class="financial-table">
+                        <table id="cashFlowTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th id="cashFlowYear1">Year 1</th>
+                                    <th id="cashFlowYear2">Year 2</th>
+                                    <th id="cashFlowYear3">Year 3</th>
+                                    <th id="cashFlowYear4">Year 4</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cashFlowTableBody">
+                                <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">Loading data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ratio Analysis -->
+            <div class="section">
+                <h2>📐 Ratio Analysis</h2>
+                <div class="ratios-grid">
+                    <div class="ratio-category">
+                        <h3>Profitability Ratios</h3>
+                        <div class="ratio-item">
+                            <label>Gross Margin</label>
+                            <span class="ratio-value" id="grossMargin">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Operating Margin</label>
+                            <span class="ratio-value" id="operatingMargin">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Net Profit Margin</label>
+                            <span class="ratio-value" id="netMargin">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Return on Assets (ROA)</label>
+                            <span class="ratio-value" id="roaRatio">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Return on Equity (ROE)</label>
+                            <span class="ratio-value" id="roeRatio">-</span>
+                        </div>
+                    </div>
+
+                    <div class="ratio-category">
+                        <h3>Liquidity Ratios</h3>
+                        <div class="ratio-item">
+                            <label>Current Ratio</label>
+                            <span class="ratio-value" id="currentRatio">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Quick Ratio</label>
+                            <span class="ratio-value" id="quickRatio">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Cash Ratio</label>
+                            <span class="ratio-value" id="cashRatio">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Working Capital</label>
+                            <span class="ratio-value" id="workingCapital">-</span>
+                        </div>
+                    </div>
+
+                    <div class="ratio-category">
+                        <h3>Solvency Ratios</h3>
+                        <div class="ratio-item">
+                            <label>Debt to Equity</label>
+                            <span class="ratio-value" id="debtToEquity">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Debt to Assets</label>
+                            <span class="ratio-value" id="debtToAssets">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Interest Coverage</label>
+                            <span class="ratio-value" id="interestCoverage">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Equity Multiplier</label>
+                            <span class="ratio-value" id="equityMultiplier">-</span>
+                        </div>
+                    </div>
+
+                    <div class="ratio-category">
+                        <h3>Efficiency Ratios</h3>
+                        <div class="ratio-item">
+                            <label>Asset Turnover</label>
+                            <span class="ratio-value" id="assetTurnover">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Inventory Turnover</label>
+                            <span class="ratio-value" id="inventoryTurnover">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Receivables Turnover</label>
+                            <span class="ratio-value" id="receivablesTurnover">-</span>
+                        </div>
+                        <div class="ratio-item">
+                            <label>Days Sales Outstanding</label>
+                            <span class="ratio-value" id="dso">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Growth Analysis -->
+            <div class="section">
+                <h2>📈 Growth Analysis</h2>
+                <div class="growth-stats">
+                    <div class="growth-item">
+                        <label>Revenue Growth (YoY)</label>
+                        <div class="growth-value" id="revenueGrowth">-</div>
+                    </div>
+                    <div class="growth-item">
+                        <label>Earnings Growth (YoY)</label>
+                        <div class="growth-value" id="earningsGrowth">-</div>
+                    </div>
+                    <div class="growth-item">
+                        <label>5-Year Revenue CAGR</label>
+                        <div class="growth-value" id="revenueCAGR">-</div>
+                    </div>
+                    <div class="growth-item">
+                        <label>5-Year Earnings CAGR</label>
+                        <div class="growth-value" id="earningsCAGR">-</div>
+                    </div>
+                    <div class="growth-item">
+                        <label>Book Value Growth</label>
+                        <div class="growth-value" id="bookValueGrowth">-</div>
+                    </div>
+                    <div class="growth-item">
+                        <label>Free Cash Flow Growth</label>
+                        <div class="growth-value" id="fcfGrowth">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Valuation Models -->
+            <div class="section">
+                <h2>💰 Valuation Models</h2>
+                <div class="valuation-grid">
+                    <div class="valuation-card">
+                        <h3>DCF Valuation</h3>
+                        <div class="valuation-result">
+                            <div class="label">Intrinsic Value per Share</div>
+                            <div class="value" id="dcfValue">-</div>
+                        </div>
+                        <div class="valuation-result">
+                            <div class="label">Current Price</div>
+                            <div class="value" id="dcfCurrentPrice">-</div>
+                        </div>
+                        <div class="valuation-result">
+                            <div class="label">Upside/Downside</div>
+                            <div class="value" id="dcfUpside">-</div>
+                        </div>
+                        <div class="valuation-assumptions">
+                            <strong>Assumptions:</strong><br>
+                            • Discount Rate: <span id="dcfDiscount">10%</span><br>
+                            • Growth Rate: <span id="dcfGrowth">3%</span><br>
+                            • Based on Free Cash Flow
+                        </div>
+                    </div>
+
+                    <div class="valuation-card">
+                        <h3>P/E Relative Valuation</h3>
+                        <div class="valuation-result">
+                            <div class="label">Fair Value (Industry P/E)</div>
+                            <div class="value" id="peValue">-</div>
+                        </div>
+                        <div class="valuation-result">
+                            <div class="label">Current P/E</div>
+                            <div class="value" id="peCurrentRatio">-</div>
+                        </div>
+                        <div class="valuation-result">
+                            <div class="label">Industry Average P/E</div>
+                            <div class="value" id="peIndustryRatio">-</div>
+                        </div>
+                        <div class="valuation-assumptions">
+                            <strong>Method:</strong><br>
+                            • Fair Value = EPS × Industry Avg P/E<br>
+                            • Compares to sector peers<br>
+                            • Relative valuation metric
+                        </div>
+                    </div>
+
+                    <div class="valuation-card">
+                        <h3>Graham Number</h3>
+                        <div class="valuation-result">
+                            <div class="label">Graham Intrinsic Value</div>
+                            <div class="value" id="grahamValue">-</div>
+                        </div>
+                        <div class="valuation-result">
+                            <div class="label">Margin of Safety</div>
+                            <div class="value" id="grahamMargin">-</div>
+                        </div>
+                        <div class="valuation-assumptions">
+                            <strong>Formula:</strong><br>
+                            • √(22.5 × EPS × Book Value)<br>
+                            • Benjamin Graham's method<br>
+                            • Conservative valuation
+                        </div>
+                    </div>
+
+                    <div class="valuation-card">
+                        <h3>Price to Sales Valuation</h3>
+                        <div class="valuation-result">
+                            <div class="label">Fair Value (P/S Method)</div>
+                            <div class="value" id="psValue">-</div>
+                        </div>
+                        <div class="valuation-result">
+                            <div class="label">Current P/S Ratio</div>
+                            <div class="value" id="psCurrentRatio">-</div>
+                        </div>
+                        <div class="valuation-result">
+                            <div class="label">Industry Avg P/S</div>
+                            <div class="value" id="psIndustryRatio">-</div>
+                        </div>
+                        <div class="valuation-assumptions">
+                            <strong>Method:</strong><br>
+                            • Fair Value = Sales per Share × Industry P/S<br>
+                            • Useful for growth companies<br>
+                            • Revenue-based valuation
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Health Score -->
+            <div class="section">
+                <h2>💯 Financial Health Score</h2>
+                <div class="health-score-container">
+                    <div class="score-circle" id="scoreCircle">
+                        <div class="score-display" id="healthScore">-</div>
+                    </div>
+                    <div class="score-label">OVERALL FINANCIAL HEALTH</div>
+
+                    <div class="score-breakdown">
+                        <div class="score-component">
+                            <h4>Profitability</h4>
+                            <span class="component-score" id="profitScore">-</span>
+                            <span class="component-max"> / 25</span>
+                        </div>
+                        <div class="score-component">
+                            <h4>Growth</h4>
+                            <span class="component-score" id="growthScore">-</span>
+                            <span class="component-max"> / 25</span>
+                        </div>
+                        <div class="score-component">
+                            <h4>Financial Strength</h4>
+                            <span class="component-score" id="strengthScore">-</span>
+                            <span class="component-max"> / 25</span>
+                        </div>
+                        <div class="score-component">
+                            <h4>Valuation</h4>
+                            <span class="component-score" id="valuationScore">-</span>
+                            <span class="component-max"> / 25</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="hidden">
+            <div class="section">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>Analyzing Company Data...</h3>
+                    <p>Fetching financial statements and calculating metrics</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Container -->
+        <div id="errorContainer" class="hidden">
+            <div class="section">
+                <div class="error-message">
+                    <h3>⚠ Error Loading Data</h3>
+                    <p id="errorMessage">Unable to fetch company data. Please check the symbol and try again.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Global chart instances
+        let revenueChart = null;
+        let assetsChart = null;
+        let cashFlowChart = null;
+
+        // Chart.js default configuration
+        Chart.defaults.color = '#b0b8c8';
+        Chart.defaults.borderColor = '#1e3a5f';
+
+        // Load symbol helper
+        function loadSymbol(symbol) {
+            document.getElementById('symbolInput').value = symbol;
+            analyzeCompany();
+        }
+
+        // Tab switching
+        function switchTab(event, tabName) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let content of tabContents) {
+                content.classList.remove('active');
+            }
+
+            // Remove active class from all tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let tab of tabs) {
+                tab.classList.remove('active');
+            }
+
+            // Show selected tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Format currency
+        function formatCurrency(value) {
+            if (value === null || value === undefined || isNaN(value)) return 'N/A';
+
+            const absValue = Math.abs(value);
+            if (absValue >= 1e12) {
+                return '$' + (value / 1e12).toFixed(2) + 'T';
+            } else if (absValue >= 1e9) {
+                return '$' + (value / 1e9).toFixed(2) + 'B';
+            } else if (absValue >= 1e6) {
+                return '$' + (value / 1e6).toFixed(2) + 'M';
+            } else if (absValue >= 1e3) {
+                return '$' + (value / 1e3).toFixed(2) + 'K';
+            }
+            return '$' + value.toFixed(2);
+        }
+
+        // Format number
+        function formatNumber(value) {
+            if (value === null || value === undefined || isNaN(value)) return 'N/A';
+
+            const absValue = Math.abs(value);
+            if (absValue >= 1e9) {
+                return (value / 1e9).toFixed(2) + 'B';
+            } else if (absValue >= 1e6) {
+                return (value / 1e6).toFixed(2) + 'M';
+            } else if (absValue >= 1e3) {
+                return (value / 1e3).toFixed(2) + 'K';
+            }
+            return value.toFixed(2);
+        }
+
+        // Format percentage
+        function formatPercent(value) {
+            if (value === null || value === undefined || isNaN(value)) return 'N/A';
+            return (value * 100).toFixed(2) + '%';
+        }
+
+        // Format ratio
+        function formatRatio(value) {
+            if (value === null || value === undefined || isNaN(value)) return 'N/A';
+            return value.toFixed(2);
+        }
+
+        // Main analysis function
+        async function analyzeCompany() {
+            const symbol = document.getElementById('symbolInput').value.trim().toUpperCase();
+
+            if (!symbol) {
+                alert('Please enter a stock symbol');
+                return;
+            }
+
+            // Show loading, hide content and errors
+            document.getElementById('loadingIndicator').classList.remove('hidden');
+            document.getElementById('mainContent').classList.add('hidden');
+            document.getElementById('errorContainer').classList.add('hidden');
+
+            try {
+                // Fetch data from Yahoo Finance API
+                const quoteUrl = `http://localhost:5002/api/yahoo/v10/finance/quoteSummary/${symbol}?modules=assetProfile,financialData,defaultKeyStatistics,incomeStatementHistory,balanceSheetHistory,cashflowStatementHistory,earnings`;
+
+                const response = await fetch(quoteUrl);
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data from Yahoo Finance');
+                }
+
+                const data = await response.json();
+
+                if (!data.quoteSummary || !data.quoteSummary.result) {
+                    throw new Error('Invalid symbol or no data available');
+                }
+
+                const result = data.quoteSummary.result[0];
+
+                // Display all sections
+                displayCompanyOverview(result, symbol);
+                displayKeyMetrics(result);
+                displayFinancialStatements(result);
+                displayRatioAnalysis(result);
+                displayGrowthAnalysis(result);
+                displayValuationModels(result);
+                calculateHealthScore(result);
+
+                // Show main content
+                document.getElementById('loadingIndicator').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('loadingIndicator').classList.add('hidden');
+                document.getElementById('errorMessage').textContent = error.message || 'Unable to fetch company data. Please check the symbol and try again.';
+                document.getElementById('errorContainer').classList.remove('hidden');
+            }
+        }
+
+        // Display company overview
+        function displayCompanyOverview(data, symbol) {
+            const profile = data.assetProfile || {};
+            const financialData = data.financialData || {};
+            const keyStats = data.defaultKeyStatistics || {};
+
+            document.getElementById('companyName').textContent = profile.longName || symbol;
+            document.getElementById('companySymbol').textContent = symbol;
+            document.getElementById('companySector').textContent = profile.sector || 'N/A';
+            document.getElementById('companyIndustry').textContent = profile.industry || 'N/A';
+
+            const marketCap = keyStats.marketCap?.raw;
+            document.getElementById('marketCap').textContent = formatCurrency(marketCap);
+
+            const currentPrice = financialData.currentPrice?.raw;
+            document.getElementById('currentPrice').textContent = formatCurrency(currentPrice);
+
+            const fiftyTwoWeekLow = keyStats.fiftyTwoWeekLow?.raw;
+            const fiftyTwoWeekHigh = keyStats.fiftyTwoWeekHigh?.raw;
+            document.getElementById('weekRange').textContent =
+                `${formatCurrency(fiftyTwoWeekLow)} - ${formatCurrency(fiftyTwoWeekHigh)}`;
+
+            const avgVolume = keyStats.averageVolume?.raw;
+            document.getElementById('avgVolume').textContent = formatNumber(avgVolume);
+
+            document.getElementById('companyDescription').textContent =
+                profile.longBusinessSummary || 'No description available.';
+        }
+
+        // Display key metrics
+        function displayKeyMetrics(data) {
+            const keyStats = data.defaultKeyStatistics || {};
+            const financialData = data.financialData || {};
+
+            // P/E Ratio
+            const pe = keyStats.trailingPE?.raw || keyStats.forwardPE?.raw;
+            document.getElementById('peRatio').textContent = formatRatio(pe);
+
+            // P/B Ratio
+            const pb = keyStats.priceToBook?.raw;
+            document.getElementById('pbRatio').textContent = formatRatio(pb);
+
+            // PEG Ratio
+            const peg = keyStats.pegRatio?.raw;
+            document.getElementById('pegRatio').textContent = formatRatio(peg);
+
+            // Dividend Yield
+            const divYield = keyStats.dividendYield?.raw;
+            document.getElementById('divYield').textContent = formatPercent(divYield);
+
+            // ROE
+            const roe = financialData.returnOnEquity?.raw;
+            document.getElementById('roeMetric').textContent = formatPercent(roe);
+
+            // ROA
+            const roa = financialData.returnOnAssets?.raw;
+            document.getElementById('roaMetric').textContent = formatPercent(roa);
+
+            // Profit Margin
+            const profitMargin = financialData.profitMargins?.raw;
+            document.getElementById('profitMarginMetric').textContent = formatPercent(profitMargin);
+
+            // Debt to Equity
+            const debtToEquity = financialData.debtToEquity?.raw;
+            document.getElementById('debtEquityMetric').textContent = formatRatio(debtToEquity);
+
+            // EPS
+            const eps = keyStats.trailingEps?.raw;
+            document.getElementById('epsMetric').textContent = formatCurrency(eps);
+
+            // Beta
+            const beta = keyStats.beta?.raw;
+            document.getElementById('betaMetric').textContent = formatRatio(beta);
+        }
+
+        // Display financial statements
+        function displayFinancialStatements(data) {
+            const incomeHistory = data.incomeStatementHistory?.incomeStatementHistory || [];
+            const balanceHistory = data.balanceSheetHistory?.balanceSheetStatements || [];
+            const cashFlowHistory = data.cashflowStatementHistory?.cashflowStatements || [];
+
+            // Income Statement
+            if (incomeHistory.length > 0) {
+                displayIncomeStatement(incomeHistory);
+            }
+
+            // Balance Sheet
+            if (balanceHistory.length > 0) {
+                displayBalanceSheet(balanceHistory);
+            }
+
+            // Cash Flow Statement
+            if (cashFlowHistory.length > 0) {
+                displayCashFlowStatement(cashFlowHistory);
+            }
+        }
+
+        // Display income statement
+        function displayIncomeStatement(history) {
+            const years = history.slice(0, 4).reverse();
+
+            // Update year headers
+            years.forEach((item, index) => {
+                const date = new Date(item.endDate.raw * 1000);
+                const year = date.getFullYear();
+                document.getElementById(`incomeYear${index + 1}`).textContent = year;
+            });
+
+            // Prepare data for chart
+            const labels = years.map(item => {
+                const date = new Date(item.endDate.raw * 1000);
+                return date.getFullYear().toString();
+            });
+
+            const revenues = years.map(item => item.totalRevenue?.raw || 0);
+            const grossProfits = years.map(item => item.grossProfit?.raw || 0);
+            const netIncomes = years.map(item => item.netIncome?.raw || 0);
+
+            // Create revenue chart
+            const ctx = document.getElementById('revenueChart');
+            if (revenueChart) {
+                revenueChart.destroy();
+            }
+
+            revenueChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Revenue',
+                            data: revenues,
+                            backgroundColor: 'rgba(220, 20, 60, 0.7)',
+                            borderColor: '#DC143C',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Gross Profit',
+                            data: grossProfits,
+                            backgroundColor: 'rgba(0, 255, 136, 0.7)',
+                            borderColor: '#00ff88',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Net Income',
+                            data: netIncomes,
+                            backgroundColor: 'rgba(0, 150, 255, 0.7)',
+                            borderColor: '#0096FF',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Revenue & Profitability Trend',
+                            color: '#DC143C',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Build income statement table
+            const tbody = document.getElementById('incomeTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td>Total Revenue</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalRevenue?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Cost of Revenue</td>
+                    ${years.map(y => `<td>${formatCurrency(y.costOfRevenue?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Gross Profit</td>
+                    ${years.map(y => `<td>${formatCurrency(y.grossProfit?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Operating Expenses</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalOperatingExpenses?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Operating Income</td>
+                    ${years.map(y => `<td>${formatCurrency(y.operatingIncome?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Interest Expense</td>
+                    ${years.map(y => `<td>${formatCurrency(y.interestExpense?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Income Before Tax</td>
+                    ${years.map(y => `<td>${formatCurrency(y.incomeBeforeTax?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Income Tax Expense</td>
+                    ${years.map(y => `<td>${formatCurrency(y.incomeTaxExpense?.raw)}</td>`).join('')}
+                </tr>
+                <tr class="total-row">
+                    <td>Net Income</td>
+                    ${years.map(y => `<td>${formatCurrency(y.netIncome?.raw)}</td>`).join('')}
+                </tr>
+            `;
+        }
+
+        // Display balance sheet
+        function displayBalanceSheet(history) {
+            const years = history.slice(0, 4).reverse();
+
+            // Update year headers
+            years.forEach((item, index) => {
+                const date = new Date(item.endDate.raw * 1000);
+                const year = date.getFullYear();
+                document.getElementById(`balanceYear${index + 1}`).textContent = year;
+            });
+
+            // Prepare data for chart
+            const labels = years.map(item => {
+                const date = new Date(item.endDate.raw * 1000);
+                return date.getFullYear().toString();
+            });
+
+            const totalAssets = years.map(item => item.totalAssets?.raw || 0);
+            const totalLiabilities = years.map(item => item.totalLiab?.raw || 0);
+            const totalEquity = years.map(item => item.totalStockholderEquity?.raw || 0);
+
+            // Create assets chart
+            const ctx = document.getElementById('assetsChart');
+            if (assetsChart) {
+                assetsChart.destroy();
+            }
+
+            assetsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Assets',
+                            data: totalAssets,
+                            borderColor: '#DC143C',
+                            backgroundColor: 'rgba(220, 20, 60, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Total Liabilities',
+                            data: totalLiabilities,
+                            borderColor: '#FF5252',
+                            backgroundColor: 'rgba(255, 82, 82, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Total Equity',
+                            data: totalEquity,
+                            borderColor: '#00ff88',
+                            backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Balance Sheet Trend',
+                            color: '#DC143C',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Build balance sheet table
+            const tbody = document.getElementById('balanceTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td><strong>ASSETS</strong></td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td>Current Assets</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalCurrentAssets?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Cash & Equivalents</td>
+                    ${years.map(y => `<td>${formatCurrency(y.cash?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Net Receivables</td>
+                    ${years.map(y => `<td>${formatCurrency(y.netReceivables?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Inventory</td>
+                    ${years.map(y => `<td>${formatCurrency(y.inventory?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Property, Plant & Equipment</td>
+                    ${years.map(y => `<td>${formatCurrency(y.propertyPlantEquipment?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Goodwill</td>
+                    ${years.map(y => `<td>${formatCurrency(y.goodWill?.raw)}</td>`).join('')}
+                </tr>
+                <tr class="total-row">
+                    <td>Total Assets</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalAssets?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td><strong>LIABILITIES</strong></td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td>Current Liabilities</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalCurrentLiabilities?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Accounts Payable</td>
+                    ${years.map(y => `<td>${formatCurrency(y.accountsPayable?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Short Term Debt</td>
+                    ${years.map(y => `<td>${formatCurrency(y.shortTermDebt?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Long Term Debt</td>
+                    ${years.map(y => `<td>${formatCurrency(y.longTermDebt?.raw)}</td>`).join('')}
+                </tr>
+                <tr class="total-row">
+                    <td>Total Liabilities</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalLiab?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td><strong>EQUITY</strong></td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr class="total-row">
+                    <td>Total Stockholder Equity</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalStockholderEquity?.raw)}</td>`).join('')}
+                </tr>
+            `;
+        }
+
+        // Display cash flow statement
+        function displayCashFlowStatement(history) {
+            const years = history.slice(0, 4).reverse();
+
+            // Update year headers
+            years.forEach((item, index) => {
+                const date = new Date(item.endDate.raw * 1000);
+                const year = date.getFullYear();
+                document.getElementById(`cashFlowYear${index + 1}`).textContent = year;
+            });
+
+            // Prepare data for chart
+            const labels = years.map(item => {
+                const date = new Date(item.endDate.raw * 1000);
+                return date.getFullYear().toString();
+            });
+
+            const operating = years.map(item => item.totalCashFromOperatingActivities?.raw || 0);
+            const investing = years.map(item => item.totalCashflowsFromInvestingActivities?.raw || 0);
+            const financing = years.map(item => item.totalCashFromFinancingActivities?.raw || 0);
+
+            // Create cash flow chart
+            const ctx = document.getElementById('cashFlowChart');
+            if (cashFlowChart) {
+                cashFlowChart.destroy();
+            }
+
+            cashFlowChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Operating Activities',
+                            data: operating,
+                            backgroundColor: 'rgba(0, 255, 136, 0.7)',
+                            borderColor: '#00ff88',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Investing Activities',
+                            data: investing,
+                            backgroundColor: 'rgba(0, 150, 255, 0.7)',
+                            borderColor: '#0096FF',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Financing Activities',
+                            data: financing,
+                            backgroundColor: 'rgba(220, 20, 60, 0.7)',
+                            borderColor: '#DC143C',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Cash Flow Statement Trend',
+                            color: '#DC143C',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Build cash flow table
+            const tbody = document.getElementById('cashFlowTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td><strong>OPERATING ACTIVITIES</strong></td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td>Net Income</td>
+                    ${years.map(y => `<td>${formatCurrency(y.netIncome?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Depreciation</td>
+                    ${years.map(y => `<td>${formatCurrency(y.depreciation?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Change in Working Capital</td>
+                    ${years.map(y => `<td>${formatCurrency(y.changeToNetincome?.raw)}</td>`).join('')}
+                </tr>
+                <tr class="total-row">
+                    <td>Total Cash from Operating Activities</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalCashFromOperatingActivities?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td><strong>INVESTING ACTIVITIES</strong></td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td>Capital Expenditures</td>
+                    ${years.map(y => `<td>${formatCurrency(y.capitalExpenditures?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Investments</td>
+                    ${years.map(y => `<td>${formatCurrency(y.investments?.raw)}</td>`).join('')}
+                </tr>
+                <tr class="total-row">
+                    <td>Total Cash from Investing Activities</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalCashflowsFromInvestingActivities?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td><strong>FINANCING ACTIVITIES</strong></td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td>Dividends Paid</td>
+                    ${years.map(y => `<td>${formatCurrency(y.dividendsPaid?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Stock Repurchase</td>
+                    ${years.map(y => `<td>${formatCurrency(y.repurchaseOfStock?.raw)}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td>Net Borrowings</td>
+                    ${years.map(y => `<td>${formatCurrency(y.netBorrowings?.raw)}</td>`).join('')}
+                </tr>
+                <tr class="total-row">
+                    <td>Total Cash from Financing Activities</td>
+                    ${years.map(y => `<td>${formatCurrency(y.totalCashFromFinancingActivities?.raw)}</td>`).join('')}
+                </tr>
+                <tr class="total-row" style="background: rgba(220, 20, 60, 0.1);">
+                    <td><strong>Net Change in Cash</strong></td>
+                    ${years.map(y => `<td>${formatCurrency(y.changeInCash?.raw)}</td>`).join('')}
+                </tr>
+            `;
+        }
+
+        // Display ratio analysis
+        function displayRatioAnalysis(data) {
+            const financialData = data.financialData || {};
+            const keyStats = data.defaultKeyStatistics || {};
+            const balanceSheet = data.balanceSheetHistory?.balanceSheetStatements?.[0] || {};
+            const incomeStatement = data.incomeStatementHistory?.incomeStatementHistory?.[0] || {};
+
+            // Profitability Ratios
+            const grossMargin = financialData.grossMargins?.raw;
+            document.getElementById('grossMargin').textContent = formatPercent(grossMargin);
+
+            const operatingMargin = financialData.operatingMargins?.raw;
+            document.getElementById('operatingMargin').textContent = formatPercent(operatingMargin);
+
+            const netMargin = financialData.profitMargins?.raw;
+            document.getElementById('netMargin').textContent = formatPercent(netMargin);
+
+            const roa = financialData.returnOnAssets?.raw;
+            document.getElementById('roaRatio').textContent = formatPercent(roa);
+
+            const roe = financialData.returnOnEquity?.raw;
+            document.getElementById('roeRatio').textContent = formatPercent(roe);
+
+            // Liquidity Ratios
+            const currentAssets = balanceSheet.totalCurrentAssets?.raw || 0;
+            const currentLiabilities = balanceSheet.totalCurrentLiabilities?.raw || 0;
+            const cash = balanceSheet.cash?.raw || 0;
+            const inventory = balanceSheet.inventory?.raw || 0;
+
+            const currentRatio = currentLiabilities > 0 ? currentAssets / currentLiabilities : 0;
+            document.getElementById('currentRatio').textContent = formatRatio(currentRatio);
+
+            const quickRatio = currentLiabilities > 0 ? (currentAssets - inventory) / currentLiabilities : 0;
+            document.getElementById('quickRatio').textContent = formatRatio(quickRatio);
+
+            const cashRatio = currentLiabilities > 0 ? cash / currentLiabilities : 0;
+            document.getElementById('cashRatio').textContent = formatRatio(cashRatio);
+
+            const workingCapital = currentAssets - currentLiabilities;
+            document.getElementById('workingCapital').textContent = formatCurrency(workingCapital);
+
+            // Solvency Ratios
+            const debtToEquity = financialData.debtToEquity?.raw / 100 || 0;
+            document.getElementById('debtToEquity').textContent = formatRatio(debtToEquity);
+
+            const totalAssets = balanceSheet.totalAssets?.raw || 0;
+            const totalLiabilities = balanceSheet.totalLiab?.raw || 0;
+            const debtToAssets = totalAssets > 0 ? totalLiabilities / totalAssets : 0;
+            document.getElementById('debtToAssets').textContent = formatRatio(debtToAssets);
+
+            const ebit = incomeStatement.ebit?.raw || 0;
+            const interestExpense = incomeStatement.interestExpense?.raw || 1;
+            const interestCoverage = Math.abs(interestExpense) > 0 ? ebit / Math.abs(interestExpense) : 0;
+            document.getElementById('interestCoverage').textContent = formatRatio(interestCoverage);
+
+            const equity = balanceSheet.totalStockholderEquity?.raw || 1;
+            const equityMultiplier = equity > 0 ? totalAssets / equity : 0;
+            document.getElementById('equityMultiplier').textContent = formatRatio(equityMultiplier);
+
+            // Efficiency Ratios
+            const revenue = incomeStatement.totalRevenue?.raw || 1;
+            const assetTurnover = totalAssets > 0 ? revenue / totalAssets : 0;
+            document.getElementById('assetTurnover').textContent = formatRatio(assetTurnover);
+
+            const cogs = incomeStatement.costOfRevenue?.raw || 1;
+            const inventoryTurnover = inventory > 0 ? cogs / inventory : 0;
+            document.getElementById('inventoryTurnover').textContent = formatRatio(inventoryTurnover);
+
+            const receivables = balanceSheet.netReceivables?.raw || 1;
+            const receivablesTurnover = receivables > 0 ? revenue / receivables : 0;
+            document.getElementById('receivablesTurnover').textContent = formatRatio(receivablesTurnover);
+
+            const dso = receivablesTurnover > 0 ? 365 / receivablesTurnover : 0;
+            document.getElementById('dso').textContent = formatRatio(dso) + ' days';
+        }
+
+        // Display growth analysis
+        function displayGrowthAnalysis(data) {
+            const financialData = data.financialData || {};
+            const earnings = data.earnings?.financialsChart?.yearly || [];
+            const incomeHistory = data.incomeStatementHistory?.incomeStatementHistory || [];
+            const balanceHistory = data.balanceSheetHistory?.balanceSheetStatements || [];
+            const cashFlowHistory = data.cashflowStatementHistory?.cashflowStatements || [];
+
+            // Revenue Growth YoY
+            const revenueGrowth = financialData.revenueGrowth?.raw;
+            const revGrowthElem = document.getElementById('revenueGrowth');
+            revGrowthElem.textContent = formatPercent(revenueGrowth);
+            revGrowthElem.className = 'growth-value ' + (revenueGrowth > 0 ? 'positive' : 'negative');
+
+            // Earnings Growth YoY
+            const earningsGrowth = financialData.earningsGrowth?.raw;
+            const earnGrowthElem = document.getElementById('earningsGrowth');
+            earnGrowthElem.textContent = formatPercent(earningsGrowth);
+            earnGrowthElem.className = 'growth-value ' + (earningsGrowth > 0 ? 'positive' : 'negative');
+
+            // Calculate 5-Year Revenue CAGR
+            if (incomeHistory.length >= 2) {
+                const oldestRevenue = incomeHistory[incomeHistory.length - 1]?.totalRevenue?.raw;
+                const newestRevenue = incomeHistory[0]?.totalRevenue?.raw;
+                const years = incomeHistory.length - 1;
+
+                if (oldestRevenue && newestRevenue && oldestRevenue > 0) {
+                    const revCAGR = Math.pow(newestRevenue / oldestRevenue, 1 / years) - 1;
+                    const revCAGRElem = document.getElementById('revenueCAGR');
+                    revCAGRElem.textContent = formatPercent(revCAGR);
+                    revCAGRElem.className = 'growth-value ' + (revCAGR > 0 ? 'positive' : 'negative');
+                }
+            }
+
+            // Calculate 5-Year Earnings CAGR
+            if (incomeHistory.length >= 2) {
+                const oldestEarnings = incomeHistory[incomeHistory.length - 1]?.netIncome?.raw;
+                const newestEarnings = incomeHistory[0]?.netIncome?.raw;
+                const years = incomeHistory.length - 1;
+
+                if (oldestEarnings && newestEarnings && oldestEarnings > 0) {
+                    const earningsCAGR = Math.pow(newestEarnings / oldestEarnings, 1 / years) - 1;
+                    const epsCAGRElem = document.getElementById('earningsCAGR');
+                    epsCAGRElem.textContent = formatPercent(earningsCAGR);
+                    epsCAGRElem.className = 'growth-value ' + (earningsCAGR > 0 ? 'positive' : 'negative');
+                }
+            }
+
+            // Book Value Growth
+            if (balanceHistory.length >= 2) {
+                const oldestEquity = balanceHistory[balanceHistory.length - 1]?.totalStockholderEquity?.raw;
+                const newestEquity = balanceHistory[0]?.totalStockholderEquity?.raw;
+
+                if (oldestEquity && newestEquity && oldestEquity > 0) {
+                    const bookValueGrowth = (newestEquity - oldestEquity) / oldestEquity;
+                    const bookGrowthElem = document.getElementById('bookValueGrowth');
+                    bookGrowthElem.textContent = formatPercent(bookValueGrowth);
+                    bookGrowthElem.className = 'growth-value ' + (bookValueGrowth > 0 ? 'positive' : 'negative');
+                }
+            }
+
+            // Free Cash Flow Growth
+            if (cashFlowHistory.length >= 2) {
+                const oldestFCF = (cashFlowHistory[cashFlowHistory.length - 1]?.totalCashFromOperatingActivities?.raw || 0) +
+                                  (cashFlowHistory[cashFlowHistory.length - 1]?.capitalExpenditures?.raw || 0);
+                const newestFCF = (cashFlowHistory[0]?.totalCashFromOperatingActivities?.raw || 0) +
+                                  (cashFlowHistory[0]?.capitalExpenditures?.raw || 0);
+
+                if (oldestFCF && newestFCF && oldestFCF > 0) {
+                    const fcfGrowth = (newestFCF - oldestFCF) / Math.abs(oldestFCF);
+                    const fcfGrowthElem = document.getElementById('fcfGrowth');
+                    fcfGrowthElem.textContent = formatPercent(fcfGrowth);
+                    fcfGrowthElem.className = 'growth-value ' + (fcfGrowth > 0 ? 'positive' : 'negative');
+                }
+            }
+        }
+
+        // Display valuation models
+        function displayValuationModels(data) {
+            const financialData = data.financialData || {};
+            const keyStats = data.defaultKeyStatistics || {};
+            const cashFlow = data.cashflowStatementHistory?.cashflowStatements?.[0] || {};
+
+            const currentPrice = financialData.currentPrice?.raw || 0;
+            const eps = keyStats.trailingEps?.raw || 0;
+            const bookValue = keyStats.bookValue?.raw || 0;
+            const sharesOutstanding = keyStats.sharesOutstanding?.raw || 1;
+
+            // DCF Valuation (Simplified)
+            const operatingCashFlow = cashFlow.totalCashFromOperatingActivities?.raw || 0;
+            const capex = cashFlow.capitalExpenditures?.raw || 0;
+            const fcf = operatingCashFlow + capex; // capex is negative
+            const fcfPerShare = fcf / sharesOutstanding;
+
+            const discountRate = 0.10;
+            const growthRate = 0.03;
+            const dcfValue = fcfPerShare * (1 + growthRate) / (discountRate - growthRate);
+
+            document.getElementById('dcfValue').textContent = formatCurrency(dcfValue);
+            document.getElementById('dcfCurrentPrice').textContent = formatCurrency(currentPrice);
+
+            const dcfUpside = currentPrice > 0 ? ((dcfValue - currentPrice) / currentPrice) : 0;
+            const dcfUpsideElem = document.getElementById('dcfUpside');
+            dcfUpsideElem.textContent = formatPercent(dcfUpside);
+            dcfUpsideElem.style.color = dcfUpside > 0 ? '#00ff88' : '#FF5252';
+
+            // P/E Relative Valuation (Industry avg P/E assumed 20)
+            const industryPE = 20;
+            const peValue = eps * industryPE;
+
+            document.getElementById('peValue').textContent = formatCurrency(peValue);
+            document.getElementById('peCurrentRatio').textContent = formatRatio(keyStats.trailingPE?.raw);
+            document.getElementById('peIndustryRatio').textContent = formatRatio(industryPE);
+
+            // Graham Number
+            if (eps > 0 && bookValue > 0) {
+                const grahamNumber = Math.sqrt(22.5 * eps * bookValue);
+                document.getElementById('grahamValue').textContent = formatCurrency(grahamNumber);
+
+                const grahamMargin = currentPrice > 0 ? ((grahamNumber - currentPrice) / currentPrice) : 0;
+                const grahamMarginElem = document.getElementById('grahamMargin');
+                grahamMarginElem.textContent = formatPercent(grahamMargin);
+                grahamMarginElem.style.color = grahamMargin > 0 ? '#00ff88' : '#FF5252';
+            }
+
+            // P/S Valuation (Industry avg P/S assumed 3)
+            const revenue = data.incomeStatementHistory?.incomeStatementHistory?.[0]?.totalRevenue?.raw || 1;
+            const salesPerShare = revenue / sharesOutstanding;
+            const industryPS = 3;
+            const psValue = salesPerShare * industryPS;
+
+            document.getElementById('psValue').textContent = formatCurrency(psValue);
+
+            const currentPS = currentPrice / salesPerShare;
+            document.getElementById('psCurrentRatio').textContent = formatRatio(currentPS);
+            document.getElementById('psIndustryRatio').textContent = formatRatio(industryPS);
+        }
+
+        // Calculate financial health score
+        function calculateHealthScore(data) {
+            const financialData = data.financialData || {};
+            const keyStats = data.defaultKeyStatistics || {};
+
+            let profitScore = 0;
+            let growthScore = 0;
+            let strengthScore = 0;
+            let valuationScore = 0;
+
+            // Profitability Score (25 points)
+            const profitMargin = financialData.profitMargins?.raw || 0;
+            if (profitMargin > 0.15) profitScore += 10;
+            else if (profitMargin > 0.10) profitScore += 7;
+            else if (profitMargin > 0.05) profitScore += 4;
+
+            const roe = financialData.returnOnEquity?.raw || 0;
+            if (roe > 0.20) profitScore += 10;
+            else if (roe > 0.15) profitScore += 7;
+            else if (roe > 0.10) profitScore += 4;
+
+            const roa = financialData.returnOnAssets?.raw || 0;
+            if (roa > 0.10) profitScore += 5;
+            else if (roa > 0.05) profitScore += 3;
+
+            profitScore = Math.min(25, profitScore);
+
+            // Growth Score (25 points)
+            const revenueGrowth = financialData.revenueGrowth?.raw || 0;
+            if (revenueGrowth > 0.20) growthScore += 12;
+            else if (revenueGrowth > 0.10) growthScore += 8;
+            else if (revenueGrowth > 0.05) growthScore += 4;
+
+            const earningsGrowth = financialData.earningsGrowth?.raw || 0;
+            if (earningsGrowth > 0.20) growthScore += 13;
+            else if (earningsGrowth > 0.10) growthScore += 8;
+            else if (earningsGrowth > 0.05) growthScore += 4;
+
+            growthScore = Math.min(25, growthScore);
+
+            // Financial Strength Score (25 points)
+            const debtToEquity = (financialData.debtToEquity?.raw || 0) / 100;
+            if (debtToEquity < 0.3) strengthScore += 12;
+            else if (debtToEquity < 0.7) strengthScore += 8;
+            else if (debtToEquity < 1.5) strengthScore += 4;
+
+            const currentRatio = financialData.currentRatio?.raw || 0;
+            if (currentRatio > 2.0) strengthScore += 8;
+            else if (currentRatio > 1.5) strengthScore += 5;
+            else if (currentRatio > 1.0) strengthScore += 3;
+
+            const quickRatio = financialData.quickRatio?.raw || 0;
+            if (quickRatio > 1.5) strengthScore += 5;
+            else if (quickRatio > 1.0) strengthScore += 3;
+
+            strengthScore = Math.min(25, strengthScore);
+
+            // Valuation Score (25 points)
+            const pe = keyStats.trailingPE?.raw || 0;
+            if (pe > 0 && pe < 15) valuationScore += 12;
+            else if (pe < 25) valuationScore += 8;
+            else if (pe < 35) valuationScore += 4;
+
+            const peg = keyStats.pegRatio?.raw || 0;
+            if (peg > 0 && peg < 1.0) valuationScore += 8;
+            else if (peg < 2.0) valuationScore += 5;
+            else if (peg < 3.0) valuationScore += 2;
+
+            const pb = keyStats.priceToBook?.raw || 0;
+            if (pb > 0 && pb < 3.0) valuationScore += 5;
+            else if (pb < 5.0) valuationScore += 3;
+
+            valuationScore = Math.min(25, valuationScore);
+
+            // Total Score
+            const totalScore = profitScore + growthScore + strengthScore + valuationScore;
+
+            // Update display
+            document.getElementById('healthScore').textContent = totalScore;
+            document.getElementById('profitScore').textContent = profitScore;
+            document.getElementById('growthScore').textContent = growthScore;
+            document.getElementById('strengthScore').textContent = strengthScore;
+            document.getElementById('valuationScore').textContent = valuationScore;
+
+            // Update score circle
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreDegrees = (totalScore / 100) * 360;
+            scoreCircle.style.setProperty('--score-deg', scoreDegrees + 'deg');
+
+            // Color based on score
+            let scoreColor = '#FF5252'; // Red for low scores
+            if (totalScore >= 80) scoreColor = '#00ff88'; // Green for high scores
+            else if (totalScore >= 60) scoreColor = '#ff9500'; // Orange for medium scores
+            else if (totalScore >= 40) scoreColor = '#DC143C'; // Crimson for below average
+
+            scoreCircle.style.background = `conic-gradient(
+                ${scoreColor} 0deg,
+                ${scoreColor} ${scoreDegrees}deg,
+                var(--border-color) ${scoreDegrees}deg,
+                var(--border-color) 360deg
+            )`;
+
+            const scoreDisplay = document.getElementById('healthScore');
+            scoreDisplay.style.color = scoreColor;
+        }
+
+        // Enter key support
+        document.getElementById('symbolInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                analyzeCompany();
+            }
+        });
+    </script>
+</body>
+</html>

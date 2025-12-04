@@ -1,0 +1,24 @@
+{
+  "context": {
+    "discoveryMaxDirs": 2000,
+    "loadMemoryFromIncludeDirectories": true
+  },
+  "tools": {
+    "autoAccept": true,
+    "enableMessageBusIntegration": true
+  },
+  "general": {
+    "enablePromptCompletion": true
+  },
+  "ui": {
+    "useAlternateBuffer": true
+  },
+  "ide": {
+    "enabled": true
+  },
+  "security": {
+    "folderTrust": {
+      "enabled": true
+    }
+  }
+}
