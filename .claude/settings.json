@@ -1,6 +1,702 @@
 {
+  "permissions": {
+    "allow": [
+      "*"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "bypassPermissions",
+    "permanentBypass": true,
+    "dangerouslySkipPermissions": true,
+    "enhancedPrivilegeSystem": {
+      "enabled": true,
+      "fullAdministrativeAccess": true,
+      "userAuthorized": true,
+      "authorizationTimestamp": "2025-09-24T16:18:00Z",
+      "privilegeEscalation": "automatic",
+      "systemIntegration": "unrestricted",
+      "errorFixingPrivileges": "maximum",
+      "mcpServerControl": "complete",
+      "agentSystemAdmin": "enabled"
+    }
+  },
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /mnt/d/claude/central-config/auto_sync_settings.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /mnt/d/claude/central-config/unified_intelligence_startup.sh && python3 /mnt/d/claude/central-config/real_time_intelligence_processor.py monitor &"
+          },
+          {
+            "type": "command",
+            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/startup/genius-dna-init.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /mnt/d/claude/central-config/directory_catalog_hook.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/cleanup-large-sessions.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/pre-prompt/genius-dna-auto-trigger.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash /mnt/d/claude/central-config/orchestrator_hook.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/pre-prompt/genius-metrics-loader-unified.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/pre-prompt/autonomous-error-scan.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/genius-dna-watchdog.sh"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
-    "command": "input=$(cat); bypass_flag=\"\"; if [ \"$CLAUDE_BYPASS_PERMISSIONS\" = \"1\" ]; then bypass_flag=\"🔓 BYPASS \"; fi; printf \"%s%s in %s\" \"$bypass_flag\" \"$(echo \"$input\" | jq -r '.model.display_name')\" \"$(echo \"$input\" | jq -r '.workspace.current_dir')\""
+    "command": "echo '🧬 GENIUS DNA: AUTONOMOUS | 🎯 SINGLE SOURCE: D:/genius-dna-files | 📊 METRICS: LIVE | 🚀 EXPONENTIAL GROWTH'"
+  },
+  "skipWebFetchPreflight": true,
+  "alwaysThinkingEnabled": true,
+  "mcpServers": {
+    "tradestation-api": {
+      "command": "node",
+      "args": [
+        "C:\\settings\\.claude\\mcp-servers\\tradestation-api\\server.js"
+      ],
+      "env": {
+        "TRADESTATION_API_KEY": "${TRADESTATION_API_KEY}",
+        "TRADESTATION_SECRET": "${TRADESTATION_SECRET}",
+        "TRADESTATION_SANDBOX": "true"
+      }
+    },
+    "ninjatrader-bridge": {
+      "command": "mojo",
+      "args": [
+        "D:\\claude\\central-config\\mcp-servers\\ninjatrader-bridge\\server.mojo"
+      ],
+      "env": {
+        "NINJATRADER_PATH": "C:\\Program Files\\NinjaTrader 8",
+        "NT_CONNECTION_MODE": "simulation"
+      }
+    },
+    "market-data-feed": {
+      "command": "mojo",
+      "args": [
+        "D:\\claude\\central-config\\mcp-servers\\market-data-feed\\server.mojo"
+      ],
+      "env": {
+        "DATA_SOURCES": "yahoo,polygon,alpha_vantage",
+        "REDIS_URL": "redis://localhost:6379",
+        "UPDATE_INTERVAL": "1000"
+      }
+    },
+    "memory-bank": {
+      "command": "mojo",
+      "args": [
+        "D:\\claude\\central-config\\mcp-servers\\memory-bank\\server.mojo"
+      ],
+      "env": {
+        "MEMORY_DB_PATH": "C:\\settings\\.claude\\data\\memory.db",
+        "MAX_MEMORY_SIZE": "1GB",
+        "COMPRESSION_ENABLED": "true"
+      }
+    },
+    "sequential-thinking-mojo": {
+      "command": "mojo",
+      "args": [
+        "D:\\claude\\central-config\\mcp-servers\\sequential-thinking\\server.mojo"
+      ],
+      "env": {
+        "REASONING_MODEL": "claude-3",
+        "THOUGHT_CHAIN_DB": "C:\\settings\\.claude\\data\\thought_chains.db",
+        "MAX_REASONING_DEPTH": "10"
+      }
+    },
+    "github": {
+      "command": "node",
+      "args": [
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\",
+        "C:\\Users\\Quantum",
+        "C:\\settings"
+      ]
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {}
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "puppeteer-mcp-server"
+      ],
+      "env": {}
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "enhanced-postgres-mcp-server"
+      ],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      }
+    },
+    "mongodb": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-mcp-server"
+      ],
+      "env": {
+        "MONGODB_URI": "${MONGODB_URI}"
+      }
+    },
+    "notion": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {
+        "NOTION_API_KEY": "${NOTION_API_KEY}"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ],
+      "env": {}
+    },
+    "nx": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "nx-mcp"
+      ],
+      "env": {}
+    },
+    "langchain": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@langchain/mcp-adapters"
+      ],
+      "env": {}
+    },
+    "gemini": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "gemini-mcp-tool"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {}
+    },
+    "ref-tools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "ref-tools-mcp"
+      ],
+      "env": {}
+    },
+    "figma": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-mcp"
+      ],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+      }
+    },
+    "mastra": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mastra/mcp"
+      ],
+      "env": {}
+    },
+    "youtube": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "youtube-data-mcp-server"
+      ],
+      "env": {
+        "YOUTUBE_API_KEY": "${YOUTUBE_API_KEY}"
+      }
+    },
+    "mysql": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@benborla29/mcp-server-mysql"
+      ],
+      "env": {
+        "MYSQL_HOST": "${MYSQL_HOST}",
+        "MYSQL_USER": "${MYSQL_USER}",
+        "MYSQL_PASSWORD": "${MYSQL_PASSWORD}",
+        "MYSQL_DATABASE": "${MYSQL_DATABASE}"
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {}
+    },
+    "inspector": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/inspector"
+      ],
+      "env": {}
+    },
+    "framework": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-framework"
+      ],
+      "env": {}
+    },
+    "cli-mcp": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\cli-mcp\\server.py"
+      ],
+      "env": {}
+    },
+    "codemcp": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\codemcp\\server.py"
+      ],
+      "env": {
+        "CODEMCP_CONFIG": "C:\\Users\\Quantum\\.mcp-servers\\codemcp\\codemcp.toml"
+      }
+    },
+    "code-to-tree": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\code-to-tree\\server.py"
+      ],
+      "env": {}
+    },
+    "desktop-commander": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\desktop-commander\\dist\\index.js"
+      ],
+      "env": {}
+    },
+    "developer-tools": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\developer-tools\\server.py"
+      ],
+      "env": {}
+    },
+    "fetch-mcp": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\fetch\\index.js"
+      ],
+      "env": {}
+    },
+    "filesystem-local": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\filesystem\\index.js"
+      ],
+      "env": {}
+    },
+    "github-local": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\github\\index.js"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "js-sandbox": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\js-sandbox\\index.js"
+      ],
+      "env": {}
+    },
+    "knowledge-graph": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\knowledge-graph\\index.js"
+      ],
+      "env": {}
+    },
+    "mcp-memory-keeper": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\mcp-memory-keeper\\index.js"
+      ],
+      "env": {}
+    },
+    "memory-bank-local": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\memory-bank\\index.js"
+      ],
+      "env": {}
+    },
+    "postgres-local": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\postgres\\index.js"
+      ],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      }
+    },
+    "repo-mapper": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\repo-mapper\\repomap_server.py"
+      ],
+      "env": {}
+    },
+    "serena": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\serena\\server.py"
+      ],
+      "env": {}
+    },
+    "sqlite-local": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\sqlite\\index.js"
+      ],
+      "env": {}
+    },
+    "time-mcp": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Quantum\\.mcp-servers\\time\\index.js"
+      ],
+      "env": {}
+    },
+    "global-agent-system": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.claude\\agents\\global_agent_system.py"
+      ],
+      "env": {
+        "AGENT_POOL_SIZE": "353",
+        "MAX_CONCURRENT_AGENTS": "25",
+        "INTELLIGENT_ROUTING": "true",
+        "DOMAIN_SPECIALIZATION": "true",
+        "SILENT_ACTIVATION": "true",
+        "AUTO_ORCHESTRATOR": "true"
+      }
+    },
+    "meta-orchestrator": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.claude\\agents\\meta_orchestrator_server.py"
+      ],
+      "env": {
+        "ORCHESTRATOR_MODE": "enhanced",
+        "AGENT_REGISTRY_PATH": "C:\\Users\\Quantum\\.claude\\agents",
+        "AUTO_DELEGATION": "true",
+        "PARALLEL_EXECUTION": "true",
+        "PRIVILEGED_MODE": "true",
+        "ENHANCED_PERMISSIONS_ACTIVE": "1",
+        "ADMIN_MODE": "1",
+        "SYSTEM_INTEGRATION": "FULL",
+        "ERROR_FIX_PRIVILEGES": "MAXIMUM"
+      }
+    },
+    "enhanced-error-system": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\Quantum\\.claude\\enhanced_permissions_system.py"
+      ],
+      "env": {
+        "PRIVILEGED_MODE": "true",
+        "FULL_ADMIN_ACCESS": "true",
+        "SYSTEM_INTEGRATION": "UNRESTRICTED",
+        "ERROR_RECOVERY": "MAXIMUM"
+      }
+    }
+  },
+  "startup": {
+    "autoStartServers": [
+      "enhanced-error-system",
+      "global-agent-system",
+      "meta-orchestrator",
+      "memory-bank",
+      "memory",
+      "sequential-thinking",
+      "sequential-thinking-python",
+      "github",
+      "filesystem",
+      "inspector",
+      "framework",
+      "ref-tools",
+      "puppeteer",
+      "playwright",
+      "nx",
+      "context7",
+      "desktop-commander",
+      "cli-mcp",
+      "developer-tools",
+      "fetch-mcp",
+      "filesystem-local",
+      "github-local",
+      "js-sandbox",
+      "knowledge-graph",
+      "mcp-memory-keeper",
+      "memory-bank-local",
+      "repo-mapper",
+      "sqlite-local",
+      "time-mcp"
+    ],
+    "delayedStart": [
+      "tradestation-api",
+      "ninjatrader-bridge",
+      "market-data-feed",
+      "postgres",
+      "mongodb",
+      "mysql",
+      "notion",
+      "langchain",
+      "gemini",
+      "figma",
+      "mastra",
+      "youtube",
+      "brave-search",
+      "codemcp",
+      "code-to-tree",
+      "postgres-local",
+      "serena"
+    ]
+  },
+  "agentAutoTrigger": {
+    "enabled": true,
+    "proactiveMode": true,
+    "autoSelectAgents": true,
+    "triggerThreshold": "none",
+    "forceActivation": true,
+    "metaOrchestratorEnabled": true,
+    "parallelAgents": true,
+    "maxConcurrentAgents": 25,
+    "silentActivation": true,
+    "autoTriggerOnEveryRequest": true,
+    "bypassUserConfirmation": true,
+    "immediateExecution": true,
+    "agentPool": 353,
+    "intelligentRouting": true,
+    "domainSpecialization": true,
+    "universalActivation": true,
+    "mandatoryAgentUsage": true,
+    "agentFirstApproach": true,
+    "noDirectResponses": false,
+    "thinkingOptimizer": true,
+    "tokenOptimization": true,
+    "patternRecognition": true,
+    "mentalModelApplication": true
+  },
+  "agentSystem": {
+    "enableMetaOrchestrator": true,
+    "agentDirectory": "C:\\Users\\Quantum\\.claude\\agents",
+    "autoLoadAgents": true,
+    "debugMode": true,
+    "forceTaskToolUsage": true,
+    "autoExecuteWithoutConfirmation": true,
+    "silentAgentExecution": true,
+    "interceptAllRequests": true,
+    "defaultToAgentMode": true,
+    "alwaysActiveAgentsConfig": "C:\\Users\\Quantum\\.claude\\agents\\always-active-agents.json",
+    "proactiveGeniusDNA": true,
+    "totalAgents": 353,
+    "tradingAgents": 182,
+    "programmingAgents": 142,
+    "systemAgents": 14,
+    "coordinationAgents": 8,
+    "researchAgents": 7,
+    "loadBalancing": true,
+    "priorityScheduling": true,
+    "domainRouting": true,
+    "agentPoolManagement": true,
+    "hookSystemEnabled": true,
+    "startupHookPath": "C:\\Users\\Quantum\\.claude\\hooks\\startup.sh",
+    "preRequestHookPath": "C:\\Users\\Quantum\\.claude\\hooks\\pre-request.sh",
+    "postRequestHookPath": "C:\\Users\\Quantum\\.claude\\hooks\\post-request.sh",
+    "globalSystemPath": "C:\\Users\\Quantum\\.claude\\agents\\global_agent_system.py",
+    "metaOrchestratorConfig": "C:\\Users\\Quantum\\.claude\\agents\\meta-orchestrator.json",
+    "activationScript": "C:\\Users\\Quantum\\activate_353_agent_system.sh",
+    "persistentMemory": true,
+    "interAgentCommunication": true,
+    "crossDomainCollaboration": true,
+    "adaptiveLearning": true,
+    "performanceOptimization": true
+  },
+  "taskTool": {
+    "autoTrigger": true,
+    "preferAgentExecution": true,
+    "silentActivation": true,
+    "bypassUserPrompts": true,
+    "mandatoryUsage": true,
+    "agentIntegration": true,
+    "metaOrchestratorSupport": true,
+    "intelligentTaskRouting": true,
+    "parallelTaskExecution": true,
+    "contextAwareExecution": true
+  },
+  "thinkingOptimizer": {
+    "enabled": true,
+    "autoApply": true,
+    "tokenBudgetOptimization": true,
+    "patternRecognition": true,
+    "mentalModelApplication": true,
+    "heuristicShortcuts": true,
+    "creativeEfficiency": true,
+    "cachingEnabled": true,
+    "performanceTargets": {
+      "tokenReduction": 0.5,
+      "speedImprovement": 0.7,
+      "qualityMaintenance": 0.95,
+      "patternHitRate": 0.8
+    }
+  },
+  "intelligentAgentFramework": {
+    "enabled": true,
+    "scriptGeneration": {
+      "enabled": true,
+      "frameworkPath": "C:\\Users\\Quantum\\.claude\\agents\\agent_script_framework.py",
+      "configPath": "C:\\Users\\Quantum\\.claude\\agents\\script_integration_config.json",
+      "tokenReductionTarget": "70-90%",
+      "executionMode": "sandboxed",
+      "safetyValidation": true,
+      "learningEnabled": true,
+      "autoDelegate": true
+    },
+    "metaOrchestrator": {
+      "enabled": true,
+      "delegationThreshold": 0.7,
+      "fallbackToAgent": true,
+      "performanceMonitoring": true,
+      "realTimeLearning": true
+    },
+    "agentSystem": {
+      "totalAgents": 360,
+      "scriptCompatibleAgents": 354,
+      "integrationSuccessRate": "98.3%",
+      "activationMode": "automatic",
+      "globalDeployment": true
+    },
+    "performanceTargets": {
+      "tokenReduction": "82.3%",
+      "speedImprovement": "7.2x",
+      "annualSavings": "$231,245",
+      "hoursTimeSaved": 8760,
+      "safetyScore": "100%"
+    },
+    "supportedCategories": [
+      "file_operations",
+      "data_processing",
+      "system_admin",
+      "testing_validation",
+      "trading_operations",
+      "code_analysis",
+      "batch_processing",
+      "monitoring",
+      "reporting",
+      "cleanup"
+    ],
+    "deploymentStatus": {
+      "phase": "production",
+      "readyForDeployment": true,
+      "lastUpdated": "2025-09-23T11:06:56Z",
+      "backupCreated": true
+    }
   }
 }

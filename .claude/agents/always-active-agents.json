@@ -1,0 +1,55 @@
+{
+  "version": "1.0.0",
+  "description": "Configuration for always-active agents that should be consulted on every prompt",
+  "always_active_agents": [
+    {
+      "name": "genius-dna-orchestrator",
+      "priority": "high",
+      "enabled": true,
+      "trigger_mode": "always",
+      "min_complexity": "any",
+      "description": "Genius DNA system for exponential skill growth and first principles reasoning"
+    },
+    {
+      "name": "meta-orchestrator",
+      "priority": "critical",
+      "enabled": true,
+      "trigger_mode": "always",
+      "min_complexity": "any",
+      "description": "Meta-level task delegation and agent coordination"
+    }
+  ],
+  "global_settings": {
+    "proactive_mode": true,
+    "silent_activation": true,
+    "complexity_detection": {
+      "enabled": true,
+      "thresholds": {
+        "simple": 1,
+        "medium": 3,
+        "complex": 7,
+        "very_complex": 15
+      }
+    },
+    "token_optimization": {
+      "enabled": true,
+      "max_agent_context": 10000,
+      "compress_results": true
+    }
+  },
+  "activation_rules": {
+    "genius-dna-orchestrator": {
+      "activate_on_every_prompt": true,
+      "activate_unconditionally": true,
+      "skip_for_simple_queries": false,
+      "always_available": true,
+      "auto_invoke_capabilities": [
+        "exponential_skills",
+        "first_principles",
+        "agent_swarm",
+        "innovation_frameworks",
+        "continuous_learning"
+      ]
+    }
+  }
+}
