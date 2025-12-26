@@ -21,27 +21,42 @@ from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 import ctypes
 from ctypes import windll
+import numpy as np
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Add root directory to path to find data_fetcher_fallback
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from data_fetcher_fallback import fetch_stock_price, fetch_crypto_price, fetch_forex_rate
+    API_AVAILABLE = True
+except ImportError:
+    API_AVAILABLE = False
+    logger.critical("CRITICAL: data_fetcher_fallback.py not found in parent directory.")
 
 # Install deps if missing
 WINDOWS_LIBS_AVAILABLE = False
 try:
     import cv2
-    import numpy as np
     import pyautogui
     import win32gui
     import win32ui
     import win32con
     WINDOWS_LIBS_AVAILABLE = True
 except ImportError:
-    print("CRITICAL: Windows dependencies (pywin32, opencv, pyautogui) not found. Real-time data capture disabled.")
+    logger.info("Windows dependencies (pywin32, opencv, pyautogui) not found. Switching to API Mode.")
 
 app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 # ============ CONFIGURATION ============ 
-LIVE_UPDATE_INTERVAL = 300.0   # Update visible charts every 1s
-BG_UPDATE_INTERVAL = 300.0    # Update background charts every 10s (Reduces flicker)
-DEEP_SCAN_INTERVAL = 300.0    # Scan for new windows every 60s
+LIVE_UPDATE_INTERVAL = 60.0   # API Update interval (respecting rate limits)
+BG_UPDATE_INTERVAL = 300.0    
+DEEP_SCAN_INTERVAL = 300.0    
 
 class Agent:
     def __init__(self, key, symbol, timeframe, source="LIVE"):
@@ -51,12 +66,15 @@ class Agent:
         self.pattern = "Scanning..."
         self.confidence = 0.0
         self.trend = "WAIT"
-        self.last_update = 0 # Initialize to 0 to force first update
+        self.last_update = 0 
         self.history = deque(maxlen=20)
         self.source = source 
 
     def update(self, bull_score, source="LIVE"):
         self.source = source
+        # Strict score clamping
+        bull_score = max(0.0, min(2.0, bull_score))
+        
         if bull_score >= 1.5:
             p, c = "STRONG BULLISH", 0.95
         elif bull_score >= 1.1:
@@ -73,8 +91,8 @@ class Agent:
         self.history.append(bull_score)
         self.last_update = time.time()
 
-        bulls = sum(1 for x in self.history if "BULL" in x)
-        bears = sum(1 for x in self.history if "BEAR" in x)
+        bulls = sum(1 for x in self.history if x > 1.05)
+        bears = sum(1 for x in self.history if x < 0.95)
         self.trend = "UP" if bulls > bears else "DOWN" if bears > bulls else "FLAT"
     
     def to_dict(self):
@@ -100,7 +118,131 @@ state = {
 def log(msg):
     ts = time.strftime("%H:%M:%S")
     state['logs'].append(f"{ts} {msg}")
+    logger.info(msg)
 
+# ==================== VALIDATION LOGIC ====================
+def validate_market_data(symbol, price, timestamp):
+    """
+    Strict validation of market data.
+    Returns True if valid, False otherwise.
+    """
+    if price is None:
+        logger.warning(f"Validation Fail: {symbol} price is None")
+        return False
+    
+    try:
+        price = float(price)
+    except (ValueError, TypeError):
+        logger.warning(f"Validation Fail: {symbol} price is not a number: {price}")
+        return False
+        
+    if price <= 0:
+        logger.warning(f"Validation Fail: {symbol} price invalid: {price}")
+        return False
+        
+    # Freshness check (allow some lag for weekends/holidays handled by fallback fetcher)
+    # data_fetcher_fallback handles caching logic
+    return True
+
+def calculate_market_score(history):
+    """
+    Calculate a technical score (0.0 - 2.0) based on REAL price history.
+    Uses Moving Average Convergence/Divergence logic or simple Trend.
+    NO RANDOM DATA.
+    """
+    if history is None or history.empty: return 1.0
+    
+    try:
+        # Ensure numeric
+        prices = history.astype(float).values
+        if len(prices) < 5: return 1.0
+        
+        current = prices[-1]
+        
+        # Simple SMA Trend
+        sma_short = np.mean(prices[-5:])
+        sma_long = np.mean(prices) # All available data in period
+        
+        if sma_long == 0: return 1.0
+        
+        # Deviation calculation
+        deviation = (sma_short - sma_long) / sma_long
+        
+        # Scale: +/- 5% deviation = +/- 0.5 score adjustment
+        # Base 1.0
+        adjustment = deviation * 10
+        score = 1.0 + adjustment
+        
+        return max(0.0, min(2.0, score))
+    except Exception as e:
+        logger.error(f"Score calculation error: {e}")
+        return 1.0
+
+# ==================== API FETCH LOOP (LINUX/NO-WIN) ====================
+def run_api_fetch_loop():
+    """
+    Main loop for non-Windows environments.
+    Fetches REAL data from authorized APIs using data_fetcher_fallback.
+    """
+    # Key assets to track
+    ASSETS = [
+        ('SPY', 'stock'), ('QQQ', 'stock'), ('IWM', 'stock'), ('DIA', 'stock'),
+        ('BTC-USD', 'crypto'), ('ETH-USD', 'crypto'), ('SOL-USD', 'crypto'),
+        ('GLD', 'stock'), ('SLV', 'stock'), ('TLT', 'stock'), ('USO', 'stock'),
+        ('EURUSD=X', 'forex'), ('USDJPY=X', 'forex')
+    ]
+    
+    log("Starting API Data Fetch Loop (Strict Mode)...")
+    
+    while state['running']:
+        start_time = time.time()
+        
+        for symbol, asset_type in ASSETS:
+            try:
+                # 1. Fetch Real Data
+                result = None
+                if asset_type == 'crypto':
+                    result = fetch_crypto_price(symbol, period_days=30)
+                elif asset_type == 'forex':
+                    result = fetch_forex_rate(symbol, period_days=30)
+                else:
+                    result = fetch_stock_price(symbol, period_days=30)
+                
+                # 2. Check Result
+                if result and result.get('success') and result.get('data') is not None:
+                    data = result['data'] # pd.Series
+                    if not data.empty:
+                        current_price = data.iloc[-1]
+                        
+                        # 3. Validate
+                        if validate_market_data(symbol, current_price, time.time()):
+                            # 4. Calculate Score
+                            score = calculate_market_score(data)
+                            
+                            # 5. Update Agent
+                            key = f"{symbol}_D_API"
+                            if key not in state['agents']:
+                                state['agents'][key] = Agent(key, symbol, "D", f"API({result.get('source')})")
+                                state['total_charts'] = len(state['agents'])
+                            
+                            state['agents'][key].update(score, f"API({result.get('source')})")
+                            # logger.info(f"Updated {symbol}: ${current_price:.2f} Score: {score:.2f}")
+                        else:
+                            log(f"Data invalid for {symbol}")
+                else:
+                    # Log failure but DO NOT use fake data
+                    # log(f"No data for {symbol}: {result.get('error')}")
+                    pass
+
+            except Exception as e:
+                logger.error(f"Error processing {symbol}: {e}")
+        
+        # Rate limit compliance
+        elapsed = time.time() - start_time
+        sleep_time = max(10.0, LIVE_UPDATE_INTERVAL - elapsed)
+        time.sleep(sleep_time)
+
+# ==================== WINDOWS CAPTURE LOGIC ====================
 def capture_background(hwnd):
     if not WINDOWS_LIBS_AVAILABLE: return None
     try:
@@ -114,10 +256,8 @@ def capture_background(hwnd):
         saveBitMap.CreateCompatibleBitmap(mfcDC, w, h)
         saveDC.SelectObject(saveBitMap)
         
-        # Try standard capture first (less flicker potential)
         result = windll.user32.PrintWindow(hwnd, saveDC.GetSafeHdc(), 0)
         if result == 0: 
-            # Fallback to full content (more likely to flicker but catches chrome-based UIs)
             result = windll.user32.PrintWindow(hwnd, saveDC.GetSafeHdc(), 2)
             
         bmpstr = saveBitMap.GetBitmapBits(True)
@@ -209,13 +349,11 @@ def update_chart(c):
     if not WINDOWS_LIBS_AVAILABLE: return
     try:
         k = c['key']
-        # --- THROTTLE LOGIC ---
-        # Check if we should skip this update to reduce load
         if k in state['agents']:
             last_up = state['agents'][k].last_update
             elapsed = time.time() - last_up
-            if c['mode'] == 'BG' and elapsed < BG_UPDATE_INTERVAL: return # Skip BG
-            if c['mode'] == 'LIVE' and elapsed < LIVE_UPDATE_INTERVAL: return # Skip LIVE
+            if c['mode'] == 'BG' and elapsed < BG_UPDATE_INTERVAL: return 
+            if c['mode'] == 'LIVE' and elapsed < LIVE_UPDATE_INTERVAL: return 
         
         if not win32gui.IsWindow(c['hwnd']): return
         rect = win32gui.GetWindowRect(c['hwnd'])
@@ -249,20 +387,18 @@ def update_chart(c):
     except: pass
 
 def background_loop():
-    last_scan = 0
-    logged_error = False
-    
-    while state['running']:
-        if not WINDOWS_LIBS_AVAILABLE:
-            if not logged_error:
-                log("CRITICAL: Windows libraries missing. Cannot capture real-time data.")
-                log("Please run on Windows with pywin32 installed.")
-                logged_error = True
-            time.sleep(5.0)
-            continue
+    # If Windows libs are missing, use API fallback loop
+    if not WINDOWS_LIBS_AVAILABLE:
+        if API_AVAILABLE:
+            run_api_fetch_loop()
+        else:
+            log("CRITICAL: No Windows Libs AND No API Fetcher. System halted.")
+            return
 
+    # Windows Logic
+    last_scan = 0
+    while state['running']:
         now = time.time()
-        # Deep scan less frequently
         if now - last_scan > DEEP_SCAN_INTERVAL:
             log("Scanning windows...")
             new = scan_windows_deep()
@@ -273,10 +409,26 @@ def background_loop():
             last_scan = now
         
         if state['cached_charts']:
-            # Lower worker count to prevent thread storming during PrintWindow calls
             workers = min(6, max(2, len(state['cached_charts'])//4))
             with ThreadPoolExecutor(max_workers=workers) as pool:
                 for c in state['cached_charts']: pool.submit(update_chart, c)
         
-        # Main loop can run faster, individual chart throttling is handled in update_chart
         time.sleep(0.5)
+
+@app.route('/')
+def index():
+    return render_template('dashboard.html')
+
+@app.route('/api/data')
+def get_data():
+    return jsonify({
+        'agents': [a.to_dict() for a in state['agents'].values()],
+        'logs': list(state['logs']),
+        'total': state['total_charts']
+    })
+
+if __name__ == '__main__':
+    t = threading.Thread(target=background_loop, daemon=True)
+    t.start()
+    app.run(host='0.0.0.0', port=5000, debug=False)
+
