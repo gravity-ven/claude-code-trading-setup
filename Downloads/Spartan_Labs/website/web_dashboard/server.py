@@ -10,7 +10,20 @@ from concurrent.futures import ThreadPoolExecutor
 import ctypes
 from ctypes import windll
 
+from flask import Flask, render_template, jsonify
+from flask_cors import CORS
+import threading
+import time
+import os
+import sys
+import re
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor
+import ctypes
+from ctypes import windll
+
 # Install deps if missing
+WINDOWS_LIBS_AVAILABLE = False
 try:
     import cv2
     import numpy as np
@@ -18,8 +31,9 @@ try:
     import win32gui
     import win32ui
     import win32con
+    WINDOWS_LIBS_AVAILABLE = True
 except ImportError:
-    pass 
+    print("CRITICAL: Windows dependencies (pywin32, opencv, pyautogui) not found. Real-time data capture disabled.")
 
 app = Flask(__name__, template_folder='templates')
 CORS(app)
@@ -71,7 +85,8 @@ class Agent:
             "pattern": self.pattern,
             "conf": self.confidence,
             "trend": self.trend,
-            "last_update": self.last_update
+            "last_update": self.last_update,
+            "history": list(self.history)
         }
 
 state = {
@@ -87,6 +102,7 @@ def log(msg):
     state['logs'].append(f"{ts} {msg}")
 
 def capture_background(hwnd):
+    if not WINDOWS_LIBS_AVAILABLE: return None
     try:
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
         w, h = right - left, bottom - top
@@ -117,6 +133,7 @@ def capture_background(hwnd):
     return None
 
 def capture_screen(rect):
+    if not WINDOWS_LIBS_AVAILABLE: return None
     try:
         img = pyautogui.screenshot(region=(rect[0], rect[1], rect[2]-rect[0], rect[3]-rect[1]))
         return np.array(img)[:, :, ::-1].copy()
@@ -131,6 +148,7 @@ def get_timeframe(title):
     return "D"
 
 def scan_windows_deep():
+    if not WINDOWS_LIBS_AVAILABLE: return []
     unique_map = {} 
     seen_hwnds = set()
 
@@ -188,6 +206,7 @@ def scan_windows_deep():
     return list(unique_map.values())
 
 def update_chart(c):
+    if not WINDOWS_LIBS_AVAILABLE: return
     try:
         k = c['key']
         # --- THROTTLE LOGIC ---
@@ -231,7 +250,17 @@ def update_chart(c):
 
 def background_loop():
     last_scan = 0
+    logged_error = False
+    
     while state['running']:
+        if not WINDOWS_LIBS_AVAILABLE:
+            if not logged_error:
+                log("CRITICAL: Windows libraries missing. Cannot capture real-time data.")
+                log("Please run on Windows with pywin32 installed.")
+                logged_error = True
+            time.sleep(5.0)
+            continue
+
         now = time.time()
         # Deep scan less frequently
         if now - last_scan > DEEP_SCAN_INTERVAL:
@@ -251,32 +280,3 @@ def background_loop():
         
         # Main loop can run faster, individual chart throttling is handled in update_chart
         time.sleep(0.5)
-
-@app.route('/')
-def index():
-    return render_template('dashboard.html')
-
-@app.route('/api/data')
-def get_data():
-    agents = list(state['agents'].values())
-    now = time.time()
-    # Relaxed timeout for UI display since BG updates are slower
-    active = [a for a in agents if now - a.last_update < (BG_UPDATE_INTERVAL * 1.5)]
-    
-    tf_val = {"D": 1, "W": 2, "M": 3, "m": 4}
-    active.sort(key=lambda x: (tf_val.get(x.timeframe, 99), x.symbol))
-    
-    return jsonify({
-        "charts": [a.to_dict() for a in active],
-        "stats": {
-            "total": state['total_charts'],
-            "active": len(active),
-            "logs": list(state['logs'])
-        }
-    })
-
-if __name__ == '__main__':
-    t = threading.Thread(target=background_loop, daemon=True)
-    t.start()
-    log("Server Started. Access at http://localhost:5050")
-    app.run(host='0.0.0.0', port=5050, debug=False, use_reloader=False)
