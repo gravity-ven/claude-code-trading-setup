@@ -977,17 +977,17 @@
 
                 return `
                     <tr class="${patternClass}">
-                        <td class="symbol-cell">${r.symbol}</td>
-                        <td>${r.name}</td>
-                        <td>${getCountry(r.locale)}</td>
-                        <td>${capitalizeFirst(r.type)}</td>
-                        <td><span class="pattern-badge ${r.pattern}">${r.pattern}</span></td>
-                        <td class="${signalClass}">${r.signal}</td>
-                        <td>$${parseFloat(r.price).toFixed(2)}</td>
-                        <td class="${changeClass}">${r.change > 0 ? '+' : ''}${r.change}%</td>
-                        <td>${formatVolume(r.volume)}</td>
-                        <td>${r.depth}%</td>
-                        <td>${r.confidence}%</td>
+                        <td data-column="symbol" class="symbol-cell">${r.symbol}</td>
+                        <td data-column="name">${r.name}</td>
+                        <td data-column="country">${getCountry(r.locale)}</td>
+                        <td data-column="type">${capitalizeFirst(r.type)}</td>
+                        <td data-column="pattern"><span class="pattern-badge ${r.pattern}">${r.pattern}</span></td>
+                        <td data-column="signal" class="${signalClass}">${r.signal}</td>
+                        <td data-column="price">$${parseFloat(r.price).toFixed(2)}</td>
+                        <td data-column="change" class="${changeClass}">${r.change > 0 ? '+' : ''}${r.change}%</td>
+                        <td data-column="volume">${formatVolume(r.volume)}</td>
+                        <td data-column="depth">${r.depth}%</td>
+                        <td data-column="confidence">${r.confidence}%</td>
                     </tr>
                 `;
             }).join('');
@@ -1120,16 +1120,18 @@
             // Reorder all data rows
             const rows = document.querySelectorAll('#resultsBody tr');
             rows.forEach(row => {
-                const cells = Array.from(row.querySelectorAll('td'));
-                if (cells.length > 1) {  // Skip "no results" row
+                const cells = Array.from(row.querySelectorAll('td[data-column]'));
+                if (cells.length > 0) {  // Skip "no results" row
+                    // Create a map using data-column attribute
                     const cellMap = {};
-                    cells.forEach((cell, index) => {
-                        // Map cells to their original column positions
-                        const originalHeaders = ['symbol', 'name', 'country', 'type', 'pattern', 'signal', 'price', 'change', 'volume', 'depth', 'confidence'];
-                        cellMap[originalHeaders[index]] = cell;
+                    cells.forEach(cell => {
+                        const columnName = cell.getAttribute('data-column');
+                        if (columnName) {
+                            cellMap[columnName] = cell;
+                        }
                     });
 
-                    // Reorder cells
+                    // Reorder cells according to columnOrder
                     row.innerHTML = '';
                     columnOrder.forEach(columnName => {
                         if (cellMap[columnName]) {
