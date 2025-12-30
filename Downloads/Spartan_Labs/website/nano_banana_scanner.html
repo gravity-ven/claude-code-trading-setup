@@ -331,17 +331,93 @@
             background: rgba(220, 20, 60, 0.9);
             transform: translateY(-2px);
         }
+
+        /* Tab Navigation */
+        .tab-nav {
+            background: rgba(18, 32, 58, 0.95);
+            padding: 15px 40px 0;
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 0;
+            display: flex;
+            gap: 10px;
+            border-bottom: 3px solid #FFD700;
+        }
+
+        .tab-button {
+            padding: 12px 30px;
+            background: rgba(30, 41, 59, 0.6);
+            color: #b0b8c8;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            border-bottom: none;
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #0a1628;
+            border-color: #FFD700;
+            border-bottom: none;
+            transform: translateY(2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .scanner-placeholder {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 60px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: center;
+            border: 2px dashed #4a5568;
+        }
+
+        .scanner-placeholder h2 {
+            color: #FFD700;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .scanner-placeholder p {
+            color: #b0b8c8;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <a href="index.html" class="back-btn">← Back to Dashboard</a>
-            <h1>W/M Scanner</h1>
-            <p class="subtitle">Real-time W (Double Bottom) & M (Double Top) pattern detection</p>
+            <h1>Pattern Scanners</h1>
+            <p class="subtitle">Real-time pattern detection across 44,000+ symbols</p>
             <p class="subtitle" id="symbolCount" style="font-size: 0.9em; color: #00ff88;">Loading symbol count...</p>
         </header>
 
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-button active" data-tab="wm-scanner">W/M Pattern Scanner</button>
+            <button class="tab-button" data-tab="placeholder1">Coming Soon</button>
+            <button class="tab-button" data-tab="placeholder2">Coming Soon</button>
+        </div>
+
+        <!-- Tab Content: W/M Scanner -->
+        <div id="wm-scanner" class="tab-content active">
         <div class="controls">
             <div class="control-row">
                 <div class="filter-buttons">
@@ -405,6 +481,31 @@
                 </tbody>
             </table>
         </div>
+        </div>
+        </div>
+        <!-- End Tab Content: W/M Scanner -->
+
+        <!-- Tab Content: Placeholder 1 -->
+        <div id="placeholder1" class="tab-content">
+            <div class="scanner-placeholder">
+                <h2>📊 Scanner Coming Soon</h2>
+                <p>This scanner slot is ready for your next pattern detection strategy.</p>
+                <p style="margin-top: 15px; font-size: 0.95em;">
+                    Ideas: Momentum scanner, Breakout scanner, Volume scanner, etc.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab Content: Placeholder 2 -->
+        <div id="placeholder2" class="tab-content">
+            <div class="scanner-placeholder">
+                <h2>🔍 Scanner Coming Soon</h2>
+                <p>This scanner slot is ready for your next pattern detection strategy.</p>
+                <p style="margin-top: 15px; font-size: 0.95em;">
+                    Ideas: RSI scanner, MACD scanner, Bollinger Bands scanner, etc.
+                </p>
+            </div>
+        </div>
     </div>
 
     <div class="progress-overlay" id="progressOverlay">
@@ -431,12 +532,43 @@
         let currentSort = { column: 'depth', direction: 'desc' };
         let isScanning = false;
 
+        // Fetch and display available symbol count
+        async function loadSymbolCount() {
+            try {
+                const response = await fetch('/api/db/polygon-symbols?limit=1');
+                const data = await response.json();
+                const totalSymbols = data.total || 0;
+                const countEl = document.getElementById('symbolCount');
+                countEl.textContent = `${totalSymbols.toLocaleString()} symbols available to scan (OTC excluded)`;
+                countEl.style.color = '#00ff88';
+            } catch (error) {
+                console.error('Error loading symbol count:', error);
+                document.getElementById('symbolCount').textContent = 'Symbol count unavailable';
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners();
+            loadSymbolCount();
         });
 
         function setupEventListeners() {
+            // Tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.dataset.tab;
+
+                    // Remove active from all tabs and buttons
+                    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+                    // Add active to clicked button and corresponding tab
+                    btn.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
             // Filter buttons
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
