@@ -172,9 +172,20 @@
             text-align: left;
             font-weight: 700;
             color: #FFD700;
-            cursor: pointer;
+            cursor: move;
             user-select: none;
             position: relative;
+            transition: all 0.2s ease;
+        }
+
+        th.dragging {
+            opacity: 0.4;
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        th.drag-over {
+            border-left: 3px solid #FFD700;
+            background: rgba(255, 215, 0, 0.1);
         }
 
         th:hover {
@@ -463,18 +474,18 @@
         <div class="results-table">
             <table>
                 <thead>
-                    <tr>
-                        <th data-sort="symbol">Symbol</th>
-                        <th data-sort="name">Name</th>
-                        <th data-sort="country">Country</th>
-                        <th data-sort="type">Type</th>
-                        <th data-sort="pattern">Pattern</th>
-                        <th data-sort="signal">Signal</th>
-                        <th data-sort="price">Price</th>
-                        <th data-sort="change">Change %</th>
-                        <th data-sort="volume">Volume</th>
-                        <th data-sort="depth">Pattern Depth</th>
-                        <th data-sort="confidence">Confidence</th>
+                    <tr id="tableHeader">
+                        <th draggable="true" data-sort="symbol" data-column="symbol">Symbol</th>
+                        <th draggable="true" data-sort="name" data-column="name">Name</th>
+                        <th draggable="true" data-sort="country" data-column="country">Country</th>
+                        <th draggable="true" data-sort="type" data-column="type">Type</th>
+                        <th draggable="true" data-sort="pattern" data-column="pattern">Pattern</th>
+                        <th draggable="true" data-sort="signal" data-column="signal">Signal</th>
+                        <th draggable="true" data-sort="price" data-column="price">Price</th>
+                        <th draggable="true" data-sort="change" data-column="change">Change %</th>
+                        <th draggable="true" data-sort="volume" data-column="volume">Volume</th>
+                        <th draggable="true" data-sort="depth" data-column="depth">Pattern Depth</th>
+                        <th draggable="true" data-sort="confidence" data-column="confidence">Confidence</th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody">
@@ -525,6 +536,8 @@
         let currentFilter = 'all';
         let currentSort = { column: 'depth', direction: 'desc' };
         let isScanning = false;
+        let columnOrder = ['symbol', 'name', 'country', 'type', 'pattern', 'signal', 'price', 'change', 'volume', 'depth', 'confidence'];
+        let draggedColumn = null;
 
         // Fetch and display available symbol count
         async function loadSymbolCount() {
@@ -583,7 +596,10 @@
 
             // Table sorting
             document.querySelectorAll('th[data-sort]').forEach(th => {
-                th.addEventListener('click', () => {
+                th.addEventListener('click', (e) => {
+                    // Don't sort while dragging
+                    if (e.target.classList.contains('dragging')) return;
+
                     const column = th.dataset.sort;
                     if (currentSort.column === column) {
                         currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -594,6 +610,10 @@
                     sortAndRenderResults();
                 });
             });
+
+            // Column drag and drop
+            setupColumnDragDrop();
+            loadColumnOrder();
         }
 
         async function startScan() {
@@ -1005,6 +1025,138 @@
                 return 'International';
             } else {
                 return locale ? locale.toUpperCase() : 'Unknown';
+            }
+        }
+
+        // ===== Column Drag and Drop Functions =====
+
+        function setupColumnDragDrop() {
+            const headers = document.querySelectorAll('#tableHeader th[draggable="true"]');
+
+            headers.forEach(header => {
+                header.addEventListener('dragstart', handleDragStart);
+                header.addEventListener('dragover', handleDragOver);
+                header.addEventListener('dragenter', handleDragEnter);
+                header.addEventListener('dragleave', handleDragLeave);
+                header.addEventListener('drop', handleDrop);
+                header.addEventListener('dragend', handleDragEnd);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedColumn = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (this !== draggedColumn) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (draggedColumn !== this) {
+                // Get column indices
+                const headers = Array.from(document.querySelectorAll('#tableHeader th'));
+                const draggedIndex = headers.indexOf(draggedColumn);
+                const targetIndex = headers.indexOf(this);
+
+                // Reorder columnOrder array
+                const [movedColumn] = columnOrder.splice(draggedIndex, 1);
+                columnOrder.splice(targetIndex, 0, movedColumn);
+
+                // Apply new column order
+                applyColumnOrder();
+                saveColumnOrder();
+            }
+
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            const headers = document.querySelectorAll('#tableHeader th');
+            headers.forEach(header => {
+                header.classList.remove('dragging', 'drag-over');
+            });
+        }
+
+        function applyColumnOrder() {
+            const headerRow = document.querySelector('#tableHeader');
+            const headers = Array.from(headerRow.querySelectorAll('th'));
+
+            // Create a map of column names to header elements
+            const headerMap = {};
+            headers.forEach(header => {
+                const column = header.dataset.column;
+                headerMap[column] = header;
+            });
+
+            // Reorder headers
+            headerRow.innerHTML = '';
+            columnOrder.forEach(columnName => {
+                if (headerMap[columnName]) {
+                    headerRow.appendChild(headerMap[columnName]);
+                }
+            });
+
+            // Reorder all data rows
+            const rows = document.querySelectorAll('#resultsBody tr');
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td'));
+                if (cells.length > 1) {  // Skip "no results" row
+                    const cellMap = {};
+                    cells.forEach((cell, index) => {
+                        // Map cells to their original column positions
+                        const originalHeaders = ['symbol', 'name', 'country', 'type', 'pattern', 'signal', 'price', 'change', 'volume', 'depth', 'confidence'];
+                        cellMap[originalHeaders[index]] = cell;
+                    });
+
+                    // Reorder cells
+                    row.innerHTML = '';
+                    columnOrder.forEach(columnName => {
+                        if (cellMap[columnName]) {
+                            row.appendChild(cellMap[columnName]);
+                        }
+                    });
+                }
+            });
+        }
+
+        function saveColumnOrder() {
+            try {
+                localStorage.setItem('wm_scanner_column_order', JSON.stringify(columnOrder));
+            } catch (e) {
+                console.error('Failed to save column order:', e);
+            }
+        }
+
+        function loadColumnOrder() {
+            try {
+                const saved = localStorage.getItem('wm_scanner_column_order');
+                if (saved) {
+                    columnOrder = JSON.parse(saved);
+                    applyColumnOrder();
+                }
+            } catch (e) {
+                console.error('Failed to load column order:', e);
             }
         }
 
