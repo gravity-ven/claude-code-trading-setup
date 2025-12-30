@@ -464,6 +464,7 @@
                     <tr>
                         <th data-sort="symbol">Symbol</th>
                         <th data-sort="name">Name</th>
+                        <th data-sort="country">Country</th>
                         <th data-sort="type">Type</th>
                         <th data-sort="pattern">Pattern</th>
                         <th data-sort="signal">Signal</th>
@@ -476,7 +477,7 @@
                 </thead>
                 <tbody id="resultsBody">
                     <tr>
-                        <td colspan="10" class="no-results">
+                        <td colspan="11" class="no-results">
                             Click "Scan All Markets" to start detecting W/M patterns
                         </td>
                     </tr>
@@ -729,6 +730,7 @@
                 return {
                     symbol: ticker.ticker,
                     name: ticker.name || ticker.ticker,
+                    locale: ticker.locale || 'us', // 'us' or 'global'
                     type: ticker.market || ticker.type || 'stocks',
                     pattern: pattern.type, // 'W' or 'M'
                     signal: pattern.signal, // 'BULLISH' or 'BEARISH'
@@ -923,7 +925,7 @@
             const tbody = document.getElementById('resultsBody');
 
             if (results.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="no-results">No patterns found matching your filters</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="11" class="no-results">No patterns found matching your filters</td></tr>';
                 return;
             }
 
@@ -966,6 +968,7 @@
                     <tr class="${patternClass}">
                         <td class="symbol-cell">${r.symbol}</td>
                         <td>${r.name}</td>
+                        <td>${getCountry(r.locale)}</td>
                         <td>${capitalizeFirst(r.type)}</td>
                         <td><span class="pattern-badge ${r.pattern}">${r.pattern}</span></td>
                         <td class="${signalClass}">${r.signal}</td>
@@ -1001,6 +1004,17 @@
 
         function capitalizeFirst(str) {
             return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function getCountry(locale) {
+            // Map locale to country name
+            if (locale === 'us') {
+                return 'United States';
+            } else if (locale === 'global') {
+                return 'International';
+            } else {
+                return locale ? locale.toUpperCase() : 'Unknown';
+            }
         }
 
         function sleep(ms) {
