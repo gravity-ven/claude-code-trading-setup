@@ -3,2341 +3,584 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banana Scanner - Auto Scan 12,000+ Symbols</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>🏛️ Nano Banana Scanner - Spartan Research Station</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="js/agent_heartbeat.js?v=1766988597"></script>
+    <script src="js/api_heartbeat_wrapper.js?v=1766988597"></script>
     <style>
-        :root {
-            --banana: #FACC15;
-            --dark: #0f172a;
-            --panel: #1e293b;
-        }
-        body { background-color: var(--dark); color: #cbd5e1; font-family: 'Work Sans', sans-serif; }
-        .font-mono { font-family: 'Space Mono', monospace; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .glass-input {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid #334155;
-            color: white;
-            transition: all 0.3s;
-        }
-        .glass-input:focus {
-            border-color: var(--banana);
-            outline: none;
-            box-shadow: 0 0 10px rgba(250, 204, 21, 0.2);
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a1f3a 50%, #0a0e27 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .banana-btn {
-            background: var(--banana);
-            color: black;
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(18, 32, 58, 0.95);
+            padding: 25px 40px;
+            border-radius: 15px;
+            border-bottom: 3px solid #8B0000;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 2.2em;
+            color: #FFD700;
             font-weight: 800;
-            text-transform: uppercase;
-            transition: transform 0.1s;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
         }
-        .banana-btn:hover { background: #EAB308; }
-        .banana-btn:active { transform: scale(0.98); }
-        .banana-btn:disabled { background: #555; cursor: not-allowed; }
 
-        .stop-btn {
-            background: #EF4444;
-            color: white;
-            font-weight: 800;
-            text-transform: uppercase;
+        .header-left .description {
+            color: #b0b8c8;
+            font-size: 1em;
         }
-        .stop-btn:hover { background: #DC2626; }
 
-        /* Card Styles */
-        .result-card {
-            background: var(--panel);
-            border-left: 4px solid #334155;
-            transition: all 0.3s;
-        }
-        .score-high { border-left-color: #A855F7; } /* Alpha */
-        .score-med { border-left-color: #10B981; }  /* Green Light */
-        .score-low { border-left-color: #EF4444; }  /* Abort */
-
-        .check-pass { color: #10B981; }
-        .check-fail { color: #64748B; text-decoration: line-through; }
-
-        /* Loading Animation */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--banana);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Progress Bar */
-        .progress-container {
-            background: rgba(30, 41, 59, 0.8);
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: #ffffff;
+            padding: 12px 30px;
             border-radius: 8px;
-            overflow: hidden;
-            height: 32px;
-            position: relative;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-        .progress-bar {
-            background: linear-gradient(90deg, var(--banana), #EAB308);
-            height: 100%;
-            transition: width 0.3s;
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+        }
+
+        .status-bar {
+            background: rgba(0, 255, 136, 0.15);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-bar .live-indicator {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
         }
-        .progress-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
+
+        .status-bar .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .status-bar .status-text {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .status-bar .last-update {
+            color: #b0b8c8;
+            font-size: 0.9em;
+        }
+
+        .scanner-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: rgba(18, 32, 58, 0.7);
+            color: #b0b8c8;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: rgba(18, 32, 58, 0.9);
+            border-color: #FFD700;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: #ffffff;
+            border-color: #FFD700;
+        }
+
+        .scanner-content {
+            display: none;
+        }
+
+        .scanner-content.active {
+            display: block;
+        }
+
+        .stocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .stock-card {
+            background: rgba(18, 32, 58, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #FFD700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stock-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stock-symbol {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: #FFD700;
+        }
+
+        .stock-price {
+            font-size: 1.8em;
             font-weight: 700;
-            color: white;
-            text-shadow: 0 0 4px rgba(0,0,0,0.8);
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .stock-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .metric {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .metric-label {
+            color: #b0b8c8;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .metric-value {
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            font-size: 1.3em;
+            font-weight: 800;
+        }
+
+        .signal-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .signal-buy {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .signal-sell {
+            background: rgba(255, 82, 82, 0.2);
+            color: #FF5252;
+            border: 1px solid #FF5252;
+        }
+
+        .signal-hold {
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+            border: 1px solid #FFD700;
+        }
+
+        .signal-breakout {
+            background: rgba(138, 43, 226, 0.2);
+            color: #BA55D3;
+            border: 1px solid #BA55D3;
+        }
+
+        .signal-surge {
+            background: rgba(0, 191, 255, 0.2);
+            color: #00BFFF;
+            border: 1px solid #00BFFF;
+        }
+
+        .signal-trend {
+            background: rgba(255, 140, 0, 0.2);
+            color: #FF8C00;
+            border: 1px solid #FF8C00;
+        }
+
+        .loading-overlay {
+            text-align: center;
+            padding: 60px 20px;
+            color: #FFD700;
+            font-size: 1.2em;
+        }
+
+        .error-message {
+            background: rgba(255, 82, 82, 0.15);
+            border: 1px solid #FF5252;
+            color: #FF5252;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .scanner-title {
+            color: #FFD700;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
         }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8 max-w-7xl mx-auto">
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>🏛️ Nano Banana Scanner</h1>
+                <p class="description">Ultra-short-term pattern recognition powered by Polygon.io</p>
+            </div>
+            <a href="index.html" class="back-button">← Back to Dashboard</a>
+        </header>
 
-    <!-- HEADER -->
-    <header class="mb-8 border-b border-slate-800 pb-6">
-        <!-- Back Navigation -->
-        <div class="mb-4">
-            <a href="index.html" class="inline-flex items-center text-yellow-400 hover:text-yellow-300 font-mono text-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                BACK TO RESEARCH PATHWAYS
-            </a>
+        <div class="status-bar">
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span class="status-text">Data Loaded Successfully</span>
+            </div>
+            <div class="last-update">Last update: <span id="lastUpdate">--</span></div>
         </div>
 
-        <!-- Title and Status -->
-        <div class="flex flex-col md:flex-row justify-between items-end">
-            <div>
-                <h1 class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
-                    <span class="text-yellow-400">BANANA</span> SCANNER
-                </h1>
-                <p class="text-slate-500 font-mono text-xs mt-2">/// AUTO-SCAN 12,000+ US MARKETS (POWERED BY POLYGON.IO PAID TIER 🚀)</p>
-            </div>
-            <div class="text-right mt-4 md:mt-0">
-                <div id="statusLog" class="font-mono text-xs text-yellow-400">READY TO SCAN...</div>
-                <div id="statsDisplay" class="font-mono text-xs text-slate-500 mt-1">0 SYMBOLS LOADED</div>
-            </div>
+        <div class="scanner-tabs">
+            <div class="tab active" onclick="switchScanner('momentum')">📈 Momentum</div>
+            <div class="tab" onclick="switchScanner('breakout')">💥 Breakout</div>
+            <div class="tab" onclick="switchScanner('oversold')">📉 Oversold</div>
+            <div class="tab" onclick="switchScanner('volume')">📊 Volume Spike</div>
+            <div class="tab" onclick="switchScanner('trend')">🔥 Trend Strength</div>
         </div>
 
-        <!-- Long/Short Tabs -->
-        <div class="mt-6 flex gap-2">
-            <button onclick="setMode('long')" id="longTab" class="tab-btn active px-6 py-3 rounded font-bold uppercase text-sm transition-all">
-                📈 LONG (BUY)
-            </button>
-            <button onclick="setMode('short')" id="shortTab" class="tab-btn px-6 py-3 rounded font-bold uppercase text-sm transition-all">
-                📉 SHORT (SELL)
-            </button>
-        </div>
-
-        <!-- Scanner Type Tabs -->
-        <div class="mt-6 border-t border-slate-800 pt-6">
-            <div class="text-sm font-mono text-slate-400 uppercase mb-3">SELECT SCANNER TYPE:</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <button onclick="setScannerTab('regime')" id="scannerTab1" class="scanner-tab-btn active px-4 py-4 rounded font-bold uppercase text-sm transition-all text-center">
-                    🦁 REGIME SCANNER <span class="text-xs opacity-70 block">(26-Day Kijun-sen)</span>
-                </button>
-                <button onclick="setScannerTab('cot')" id="scannerTab2" class="scanner-tab-btn px-4 py-4 rounded font-bold uppercase text-sm transition-all text-center">
-                    📊 COT SCANNER <span class="text-xs opacity-70 block">(CFTC Extremes)</span>
-                </button>
-                <button onclick="setScannerTab('checklist')" id="scannerTab3" class="scanner-tab-btn px-4 py-4 rounded font-bold uppercase text-sm transition-all text-center">
-                    🍌 BANANA CHECKLIST
-                </button>
-                <button onclick="setScannerTab('whale')" id="scannerTab4" class="scanner-tab-btn px-4 py-4 rounded font-bold uppercase text-sm transition-all text-center">
-                    🐋 WHALE SCANNER <span class="text-xs opacity-70 block">(Block Trades 25%+)</span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <style>
-        .tab-btn {
-            background: rgba(30, 41, 59, 0.5);
-            color: #94a3b8;
-            border: 1px solid #334155;
-        }
-        .tab-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #cbd5e1;
-        }
-        .tab-btn.active {
-            background: #facc15;
-            color: #000;
-            border-color: #facc15;
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.3);
-        }
-
-        /* Scanner Tab Styles */
-        .scanner-tab-btn {
-            background: rgba(30, 41, 59, 0.3);
-            color: #64748b;
-            border: 1px solid #334155;
-        }
-        .scanner-tab-btn:hover {
-            background: rgba(30, 41, 59, 0.6);
-            color: #94a3b8;
-        }
-        .scanner-tab-btn.active {
-            background: linear-gradient(135deg, #a855f7, #ec4899);
-            color: white;
-            border-color: #a855f7;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
-        }
-
-        /* Scanner Container Visibility */
-        .scanner-container {
-            display: none;
-        }
-        .scanner-container.active {
-            display: block;
-        }
-    </style>
-
-    <!-- REGIME SCANNER CONTAINER (26-Day Kijun-sen Strategy) -->
-    <div id="regimeScanner" class="scanner-container active">
-
-    <!-- REGIME CONTROLS -->
-    <section class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-            <!-- API Key Input -->
-            <div class="md:col-span-2">
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Polygon.io API Key</label>
-                <input type="password" id="regimeApiKey" class="glass-input w-full p-3 rounded font-mono" placeholder="Auto-loaded from .env file..." value="">
-                <p class="text-[10px] text-slate-600 mt-1">✅ API Key automatically loaded from server .env file</p>
-            </div>
-
-            <!-- RSI Threshold -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">RSI Oversold Threshold</label>
-                <select id="regimeRsiThreshold" class="glass-input w-full p-3 rounded font-mono">
-                    <option value="30">RSI < 30</option>
-                    <option value="35" selected>RSI < 35</option>
-                    <option value="40">RSI < 40</option>
-                </select>
+        <div id="momentum" class="scanner-content active">
+            <h2 class="scanner-title">Momentum Scanner</h2>
+            <div id="momentum-grid" class="stocks-grid">
+                <div class="loading-overlay">Loading momentum data...</div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-            <!-- Market Type Filter -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Market Type</label>
-                <select id="regimeMarketType" class="glass-input w-full p-3 rounded font-mono text-sm">
-                    <option value="all">All Markets</option>
-                    <option value="stocks" selected>Stocks Only</option>
-                    <option value="crypto">Crypto Only</option>
-                    <option value="etf">ETFs Only</option>
-                </select>
-            </div>
-
-            <!-- Max Symbols to Scan -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Max Symbols</label>
-                <select id="regimeMaxSymbols" class="glass-input w-full p-3 rounded font-mono text-sm">
-                    <option value="100">100 Symbols</option>
-                    <option value="500" selected>500 Symbols</option>
-                    <option value="1000">1,000 Symbols</option>
-                    <option value="2500">2,500 Symbols</option>
-                </select>
-            </div>
-
-            <!-- Sort Symbols By -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Prioritize</label>
-                <select id="regimeSortBy" class="glass-input w-full p-3 rounded font-mono text-sm">
-                    <option value="volume">High Volume</option>
-                    <option value="market_cap">High Market Cap</option>
-                    <option value="random">Random</option>
-                </select>
-            </div>
-
-            <!-- Rate Limit (ms) -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Delay (ms)</label>
-                <input type="number" id="regimeRateLimit" class="glass-input w-full p-3 rounded font-mono text-sm" value="150" min="50" max="5000" step="25">
+        <div id="breakout" class="scanner-content">
+            <h2 class="scanner-title">Breakout Scanner</h2>
+            <div id="breakout-grid" class="stocks-grid">
+                <div class="loading-overlay">Loading breakout data...</div>
             </div>
         </div>
 
-        <!-- Manual Ticker Input (Optional) -->
-        <div class="mb-4">
-            <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">
-                <input type="checkbox" id="regimeUseManualTickers" class="mr-2">
-                📋 Use Custom Watchlist (Check to override Polygon screener with manual tickers)
-            </label>
-            <input type="text" id="regimeTickers" class="glass-input w-full p-3 rounded font-mono uppercase" placeholder="Enter tickers: AAPL, NVDA, TSLA" value="AAPL, NVDA, TSLA, AMD, MSFT, GOOGL, AMZN, META, NFLX, PYPL, SQ, SHOP, ROKU, DKNG, ABNB, UBER, LYFT, ZM, CRM, SNOW, PLTR, SOFI, HOOD, COIN, MSTR" disabled>
+        <div id="oversold" class="scanner-content">
+            <h2 class="scanner-title">Oversold Scanner</h2>
+            <div id="oversold-grid" class="stocks-grid">
+                <div class="loading-overlay">Loading oversold data...</div>
+            </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button onclick="startRegimeScan()" id="regimeScanBtn" class="banana-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2">
-                <span>🦁 START REGIME SCAN</span>
-            </button>
-            <button onclick="stopRegimeScan()" id="regimeStopBtn" class="stop-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2" disabled>
-                <span>⛔ STOP SCAN</span>
-            </button>
+        <div id="volume" class="scanner-content">
+            <h2 class="scanner-title">Volume Spike Scanner</h2>
+            <div id="volume-grid" class="stocks-grid">
+                <div class="loading-overlay">Loading volume data...</div>
+            </div>
         </div>
-    </section>
 
-    <!-- REGIME PROGRESS BAR -->
-    <section id="regimeProgressSection" class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8 hidden">
-        <div class="progress-container">
-            <div class="progress-bar" id="regimeProgressBar" style="width: 0%"></div>
-            <div class="progress-text" id="regimeProgressText">0 / 0 (0%)</div>
-        </div>
-        <div class="mt-4 grid grid-cols-4 gap-4 text-center">
-            <div>
-                <div class="text-2xl font-black text-yellow-400" id="regimeQualifiedCount">0</div>
-                <div class="text-xs text-slate-500">QUALIFIED</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-green-400" id="regimeScannedCount">0</div>
-                <div class="text-xs text-slate-500">SCANNED</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-blue-400" id="regimeSkippedCount">0</div>
-                <div class="text-xs text-slate-500">SKIPPED</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-white" id="regimeEtaDisplay">--</div>
-                <div class="text-xs text-slate-500">ETA</div>
+        <div id="trend" class="scanner-content">
+            <h2 class="scanner-title">Trend Strength Scanner</h2>
+            <div id="trend-grid" class="stocks-grid">
+                <div class="loading-overlay">Loading trend data...</div>
             </div>
         </div>
-    </section>
-
-    <!-- REGIME RESULTS AREA -->
-    <section id="regimeResultsContainer" class="space-y-4">
-        <!-- Results will be injected here via JS -->
-    </section>
     </div>
 
-    <!-- COT SCANNER CONTAINER (CFTC Commitment of Traders) -->
-    <div id="cotScanner" class="scanner-container">
-
-    <!-- COT CONTROLS -->
-    <section class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8">
-        <div class="mb-4 p-4 bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-500/30 rounded">
-            <h3 class="text-lg font-bold text-purple-200 mb-2">📊 COT Scanner (CFTC Extremes)</h3>
-            <p class="text-sm text-slate-400">Analyzes Commitment of Traders data to find overcrowded positions in Futures & Commodities.</p>
-            <p class="text-xs text-slate-500 mt-2">⚡ <strong>26-Week COT Index:</strong> >95% = Commercials Bullish (Bottom), <5% = Commercials Bearish (Top)</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-            <!-- API Key Input -->
-            <div class="md:col-span-2">
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Polygon.io API Key (For Price Data)</label>
-                <input type="password" id="cotApiKey" class="glass-input w-full p-3 rounded font-mono" placeholder="Auto-loaded from .env file..." value="">
-                <p class="text-[10px] text-slate-600 mt-1">✅ API Key automatically loaded from server .env file</p>
-            </div>
-
-            <!-- COT Threshold -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Extreme Threshold</label>
-                <select id="cotThreshold" class="glass-input w-full p-3 rounded font-mono">
-                    <option value="10">Show 90%+ or 10%- (Moderate)</option>
-                    <option value="5" selected>Show 95%+ or 5%- (Extreme)</option>
-                    <option value="2">Show 98%+ or 2%- (Rare)</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Market Coverage Info -->
-        <div class="mb-4">
-            <label class="block text-sm font-mono text-slate-400 mb-2 uppercase">
-                Scanning ALL Markets Automatically:
-            </label>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-2 p-4 bg-slate-800 rounded text-xs">
-                <div class="text-yellow-400 font-bold mb-1 col-span-full">💎 PRECIOUS METALS (5)</div>
-                <div class="text-slate-400">• Gold</div>
-                <div class="text-slate-400">• Silver</div>
-                <div class="text-slate-400">• Copper</div>
-                <div class="text-slate-400">• Platinum</div>
-                <div class="text-slate-400">• Palladium</div>
-
-                <div class="text-orange-400 font-bold mt-3 mb-1 col-span-full">⚡ ENERGY (4)</div>
-                <div class="text-slate-400">• Crude Oil</div>
-                <div class="text-slate-400">• Natural Gas</div>
-                <div class="text-slate-400">• Gasoline</div>
-                <div class="text-slate-400">• Heating Oil</div>
-
-                <div class="text-green-400 font-bold mt-3 mb-1 col-span-full">🌾 AGRICULTURE (13)</div>
-                <div class="text-slate-400">• Corn</div>
-                <div class="text-slate-400">• Soybeans</div>
-                <div class="text-slate-400">• Wheat</div>
-                <div class="text-slate-400">• Soybean Oil</div>
-                <div class="text-slate-400">• Soybean Meal</div>
-                <div class="text-slate-400">• Kansas Wheat</div>
-                <div class="text-slate-400">• Cotton</div>
-                <div class="text-slate-400">• Sugar</div>
-                <div class="text-slate-400">• Cocoa</div>
-                <div class="text-slate-400">• Coffee</div>
-                <div class="text-slate-400">• Lumber</div>
-                <div class="text-slate-400">• Live Cattle</div>
-                <div class="text-slate-400">• Lean Hogs</div>
-
-                <div class="text-purple-400 font-bold mt-3 mb-1 col-span-full">₿ CRYPTOCURRENCY (2)</div>
-                <div class="text-slate-400">• Bitcoin</div>
-                <div class="text-slate-400">• Ethereum</div>
-
-                <div class="text-cyan-400 font-bold mt-3 mb-1 col-span-full">📈 INDICES (5)</div>
-                <div class="text-slate-400">• E-mini S&P 500</div>
-                <div class="text-slate-400">• E-mini NASDAQ</div>
-                <div class="text-slate-400">• E-mini Dow</div>
-                <div class="text-slate-400">• E-mini Russell 2000</div>
-                <div class="text-slate-400">• VIX Futures</div>
-
-                <div class="text-blue-400 font-bold mt-3 mb-1 col-span-full">💱 CURRENCIES (8)</div>
-                <div class="text-slate-400">• EUR/USD</div>
-                <div class="text-slate-400">• JPY/USD</div>
-                <div class="text-slate-400">• GBP/USD</div>
-                <div class="text-slate-400">• AUD/USD</div>
-                <div class="text-slate-400">• CAD/USD</div>
-                <div class="text-slate-400">• CHF/USD</div>
-                <div class="text-slate-400">• NZD/USD</div>
-                <div class="text-slate-400">• MXN/USD</div>
-
-                <div class="text-indigo-400 font-bold mt-3 mb-1 col-span-full">📊 TREASURIES (4)</div>
-                <div class="text-slate-400">• 30-Year T-Bond</div>
-                <div class="text-slate-400">• 10-Year T-Note</div>
-                <div class="text-slate-400">• 5-Year T-Note</div>
-                <div class="text-slate-400">• 2-Year T-Note</div>
-
-                <div class="col-span-full mt-4 pt-4 border-t border-slate-700 text-center">
-                    <div class="text-yellow-400 font-bold text-lg">TOTAL: 41 MARKETS</div>
-                    <div class="text-slate-500 text-xs mt-1">All markets automatically scanned for CFTC extremes</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button onclick="startCOTScan()" id="cotScanBtn" class="banana-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2">
-                <span>📊 START COT SCAN</span>
-            </button>
-            <button onclick="stopCOTScan()" id="cotStopBtn" class="stop-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2" disabled>
-                <span>⛔ STOP SCAN</span>
-            </button>
-        </div>
-
-        <!-- Data Source Note -->
-        <div class="mt-4 p-3 bg-green-900/20 border border-green-600/30 rounded">
-            <p class="text-xs text-green-200">
-                <strong>✅ Live CFTC Data:</strong> This scanner uses real Commitment of Traders data from CFTC.gov (Legacy Reports).
-                Data updates weekly on Friday. COT Index calculated using 26-week Commercial Net Positions.
-                <span class="block mt-1 text-green-300/70">Requires COT API backend running on port 5005.</span>
-            </p>
-        </div>
-    </section>
-
-    <!-- COT PROGRESS BAR -->
-    <section id="cotProgressSection" class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8 hidden">
-        <div class="progress-container">
-            <div class="progress-bar" id="cotProgressBar" style="width: 0%"></div>
-            <div class="progress-text" id="cotProgressText">0 / 0 (0%)</div>
-        </div>
-        <div class="mt-4 grid grid-cols-3 gap-4 text-center">
-            <div>
-                <div class="text-2xl font-black text-yellow-400" id="cotQualifiedCount">0</div>
-                <div class="text-xs text-slate-500">EXTREMES FOUND</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-green-400" id="cotScannedCount">0</div>
-                <div class="text-xs text-slate-500">MARKETS SCANNED</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-white" id="cotEtaDisplay">--</div>
-                <div class="text-xs text-slate-500">ETA</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- COT RESULTS AREA -->
-    <section id="cotResultsContainer" class="space-y-4">
-        <!-- Results will be injected here via JS -->
-    </section>
-    </div>
-
-    <!-- BANANA CHECKLIST SCANNER CONTAINER -->
-    <div id="checklistScanner" class="scanner-container">
-    <!-- CONTROLS -->
-    <section class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-
-            <!-- API Key Input -->
-            <div class="md:col-span-2">
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Polygon.io API Key</label>
-                <input type="password" id="apiKey" class="glass-input w-full p-3 rounded font-mono" placeholder="Auto-loaded from .env file..." value="">
-                <p class="text-[10px] text-slate-600 mt-1">✅ API Key automatically loaded from server .env file</p>
-            </div>
-
-            <!-- Min Score Threshold -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Min Score (Show Only Qualified)</label>
-                <select id="minScore" class="glass-input w-full p-3 rounded font-mono">
-                    <option value="0">Show All (0+)</option>
-                    <option value="5">WAIT+ (5+)</option>
-                    <option value="7" selected>GO+ (7+)</option>
-                    <option value="8.5">ALPHA PRIME ONLY (8.5+)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-            <!-- Market Type Filter -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Market Type</label>
-                <select id="marketType" class="glass-input w-full p-3 rounded font-mono text-sm">
-                    <option value="all">All Markets</option>
-                    <option value="stocks" selected>Stocks Only</option>
-                    <option value="crypto">Crypto Only</option>
-                    <option value="etf">ETFs Only</option>
-                </select>
-            </div>
-
-            <!-- Max Symbols to Scan -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Max Symbols</label>
-                <select id="maxSymbols" class="glass-input w-full p-3 rounded font-mono text-sm">
-                    <option value="100">100 Symbols</option>
-                    <option value="500">500 Symbols</option>
-                    <option value="1000">1,000 Symbols</option>
-                    <option value="2500">2,500 Symbols</option>
-                    <option value="5000">5,000 Symbols</option>
-                    <option value="10000">10,000 Symbols</option>
-                    <option value="999999">ALL Symbols</option>
-                </select>
-            </div>
-
-            <!-- Sort Symbols By -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Prioritize</label>
-                <select id="sortBy" class="glass-input w-full p-3 rounded font-mono text-sm">
-                    <option value="volume">High Volume</option>
-                    <option value="market_cap">High Market Cap</option>
-                    <option value="random">Random</option>
-                </select>
-            </div>
-
-            <!-- Rate Limit (ms) -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Delay (ms) - Paid Tier</label>
-                <input type="number" id="rateLimit" class="glass-input w-full p-3 rounded font-mono text-sm" value="100" min="50" max="5000" step="25">
-                <p class="text-[9px] text-green-500 mt-1">🚀 Paid: 50ms = turbo, 100ms = fast</p>
-            </div>
-        </div>
-
-        <!-- Manual Ticker Input (Optional) -->
-        <div class="mb-4">
-            <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">
-                <input type="checkbox" id="useManualTickers" class="mr-2">
-                📋 Use Custom Watchlist (Check to override Polygon screener with manual tickers)
-            </label>
-            <input type="text" id="tickers" class="glass-input w-full p-3 rounded font-mono uppercase" placeholder="Enter tickers: AAPL, NVDA, TSLA" value="AAPL, NVDA, TSLA, AMD, MSFT, COIN, MSTR, GOOGL, AMZN, META, NFLX, PYPL, SQ, SHOP, ROKU, DKNG, ABNB, UBER, LYFT, ZM, CRM, SNOW, PLTR, SOFI, HOOD" disabled>
-        </div>
-
-        <!-- Quick Presets for Paid Tier -->
-        <div class="mb-4 p-4 bg-slate-800 rounded border border-yellow-500/30">
-            <div class="text-xs font-mono text-yellow-400 mb-2 uppercase">🚀 Paid Tier Quick Presets:</div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                <button onclick="applyPreset('turbo')" class="bg-purple-900 hover:bg-purple-800 text-white px-3 py-2 rounded text-xs font-bold">
-                    TURBO (50ms)
-                </button>
-                <button onclick="applyPreset('aggressive')" class="bg-green-900 hover:bg-green-800 text-white px-3 py-2 rounded text-xs font-bold">
-                    AGGRESSIVE (100ms)
-                </button>
-                <button onclick="applyPreset('balanced')" class="bg-blue-900 hover:bg-blue-800 text-white px-3 py-2 rounded text-xs font-bold">
-                    BALANCED (150ms)
-                </button>
-                <button onclick="applyPreset('safe')" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded text-xs font-bold">
-                    SAFE (250ms)
-                </button>
-            </div>
-            <p class="text-[9px] text-slate-500 mt-2">Presets: Turbo = 50ms + 5K symbols, Aggressive = 100ms + 2.5K, Balanced = 150ms + 1K, Safe = 250ms + 500</p>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button onclick="startAutoScan()" id="autoScanBtn" class="banana-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2">
-                <span>🍌 START AUTO-SCAN</span>
-            </button>
-            <button onclick="stopScan()" id="stopBtn" class="stop-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2" disabled>
-                <span>⛔ STOP SCAN</span>
-            </button>
-        </div>
-    </section>
-
-    <!-- PROGRESS BAR -->
-    <section id="progressSection" class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8 hidden">
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-            <div class="progress-text" id="progressText">0 / 0 (0%)</div>
-        </div>
-        <div class="mt-4 grid grid-cols-4 gap-4 text-center">
-            <div>
-                <div class="text-2xl font-black text-yellow-400" id="qualifiedCount">0</div>
-                <div class="text-xs text-slate-500">QUALIFIED</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-green-400" id="scannedCount">0</div>
-                <div class="text-xs text-slate-500">SCANNED</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-blue-400" id="skippedCount">0</div>
-                <div class="text-xs text-slate-500">SKIPPED</div>
-            </div>
-            <div>
-                <div class="text-2xl font-black text-white" id="etaDisplay">--</div>
-                <div class="text-xs text-slate-500">ETA</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- RESULTS AREA -->
-    <section id="resultsContainer" class="space-y-4">
-        <!-- Results will be injected here via JS -->
-    </section>
-    </div>
-    <!-- END BANANA CHECKLIST SCANNER CONTAINER -->
-
-    <!-- WHALE SCANNER CONTAINER (Block Trades 25%+ Above Normal) -->
-    <div id="whaleScanner" class="scanner-container">
-
-    <!-- WHALE CONTROLS -->
-    <section class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-            <!-- API Key Input -->
-            <div class="md:col-span-2">
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Polygon.io API Key</label>
-                <input type="password" id="whaleApiKey" class="glass-input w-full p-3 rounded font-mono" placeholder="Auto-loaded from .env file..." value="">
-                <p class="text-[10px] text-slate-600 mt-1">✅ API Key automatically loaded from server .env file</p>
-            </div>
-
-            <!-- Volume Threshold -->
-            <div>
-                <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">Volume Spike Threshold</label>
-                <select id="whaleThreshold" class="glass-input w-full p-3 rounded font-mono">
-                    <option value="25">25% Above Average</option>
-                    <option value="50">50% Above Average</option>
-                    <option value="75">75% Above Average</option>
-                    <option value="100">100% Above Average (2x)</option>
-                    <option value="200">200% Above Average (3x)</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Manual Ticker Input (Optional) -->
-        <div class="mb-4">
-            <label class="block text-xs font-mono text-slate-400 mb-1 uppercase">
-                <input type="checkbox" id="whaleUseManualTickers" class="mr-2">
-                📋 Use Custom Watchlist (Check to override Polygon screener with manual tickers)
-            </label>
-            <input type="text" id="whaleTickers" class="glass-input w-full p-3 rounded font-mono uppercase" placeholder="Enter tickers: AAPL, NVDA, TSLA" value="AAPL, NVDA, TSLA, AMD, MSFT, GOOGL, AMZN, META, NFLX, PYPL, SQ, SHOP, ROKU, DKNG, ABNB, UBER, LYFT, ZM, CRM, SNOW, PLTR, SOFI, HOOD, COIN, MSTR" disabled>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button onclick="startWhaleScan()" id="whaleScanBtn" class="banana-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2">
-                <span>🐋 START WHALE SCAN</span>
-            </button>
-            <button onclick="stopWhaleScan()" id="whaleStopBtn" class="stop-btn p-4 rounded text-xl tracking-widest flex justify-center items-center gap-2" disabled>
-                <span>⛔ STOP SCAN</span>
-            </button>
-        </div>
-    </section>
-
-    <!-- WHALE SCANNER PROGRESS -->
-    <section id="whaleProgressSection" class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8 hidden">
-        <div class="flex justify-between items-center mb-4">
-            <div class="text-sm font-mono text-slate-400">
-                Scanned: <span id="whaleScannedCount" class="text-white font-bold">0</span> |
-                Whales Found: <span id="whaleQualifiedCount" class="text-green-400 font-bold">0</span>
-            </div>
-            <div class="text-sm font-mono text-slate-400">
-                ETA: <span id="whaleEtaDisplay" class="text-yellow-400">--</span>
-            </div>
-        </div>
-        <div class="w-full bg-slate-800 rounded-full h-4 mb-2">
-            <div id="whaleProgressBar" class="bg-gradient-to-r from-blue-500 to-cyan-500 h-4 rounded-full transition-all" style="width: 0%"></div>
-        </div>
-        <div class="text-center text-xs font-mono text-slate-500">
-            <span id="whaleProgressText">0 / 0 (0%)</span>
-        </div>
-    </section>
-
-    <!-- WHALE SCANNER RESULTS -->
-    <section id="whaleResultsSection" class="bg-slate-900 p-6 rounded-xl shadow-xl border border-slate-800 mb-8">
-        <h2 class="text-2xl font-black text-white mb-6 flex items-center gap-2">
-            <span>🐋</span> WHALE ACTIVITY DETECTED
-        </h2>
-        <div id="whaleResultsContainer">
-            <!-- Results will be injected here via JS -->
-        </div>
-    </section>
-    </div>
-    <!-- END WHALE SCANNER CONTAINER -->
-
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // --- CONFIG ---
-        const API_BASE = 'https://api.polygon.io';
-        let SPY_PERFORMANCE = 0;
-        let allSymbols = [];
-        let scanResults = [];
-        let scanStopped = false;
-        let scanStartTime = 0;
-        let scanMode = 'long';  // 'long' or 'short'
+        let currentScanner = 'momentum';
+        const scannerData = {};
 
-        // Global API Keys Configuration
-        let GLOBAL_API_KEYS = {
-            polygon: '',
-            fred: '',
-            alpha_vantage: ''
-        };
+        function switchScanner(scannerType) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
 
-        // Load ALL API keys from server .env file
-        async function loadGlobalAPIKeys() {
+            // Update content
+            document.querySelectorAll('.scanner-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(scannerType).classList.add('active');
+
+            currentScanner = scannerType;
+
+            // Load data if not cached
+            if (!scannerData[scannerType]) {
+                loadScannerData(scannerType);
+            }
+        }
+
+        async function loadScannerData(scannerType) {
+            const gridId = `${scannerType}-grid`;
+            const grid = document.getElementById(gridId);
+
             try {
-                // Check if page is loaded from file:// instead of http://
-                if (window.location.protocol === 'file:') {
-                    const errorMsg = '⚠️ Page loaded from file system!\n\nPlease open via server: http://localhost:8888/nano_banana_scanner.html\n\nStart server with: python3 start_server.py';
-                    console.error(errorMsg);
-                    alert(errorMsg);
+                const response = await fetchWithHeartbeat(`/api/scanner/${scannerType}`);
+
+                // Check if response has data (success) or is a failed fetch response
+                if (!response || !response.data) {
+                    // API endpoint doesn't exist or returned error - use demo data
+                    const demoData = generateDemoData(scannerType);
+                    scannerData[scannerType] = demoData;
+                    renderStocks(demoData, gridId, scannerType);
+                    updateLastUpdate();
                     return;
                 }
 
-                console.log('🔑 Fetching API keys from /api/config...');
-                console.log('Current URL:', window.location.href);
+                const data = response.data;
 
-                const response = await fetch('/api/config');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const config = await response.json();
-                console.log('📦 Config received:', {
-                    polygon: config.polygon_api_key ? '✅ ' + config.polygon_api_key.substring(0, 10) + '...' : '❌ Missing',
-                    fred: config.fred_api_key ? '✅ Present' : '⚠️ Empty',
-                    alpha_vantage: config.alpha_vantage_api_key ? '✅ Present' : '⚠️ Empty'
-                });
-
-                // Store globally
-                GLOBAL_API_KEYS.polygon = config.polygon_api_key || '';
-                GLOBAL_API_KEYS.fred = config.fred_api_key || '';
-                GLOBAL_API_KEYS.alpha_vantage = config.alpha_vantage_api_key || '';
-
-                if (!GLOBAL_API_KEYS.polygon) {
-                    console.error('❌ POLYGON_IO_API_KEY not found in .env file!');
-                    alert('⚠️ API Key not configured! Please add POLYGON_IO_API_KEY to your .env file.');
+                if (data.error) {
+                    grid.innerHTML = `<div class="error-message">Error: ${data.error}</div>`;
                     return;
                 }
 
-                // Auto-populate all API key fields across all scanners
-                const polygonFields = [
-                    'apiKey',           // Main checklist scanner
-                    'regimeApiKey',     // Regime scanner
-                    'cotApiKey',        // COT scanner
-                    'whaleApiKey'       // Whale scanner
-                ];
+                scannerData[scannerType] = data;
+                renderStocks(data, gridId, scannerType);
+                updateLastUpdate();
 
-                // Wait a moment for DOM elements to be ready
-                setTimeout(() => {
-                    let populatedCount = 0;
-                    polygonFields.forEach(fieldId => {
-                        const field = document.getElementById(fieldId);
-                        if (field) {
-                            field.value = GLOBAL_API_KEYS.polygon;
-                            populatedCount++;
-                            console.log(`✅ Populated ${fieldId}: ${GLOBAL_API_KEYS.polygon.substring(0, 10)}...`);
-                        } else {
-                            console.warn(`⚠️  Field ${fieldId} not found in DOM`);
-                        }
-                    });
-                    console.log(`✅ Global API keys loaded! Populated ${populatedCount}/${polygonFields.length} fields`);
-                    log('✅ API KEYS LOADED FROM .ENV FILE');
-                }, 200);
             } catch (error) {
-                console.error('❌ Failed to load API keys:', error);
-
-                let errorMessage = '❌ Failed to load API keys from server!\n\n';
-                errorMessage += `Error: ${error.message}\n\n`;
-                errorMessage += 'Troubleshooting:\n';
-                errorMessage += '1. Make sure server is running: python3 start_server.py\n';
-                errorMessage += '2. Open page via: http://localhost:8888/nano_banana_scanner.html\n';
-                errorMessage += '3. Check server is on port 8888 (not 5005 or other)\n';
-                errorMessage += '4. Verify POLYGON_IO_API_KEY is in .env file\n\n';
-                errorMessage += `Current URL: ${window.location.href}`;
-
-                alert(errorMessage);
-                log('❌ API KEY LOAD FAILED - CHECK CONSOLE');
+                grid.innerHTML = `<div class="error-message">Failed to load ${scannerType} data: ${error?.message || 'Unknown error'}</div>`;
             }
         }
 
-        // Load global API keys on page load
-        window.addEventListener('DOMContentLoaded', loadGlobalAPIKeys);
-
-        // --- UTILITIES ---
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-        const log = (msg) => document.getElementById('statusLog').innerText = `/// ${msg}`;
-        const stats = (msg) => document.getElementById('statsDisplay').innerText = msg;
-
-        // Enable/disable manual ticker input
-        document.getElementById('useManualTickers').addEventListener('change', (e) => {
-            document.getElementById('tickers').disabled = !e.target.checked;
-        });
-
-        // --- MODE SWITCHER (Long/Short) ---
-        function setMode(mode) {
-            scanMode = mode;
-
-            // Update tab styles
-            document.getElementById('longTab').classList.toggle('active', mode === 'long');
-            document.getElementById('shortTab').classList.toggle('active', mode === 'short');
-
-            // Update status log
-            if (mode === 'long') {
-                log('MODE: LONG (BUY) - Scanning for uptrends');
-            } else {
-                log('MODE: SHORT (SELL) - Scanning for downtrends');
-            }
-
-            // Clear results
-            scanResults = [];
-            document.getElementById('resultsContainer').innerHTML = '';
-        }
-
-        // --- SCANNER TAB SWITCHER ---
-        function setScannerTab(scannerType) {
-            // Map scanner types to container IDs
-            const scannerMap = {
-                'regime': 'regimeScanner',
-                'cot': 'cotScanner',
-                'checklist': 'checklistScanner',
-                'whale': 'whaleScanner'
-            };
-
-            // Hide all scanner containers
-            Object.values(scannerMap).forEach(containerId => {
-                const container = document.getElementById(containerId);
-                if (container) {
-                    container.classList.remove('active');
-                }
-            });
-
-            // Show selected scanner
-            const selectedContainer = document.getElementById(scannerMap[scannerType]);
-            if (selectedContainer) {
-                selectedContainer.classList.add('active');
-            }
-
-            // Populate API key for the selected scanner if not already populated
-            if (GLOBAL_API_KEYS.polygon) {
-                const keyFieldMap = {
-                    'regime': 'regimeApiKey',
-                    'cot': 'cotApiKey',
-                    'checklist': 'apiKey',
-                    'whale': 'whaleApiKey'
-                };
-
-                const fieldId = keyFieldMap[scannerType];
-                if (fieldId) {
-                    const field = document.getElementById(fieldId);
-                    if (field && !field.value) {
-                        field.value = GLOBAL_API_KEYS.polygon;
-                        console.log(`✅ Populated ${fieldId} when switching to ${scannerType} scanner`);
-                    }
-                }
-            }
-
-            // Update tab button styles
-            const tabButtons = document.querySelectorAll('.scanner-tab-btn');
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-
-            // Activate clicked tab
-            const tabMap = {
-                'regime': 'scannerTab1',
-                'cot': 'scannerTab2',
-                'checklist': 'scannerTab3',
-                'whale': 'scannerTab4'
-            };
-            const activeTab = document.getElementById(tabMap[scannerType]);
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
-
-            // Update status log
-            const scannerNames = {
-                'regime': 'REGIME SCANNER (26-Day Kijun-sen + RSI < 35)',
-                'cot': 'COT SCANNER (CFTC Commitment of Traders)',
-                'checklist': 'BANANA CHECKLIST SCANNER (Multi-Factor)',
-                'whale': 'WHALE SCANNER (Block Trades 25%+)'
-            };
-            log(`SWITCHED TO: ${scannerNames[scannerType]}`);
-        }
-
-        // --- APPLY PRESET CONFIGURATIONS ---
-        function applyPreset(preset) {
-            const presets = {
-                'turbo': { delay: 50, maxSymbols: 5000 },
-                'aggressive': { delay: 100, maxSymbols: 2500 },
-                'balanced': { delay: 150, maxSymbols: 1000 },
-                'safe': { delay: 250, maxSymbols: 500 }
-            };
-
-            const config = presets[preset];
-            if (config) {
-                document.getElementById('rateLimit').value = config.delay;
-                document.getElementById('maxSymbols').value = config.maxSymbols;
-                log(`PRESET APPLIED: ${preset.toUpperCase()} (${config.delay}ms delay, ${config.maxSymbols.toLocaleString()} symbols max)`);
-            }
-        }
-
-        // --- API KEY PERSISTENCE (localStorage) ---
-        function loadApiKey() {
-            const savedKey = localStorage.getItem('polygon_api_key');
-            if (savedKey) {
-                document.getElementById('apiKey').value = savedKey;
-                log('API KEY LOADED FROM STORAGE');
-            } else {
-                // Try to load from server .env (optional)
-                const defaultKey = '08bqd7Ew8fw1b7QcixwkTea1UvJHdRkD';
-                document.getElementById('apiKey').value = defaultKey;
-                localStorage.setItem('polygon_api_key', defaultKey);
-                log('API KEY PRE-FILLED');
-            }
-        }
-
-        // API keys now loaded globally from .env via /api/config endpoint
-        // No need for individual save/load functions
-
-        // --- FETCH ALL SYMBOLS FROM POLYGON.IO ---
-        async function fetchAllSymbols(apiKey, marketType = 'all') {
-            log("LOADING SYMBOLS FROM POLYGON.IO...");
-            let allTickers = [];
-            let nextUrl = `${API_BASE}/v3/reference/tickers?market=stocks&active=true&limit=1000&apiKey=${apiKey}`;
-
-            // Map market types
-            if (marketType === 'crypto') {
-                nextUrl = `${API_BASE}/v3/reference/tickers?market=crypto&active=true&limit=1000&apiKey=${apiKey}`;
-            } else if (marketType === 'etf') {
-                nextUrl = `${API_BASE}/v3/reference/tickers?type=ETF&active=true&limit=1000&apiKey=${apiKey}`;
-            } else if (marketType === 'stocks') {
-                nextUrl = `${API_BASE}/v3/reference/tickers?market=stocks&active=true&limit=1000&apiKey=${apiKey}`;
-            }
-
-            try {
-                // Paginate through all results
-                while (nextUrl && allTickers.length < 15000) {
-                    const res = await fetch(nextUrl);
-                    const json = await res.json();
-
-                    if (json.results && json.results.length > 0) {
-                        allTickers = allTickers.concat(json.results);
-                        stats(`${allTickers.length.toLocaleString()} SYMBOLS LOADED`);
-                    }
-
-                    // Check for next page
-                    if (json.next_url) {
-                        nextUrl = `${json.next_url}&apiKey=${apiKey}`;
-                        await sleep(250); // Rate limit
-                    } else {
-                        break;
-                    }
-                }
-
-                log(`LOADED ${allTickers.length.toLocaleString()} SYMBOLS`);
-                return allTickers;
-            } catch (e) {
-                console.error("Error fetching symbols:", e);
-                alert("Failed to load symbols. Check API key and try again.");
-                return [];
-            }
-        }
-
-        // --- SORT SYMBOLS ---
-        function sortSymbols(symbols, sortBy) {
-            if (sortBy === 'volume') {
-                // Sort by volume (use weighted_shares_outstanding as proxy)
-                return symbols.sort((a, b) => (b.weighted_shares_outstanding || 0) - (a.weighted_shares_outstanding || 0));
-            } else if (sortBy === 'market_cap') {
-                return symbols.sort((a, b) => (b.market_cap || 0) - (a.market_cap || 0));
-            } else {
-                // Random shuffle
-                return symbols.sort(() => Math.random() - 0.5);
-            }
-        }
-
-        // --- MATH FUNCTIONS ---
-        function calculateSMA(data, period) {
-            if (data.length < period) return null;
-            let sum = 0;
-            for (let i = 0; i < period; i++) sum += data[i].c;
-            return sum / period;
-        }
-
-        function calculateRSI(data, period = 14) {
-            if (data.length < period + 1) return null;
-            let gains = 0, losses = 0;
-
-            for (let i = data.length - period - 1; i < data.length - 1; i++) {
-                const change = data[i+1].c - data[i].c;
-                if (change > 0) gains += change;
-                else losses -= change;
-            }
-
-            let avgGain = gains / period;
-            let avgLoss = losses / period;
-
-            const change = data[data.length - 1].c - data[data.length - 2].c;
-            if (change > 0) {
-                avgGain = (avgGain * (period - 1) + change) / period;
-                avgLoss = (avgLoss * (period - 1)) / period;
-            } else {
-                avgGain = (avgGain * (period - 1)) / period;
-                avgLoss = (avgLoss * (period - 1) + Math.abs(change)) / period;
-            }
-
-            if (avgLoss === 0) return 100;
-            const rs = avgGain / avgLoss;
-            return 100 - (100 / (1 + rs));
-        }
-
-        function calculateBollinger(data, period = 20) {
-            if (data.length < period) return null;
-            const sma = calculateSMA(data, period);
-
-            let sumSqDiff = 0;
-            for(let i = 0; i < period; i++) {
-                const val = data[(data.length - 1) - i].c;
-                sumSqDiff += Math.pow((val - sma), 2);
-            }
-            const stdDev = Math.sqrt(sumSqDiff / period);
-
-            const upper = sma + (2 * stdDev);
-            const lower = sma - (2 * stdDev);
-            const width = (upper - lower) / sma;
-
-            return { width, upper, lower };
-        }
-
-        // --- API FETCHING ---
-        async function fetchBars(ticker, apiKey) {
-            const end = new Date().toISOString().split('T')[0];
-            const start = new Date(Date.now() - (100 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0];
-
-            const url = `${API_BASE}/v2/aggs/ticker/${ticker}/range/1/day/${start}/${end}?adjusted=true&sort=asc&limit=120&apiKey=${apiKey}`;
-            try {
-                const res = await fetch(url);
-                const json = await res.json();
-                return json.results || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        async function fetchNews(ticker, apiKey) {
-            const url = `${API_BASE}/v2/reference/news?ticker=${ticker}&limit=5&apiKey=${apiKey}`;
-            try {
-                const res = await fetch(url);
-                const json = await res.json();
-                return json.results || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        // --- FETCH TICKER DETAILS (Company Name) ---
-        async function fetchTickerDetails(ticker, apiKey) {
-            try {
-                const url = `${API_BASE}/v3/reference/tickers/${ticker}?apiKey=${apiKey}`;
-                const res = await fetch(url);
-                const json = await res.json();
-                return json.results?.name || ticker;
-            } catch (e) {
-                return ticker;
-            }
-        }
-
-        // --- ANALYZE SINGLE TICKER ---
-        async function analyzeTicker(ticker, apiKey) {
-            const [bars, news, companyName] = await Promise.all([
-                fetchBars(ticker, apiKey),
-                fetchNews(ticker, apiKey),
-                fetchTickerDetails(ticker, apiKey)
-            ]);
-
-            if(bars.length < 50) return null;
-
-            const current = bars[bars.length - 1];
-            const prev = bars[bars.length - 2];
-
-            const sma20 = calculateSMA(bars.slice(-20), 20);
-            const sma50 = calculateSMA(bars.slice(-50), 50);
-            const rsi = calculateRSI(bars, 14);
-            const bb = calculateBollinger(bars, 20);
-
-            let volSum = 0;
-            for(let i=1; i<=20; i++) volSum += bars[bars.length-i].v;
-            const avgVol = volSum / 20;
-
-            const price5dAgo = bars[bars.length - 6].c;
-            const perf5d = ((current.c - price5dAgo) / price5dAgo) * 100;
-
-            let eventRisk = false;
-            const riskyKeywords = ['EARNINGS', 'REPORT', 'DIVIDEND', 'SEC', 'INVESTIGATION'];
-            news.forEach(n => {
-                const title = n.title.toUpperCase();
-                if(riskyKeywords.some(kw => title.includes(kw))) eventRisk = true;
-            });
-
-            let score = 0;
-            let checks = [];
-
-            // Adapt scoring logic based on scan mode (LONG vs SHORT)
-            if (scanMode === 'long') {
-                // LONG MODE: Looking for uptrends and bullish signals
-                const trendPass = current.c > sma20;
-                if(trendPass) score++;
-                checks.push({ name: "🔺 Uptrend (Price > SMA20)", pass: trendPass, val: `${current.c.toFixed(2)} > ${sma20.toFixed(2)}` });
-
-                const volPass = current.v > avgVol || (current.c > prev.c && current.v > prev.v);
-                if(volPass) score++;
-                checks.push({ name: "🔺 Buying Pressure (High Volume)", pass: volPass, val: `${(current.v/1000000).toFixed(1)}M` });
-
-                const rsPass = perf5d > SPY_PERFORMANCE;
-                if(rsPass) score++;
-                checks.push({ name: "🔺 Outperforming Market", pass: rsPass, val: `${perf5d.toFixed(2)}% vs SPY ${SPY_PERFORMANCE.toFixed(2)}%` });
-
-                const rsiPass = rsi >= 50 && rsi <= 70;
-                if(rsiPass) score++;
-                checks.push({ name: "🔺 Bullish RSI Zone (50-70)", pass: rsiPass, val: rsi.toFixed(1) });
-
-                const weeklyPass = current.c > sma50;
-                if(weeklyPass) score++;
-                checks.push({ name: "🔺 Weekly Uptrend (> SMA50)", pass: weeklyPass, val: "Bullish" });
-
-                let minLow = 999999;
-                for(let i=1; i<=5; i++) minLow = Math.min(minLow, bars[bars.length-i].l);
-                const stopDist = ((current.c - minLow) / current.c) * 100;
-                const stopPass = stopDist < 7;
-                if(stopPass) score++;
-                checks.push({ name: "🔺 Stop Below < 7% (Long Protection)", pass: stopPass, val: `-${stopDist.toFixed(2)}%` });
-
-            } else {
-                // SHORT MODE: Looking for downtrends and bearish signals
-                const trendPass = current.c < sma20;
-                if(trendPass) score++;
-                checks.push({ name: "🔻 Downtrend (Price < SMA20)", pass: trendPass, val: `${current.c.toFixed(2)} < ${sma20.toFixed(2)}` });
-
-                const volPass = current.v > avgVol || (current.c < prev.c && current.v > prev.v);
-                if(volPass) score++;
-                checks.push({ name: "🔻 Selling Pressure (High Volume)", pass: volPass, val: `${(current.v/1000000).toFixed(1)}M` });
-
-                const rsPass = perf5d < SPY_PERFORMANCE;
-                if(rsPass) score++;
-                checks.push({ name: "🔻 Underperforming Market", pass: rsPass, val: `${perf5d.toFixed(2)}% vs SPY ${SPY_PERFORMANCE.toFixed(2)}%` });
-
-                const rsiPass = rsi >= 30 && rsi <= 50;
-                if(rsiPass) score++;
-                checks.push({ name: "🔻 Bearish RSI Zone (30-50)", pass: rsiPass, val: rsi.toFixed(1) });
-
-                const weeklyPass = current.c < sma50;
-                if(weeklyPass) score++;
-                checks.push({ name: "🔻 Weekly Downtrend (< SMA50)", pass: weeklyPass, val: "Bearish" });
-
-                let maxHigh = 0;
-                for(let i=1; i<=5; i++) maxHigh = Math.max(maxHigh, bars[bars.length-i].h);
-                const stopDist = ((maxHigh - current.c) / current.c) * 100;
-                const stopPass = stopDist < 7;
-                if(stopPass) score++;
-                checks.push({ name: "🔻 Stop Above < 7% (Short Protection)", pass: stopPass, val: `+${stopDist.toFixed(2)}%` });
-            }
-
-            const eventPass = !eventRisk;
-            if(eventPass) score++;
-            checks.push({ name: "No News/Earnings Risk", pass: eventPass, val: eventRisk ? "RISK DETECTED" : "Clear" });
-
-            const squeezePass = bb.width < 0.12;
-            if(squeezePass) score += 1.5;
-            checks.push({ name: "Volatility Squeeze", pass: squeezePass, val: `Width: ${(bb.width*100).toFixed(1)}%` });
-
-            return {
-                ticker: ticker,
-                name: companyName,
-                price: current.c,
-                score: score,
-                checks: checks,
-                bbWidth: bb.width,
-                rsi: rsi
-            };
-        }
-
-        // --- AUTO SCAN ---
-        async function startAutoScan() {
-            let key = document.getElementById('apiKey').value.trim();
-
-            // If field is empty, use global API key from .env
-            if (!key) {
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            // If still no key, reload from config
-            if (!key) {
-                await loadGlobalAPIKeys();
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            if (!key) {
-                alert("API Key not loaded. Please check your .env file for POLYGON_IO_API_KEY");
-                return;
-            }
-
-            const useManual = document.getElementById('useManualTickers').checked;
-            const minScore = parseFloat(document.getElementById('minScore').value);
-            const maxSymbols = parseInt(document.getElementById('maxSymbols').value);
-            const marketType = document.getElementById('marketType').value;
-            const sortBy = document.getElementById('sortBy').value;
-            const rateLimit = parseInt(document.getElementById('rateLimit').value);
-
-            scanStopped = false;
-            scanResults = [];
-            scanStartTime = Date.now();
-
-            document.getElementById('autoScanBtn').disabled = true;
-            document.getElementById('stopBtn').disabled = false;
-            document.getElementById('progressSection').classList.remove('hidden');
-            document.getElementById('resultsContainer').innerHTML = '';
-
-            // 1. Get Symbols
-            let symbolsToScan = [];
-
-            if (useManual) {
-                const tickersRaw = document.getElementById('tickers').value.toUpperCase();
-                if(!tickersRaw) { alert("Please enter tickers"); return; }
-                symbolsToScan = tickersRaw.split(',').map(t => t.trim()).filter(t => t.length > 0);
-            } else {
-                const symbols = await fetchAllSymbols(key, marketType);
-                if (symbols.length === 0) return;
-
-                // Sort and limit
-                const sorted = sortSymbols(symbols, sortBy);
-                symbolsToScan = sorted.slice(0, maxSymbols).map(s => s.ticker);
-            }
-
-            log(`SCANNING ${symbolsToScan.length} SYMBOLS (MIN SCORE: ${minScore}+)`);
-
-            // 2. Get Benchmark (SPY)
-            const spyData = await fetchBars('SPY', key);
-            if(spyData.length > 5) {
-                const spyStart = spyData[spyData.length - 6].c;
-                const spyEnd = spyData[spyData.length - 1].c;
-                SPY_PERFORMANCE = ((spyEnd - spyStart) / spyStart) * 100;
-            }
-
-            // 3. Scan Loop
-            let scanned = 0;
-            let skipped = 0;
-            let qualified = 0;
-
-            for (let i = 0; i < symbolsToScan.length; i++) {
-                if (scanStopped) {
-                    log("SCAN STOPPED BY USER");
-                    break;
-                }
-
-                const ticker = symbolsToScan[i];
-                log(`SCANNING ${ticker} (${i+1}/${symbolsToScan.length})`);
-
-                const result = await analyzeTicker(ticker, key);
-
-                if (result) {
-                    scanned++;
-                    if (result.score >= minScore) {
-                        qualified++;
-                        scanResults.push(result);
-
-                        // Sort and re-render
-                        scanResults.sort((a, b) => b.score - a.score);
-                        renderResults(scanResults);
-                    }
-                } else {
-                    skipped++;
-                }
-
-                // Update Progress
-                const progress = ((i + 1) / symbolsToScan.length * 100).toFixed(1);
-                document.getElementById('progressBar').style.width = progress + '%';
-                document.getElementById('progressText').innerText = `${i+1} / ${symbolsToScan.length} (${progress}%)`;
-                document.getElementById('scannedCount').innerText = scanned;
-                document.getElementById('skippedCount').innerText = skipped;
-                document.getElementById('qualifiedCount').innerText = qualified;
-
-                // Calculate ETA
-                const elapsed = (Date.now() - scanStartTime) / 1000;
-                const rate = (i + 1) / elapsed;
-                const remaining = (symbolsToScan.length - (i + 1)) / rate;
-                const etaMin = Math.floor(remaining / 60);
-                const etaSec = Math.floor(remaining % 60);
-                document.getElementById('etaDisplay').innerText = `${etaMin}m ${etaSec}s`;
-
-                await sleep(rateLimit);
-            }
-
-            log(`SCAN COMPLETE! ${qualified} QUALIFIED SYMBOLS (SCORE ${minScore}+)`);
-            document.getElementById('autoScanBtn').disabled = false;
-            document.getElementById('stopBtn').disabled = true;
-        }
-
-        function stopScan() {
-            scanStopped = true;
-            document.getElementById('stopBtn').disabled = true;
-        }
-
-        // ==========================================
-        // REGIME SCANNER LOGIC (26-Day Kijun-sen)
-        // ==========================================
-
-        let regimeScanResults = [];
-        let regimeScanStopped = false;
-        let regimeScanStartTime = 0;
-
-        // Load API key for regime scanner
-        function loadRegimeApiKey() {
-            const savedKey = localStorage.getItem('polygon_api_key');
-            if (savedKey) {
-                document.getElementById('regimeApiKey').value = savedKey;
-            } else {
-                const defaultKey = '08bqd7Ew8fw1b7QcixwkTea1UvJHdRkD';
-                document.getElementById('regimeApiKey').value = defaultKey;
-                localStorage.setItem('polygon_api_key', defaultKey);
-            }
-        }
-
-        // Regime API key auto-populated globally from .env
-
-        // Enable/disable manual ticker input for regime scanner
-        document.getElementById('regimeUseManualTickers').addEventListener('change', (e) => {
-            document.getElementById('regimeTickers').disabled = !e.target.checked;
-        });
-
-        // Calculate 26-Day Kijun-sen (Ichimoku Base Line)
-        function calculateKijunSen(data, period = 26) {
-            if (data.length < period) return null;
-
-            let highestHigh = -Infinity;
-            let lowestLow = Infinity;
-
-            for (let i = 0; i < period; i++) {
-                const bar = data[data.length - 1 - i];
-                highestHigh = Math.max(highestHigh, bar.h);
-                lowestLow = Math.min(lowestLow, bar.l);
-            }
-
-            return (highestHigh + lowestLow) / 2;
-        }
-
-        // Calculate ATR (Average True Range)
-        function calculateATR(data, period = 14) {
-            if (data.length < period + 1) return null;
-
-            let trSum = 0;
-            for (let i = data.length - period; i < data.length; i++) {
-                const current = data[i];
-                const prev = data[i - 1];
-
-                const tr = Math.max(
-                    current.h - current.l,
-                    Math.abs(current.h - prev.c),
-                    Math.abs(current.l - prev.c)
-                );
-                trSum += tr;
-            }
-
-            return trSum / period;
-        }
-
-        // Analyze ticker for Regime Scanner
-        async function analyzeTickerRegime(ticker, apiKey, rsiThreshold) {
-            const [bars, companyName] = await Promise.all([
-                fetchBars(ticker, apiKey),
-                fetchTickerDetails(ticker, apiKey)
-            ]);
-
-            if (bars.length < 50) return null;
-
-            const current = bars[bars.length - 1];
-            const currentPrice = current.c;
-
-            // Calculate indicators
-            const kijunSen = calculateKijunSen(bars, 26);
-            const sma20 = calculateSMA(bars.slice(-20), 20);
-            const rsi = calculateRSI(bars, 14);
-            const atr = calculateATR(bars, 14);
-
-            if (!kijunSen || !sma20 || !rsi || !atr) return null;
-
-            // Check RSI oversold trigger
-            if (rsi >= rsiThreshold) return null;
-
-            // Determine regime
-            const isAboveKijun = currentPrice > kijunSen;
-            const regime = isAboveKijun ? 'BULL' : 'BEAR';
-            const regimeColor = isAboveKijun ? 'green' : 'red';
-
-            // Calculate stops and targets based on mode
-            let stopLoss, target, riskAmount, rewardAmount, rr;
-
-            if (scanMode === 'long') {
-                // Long setup
-                stopLoss = currentPrice - (atr * 2.0);
-                target = sma20;
-                riskAmount = currentPrice - stopLoss;
-                rewardAmount = target - currentPrice;
-            } else {
-                // Short setup
-                stopLoss = currentPrice + (atr * 2.0);
-                target = sma20;
-                riskAmount = stopLoss - currentPrice;
-                rewardAmount = currentPrice - target;
-            }
-
-            rr = riskAmount > 0 ? (rewardAmount / riskAmount) : 0;
-
-            // Only show setups with positive R/R
-            if (rr <= 0) return null;
-
-            return {
-                ticker: ticker,
-                name: companyName,
-                price: currentPrice,
-                regime: regime,
-                regimeColor: regimeColor,
-                regimeLevel: kijunSen,
-                rsi: rsi,
-                atr: atr,
-                stopLoss: stopLoss,
-                target: target,
-                rr: rr,
-                riskAmount: riskAmount,
-                rewardAmount: rewardAmount
-            };
-        }
-
-        // Start Regime Scan
-        async function startRegimeScan() {
-            let key = document.getElementById('regimeApiKey').value.trim();
-
-            // If field is empty, use global API key from .env
-            if (!key) {
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            // If still no key, reload from config
-            if (!key) {
-                await loadGlobalAPIKeys();
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            if (!key) {
-                alert("API Key not loaded. Please check your .env file for POLYGON_IO_API_KEY");
-                return;
-            }
-
-            const useManual = document.getElementById('regimeUseManualTickers').checked;
-            const rsiThreshold = parseFloat(document.getElementById('regimeRsiThreshold').value);
-            const maxSymbols = parseInt(document.getElementById('regimeMaxSymbols').value);
-            const marketType = document.getElementById('regimeMarketType').value;
-            const sortBy = document.getElementById('regimeSortBy').value;
-            const rateLimit = parseInt(document.getElementById('regimeRateLimit').value);
-
-            regimeScanStopped = false;
-            regimeScanResults = [];
-            regimeScanStartTime = Date.now();
-
-            document.getElementById('regimeScanBtn').disabled = true;
-            document.getElementById('regimeStopBtn').disabled = false;
-            document.getElementById('regimeProgressSection').classList.remove('hidden');
-            document.getElementById('regimeResultsContainer').innerHTML = '';
-
-            // Get symbols
-            let symbolsToScan = [];
-
-            if (useManual) {
-                const tickersRaw = document.getElementById('regimeTickers').value.toUpperCase();
-                if (!tickersRaw) { alert("Please enter tickers"); return; }
-                symbolsToScan = tickersRaw.split(',').map(t => t.trim()).filter(t => t.length > 0);
-            } else {
-                const symbols = await fetchAllSymbols(key, marketType);
-                if (symbols.length === 0) return;
-
-                const sorted = sortSymbols(symbols, sortBy);
-                symbolsToScan = sorted.slice(0, maxSymbols).map(s => s.ticker);
-            }
-
-            log(`REGIME SCAN: ${symbolsToScan.length} SYMBOLS (RSI < ${rsiThreshold})`);
-
-            // Scan loop
-            let scanned = 0;
-            let skipped = 0;
-            let qualified = 0;
-
-            for (let i = 0; i < symbolsToScan.length; i++) {
-                if (regimeScanStopped) {
-                    log("REGIME SCAN STOPPED BY USER");
-                    break;
-                }
-
-                const ticker = symbolsToScan[i];
-                log(`REGIME SCANNING ${ticker} (${i+1}/${symbolsToScan.length})`);
-
-                const result = await analyzeTickerRegime(ticker, key, rsiThreshold);
-
-                if (result) {
-                    scanned++;
-                    qualified++;
-                    regimeScanResults.push(result);
-
-                    // Sort by R/R ratio
-                    regimeScanResults.sort((a, b) => b.rr - a.rr);
-                    renderRegimeResults(regimeScanResults);
-                } else {
-                    skipped++;
-                }
-
-                // Update progress
-                const progress = ((i + 1) / symbolsToScan.length * 100).toFixed(1);
-                document.getElementById('regimeProgressBar').style.width = progress + '%';
-                document.getElementById('regimeProgressText').innerText = `${i+1} / ${symbolsToScan.length} (${progress}%)`;
-                document.getElementById('regimeScannedCount').innerText = scanned;
-                document.getElementById('regimeSkippedCount').innerText = skipped;
-                document.getElementById('regimeQualifiedCount').innerText = qualified;
-
-                // Calculate ETA
-                const elapsed = (Date.now() - regimeScanStartTime) / 1000;
-                const rate = (i + 1) / elapsed;
-                const remaining = (symbolsToScan.length - (i + 1)) / rate;
-                const etaMin = Math.floor(remaining / 60);
-                const etaSec = Math.floor(remaining % 60);
-                document.getElementById('regimeEtaDisplay').innerText = `${etaMin}m ${etaSec}s`;
-
-                await sleep(rateLimit);
-            }
-
-            log(`REGIME SCAN COMPLETE! ${qualified} QUALIFIED (RSI < ${rsiThreshold})`);
-            document.getElementById('regimeScanBtn').disabled = false;
-            document.getElementById('regimeStopBtn').disabled = true;
-        }
-
-        function stopRegimeScan() {
-            regimeScanStopped = true;
-            document.getElementById('regimeStopBtn').disabled = true;
-        }
-
-        // Render Regime Results
-        function renderRegimeResults(results) {
-            const container = document.getElementById('regimeResultsContainer');
-            container.innerHTML = '';
-
-            results.forEach(r => {
-                const regimeBadgeClass = r.regimeColor === 'green'
-                    ? 'bg-green-900 text-green-200 border border-green-600'
-                    : 'bg-red-900 text-red-200 border border-red-600';
-
-                const rrBadgeClass = r.rr >= 3
-                    ? 'bg-purple-900 text-purple-200'
-                    : r.rr >= 2
-                        ? 'bg-blue-900 text-blue-200'
-                        : 'bg-slate-900 text-slate-400';
-
-                const modeLabel = scanMode === 'long' ? 'BUY DIP' : 'SHORT CRASH';
-                const stopLabel = scanMode === 'long' ? 'STOP BELOW' : 'STOP ABOVE';
-
-                let html = `
-                <div class="result-card p-6 rounded-lg border-l-4 ${r.regimeColor === 'green' ? 'border-green-500' : 'border-red-500'}">
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <!-- Left: Ticker Info -->
-                        <div class="md:w-1/4 flex flex-col justify-center items-center md:items-start text-center md:text-left border-b md:border-b-0 md:border-r border-slate-700 pb-4 md:pb-0 pr-0 md:pr-4">
-                            <div class="text-3xl font-black text-white mb-1">${r.ticker}</div>
-                            <div class="text-xs text-slate-500 font-medium mb-2 max-w-[200px] truncate" title="${r.name}">${r.name}</div>
-                            <div class="text-xl text-slate-400 font-mono mb-3">$${r.price.toFixed(2)}</div>
-                            <div class="px-3 py-1 rounded text-xs font-bold uppercase mb-2 ${regimeBadgeClass}">
-                                ${r.regime === 'BULL' ? '🟢 BULL REGIME' : '🔴 BEAR REGIME'}
-                            </div>
-                            <div class="text-xs text-slate-500">Kijun-sen: $${r.regimeLevel.toFixed(2)}</div>
-                        </div>
-
-                        <!-- Right: Trade Setup -->
-                        <div class="md:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <div class="text-xs text-slate-400 uppercase font-mono">📊 Indicators</div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">RSI (14):</span>
-                                    <span class="text-yellow-400 font-bold ml-2">${r.rsi.toFixed(1)}</span>
-                                    <span class="text-green-400 ml-1">✓ OVERSOLD</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">ATR (14):</span>
-                                    <span class="text-blue-400 font-mono ml-2">$${r.atr.toFixed(2)}</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">Strategy:</span>
-                                    <span class="text-white font-bold ml-2">${modeLabel}</span>
-                                </div>
-                            </div>
-
-                            <div class="space-y-2">
-                                <div class="text-xs text-slate-400 uppercase font-mono">🎯 Trade Setup</div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">Entry:</span>
-                                    <span class="text-white font-bold ml-2">$${r.price.toFixed(2)}</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">${stopLabel}:</span>
-                                    <span class="text-red-400 font-mono ml-2">$${r.stopLoss.toFixed(2)}</span>
-                                    <span class="text-slate-600 ml-1">(-${((r.riskAmount / r.price) * 100).toFixed(1)}%)</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">Target (SMA20):</span>
-                                    <span class="text-green-400 font-mono ml-2">$${r.target.toFixed(2)}</span>
-                                    <span class="text-slate-600 ml-1">(+${((r.rewardAmount / r.price) * 100).toFixed(1)}%)</span>
-                                </div>
-                            </div>
-
-                            <div class="col-span-1 md:col-span-2 mt-2 p-3 bg-slate-800 rounded border border-slate-700">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <span class="text-slate-400 text-xs uppercase">Risk/Reward Ratio:</span>
-                                        <span class="text-2xl font-black ml-3 ${rrBadgeClass} px-3 py-1 rounded">${r.rr.toFixed(2)}R</span>
-                                    </div>
-                                    <a href="https://www.tradingview.com/chart/?symbol=${r.ticker}" target="_blank" class="px-4 py-2 bg-blue-900 hover:bg-blue-800 text-blue-200 rounded text-xs font-bold uppercase">
-                                        📈 VIEW CHART
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                `;
-
-                container.innerHTML += html;
-            });
-        }
-
-        // Load regime API key on page load
-        window.addEventListener('DOMContentLoaded', loadRegimeApiKey);
-
-        // ==========================================
-        // END REGIME SCANNER LOGIC
-        // ==========================================
-
-        // ==========================================
-        // COT SCANNER LOGIC (CFTC Extremes)
-        // ==========================================
-
-        let cotScanResults = [];
-        let cotScanStopped = false;
-        let cotScanStartTime = 0;
-
-        // COT API key auto-populated globally from .env
-
-        // Fetch real COT Index from CFTC backend
-        async function fetchCOTIndex(ticker) {
-            try {
-                const response = await fetch(`http://localhost:5005/api/cot/market/${ticker}`);
-                const json = await response.json();
-
-                if (json.success && json.data) {
-                    return json.data;
-                }
-                return null;
-            } catch (e) {
-                console.error(`Error fetching COT data for ${ticker}:`, e);
-                return null;
-            }
-        }
-
-        // Analyze market for COT Scanner
-        async function analyzeCOTMarket(ticker, name, apiKey) {
-            try {
-                // Fetch real CFTC COT data
-                const cotData = await fetchCOTIndex(ticker);
-
-                if (!cotData || cotData.cot_index === null) {
-                    console.log(`No COT data available for ${ticker}`);
-                    return null;
-                }
-
-                // Use REAL CFTC COT Index
-                const cotIndex = cotData.cot_index;
-
-                // Determine signal based on REAL COT Index
-                let signal = 'NEUTRAL';
-                let signalColor = 'gray';
-                let signalText = 'No Extreme';
-
-                if (cotIndex >= 95) {
-                    signal = 'BEARISH EXTREME';
-                    signalColor = 'red';
-                    signalText = 'Commercials Bearish - Price at Top';
-                } else if (cotIndex <= 5) {
-                    signal = 'BULLISH EXTREME';
-                    signalColor = 'green';
-                    signalText = 'Commercials Bullish - Price at Bottom';
-                } else if (cotIndex >= 90) {
-                    signal = 'MODERATE BEARISH';
-                    signalColor = 'orange';
-                    signalText = 'Nearing Top';
-                } else if (cotIndex <= 10) {
-                    signal = 'MODERATE BULLISH';
-                    signalColor = 'lightgreen';
-                    signalText = 'Nearing Bottom';
-                }
-
-                // Try to fetch price data for regime and RSI (optional)
-                let currentPrice = null;
-                let regime = 'N/A';
-                let regimeLevel = null;
-                let rsi = null;
-
-                try {
-                    const bars = await fetchBars(ticker, apiKey);
-                    if (bars.length >= 50) {
-                        const current = bars[bars.length - 1];
-                        currentPrice = current.c;
-
-                        // Calculate 26-Day Regime (for confirmation)
-                        const kijunSen = calculateKijunSen(bars, 26);
-                        const isAboveKijun = currentPrice > kijunSen;
-                        regime = isAboveKijun ? 'BULL' : 'BEAR';
-                        regimeLevel = kijunSen;
-
-                        // Calculate RSI for additional context
-                        rsi = calculateRSI(bars, 14);
-                    }
-                } catch (priceError) {
-                    console.log(`Could not fetch price data for ${ticker} (OK - using COT Index only)`);
-                }
-
-                return {
-                    ticker: ticker,
-                    name: name,
-                    price: currentPrice,
-                    cotIndex: cotIndex,
-                    netPosition: cotData.net_position,
-                    commLong: cotData.comm_long,
-                    commShort: cotData.comm_short,
-                    reportDate: cotData.report_date,
-                    signal: signal,
-                    signalColor: signalColor,
-                    signalText: signalText,
-                    regime: regime,
-                    regimeLevel: regimeLevel,
-                    rsi: rsi
-                };
-            } catch (e) {
-                console.error(`Error analyzing ${ticker}:`, e);
-                return null;
-            }
-        }
-
-        // All COT Markets (Auto-scan all)
-        const ALL_COT_MARKETS = [
-            // PRECIOUS METALS
-            { ticker: 'GC=F', name: 'Gold' },
-            { ticker: 'SI=F', name: 'Silver' },
-            { ticker: 'HG=F', name: 'Copper' },
-            { ticker: 'PL=F', name: 'Platinum' },
-            { ticker: 'PA=F', name: 'Palladium' },
-            // ENERGY
-            { ticker: 'CL=F', name: 'Crude Oil' },
-            { ticker: 'NG=F', name: 'Natural Gas' },
-            { ticker: 'RB=F', name: 'Gasoline' },
-            { ticker: 'HO=F', name: 'Heating Oil' },
-            // AGRICULTURE
-            { ticker: 'ZC=F', name: 'Corn' },
-            { ticker: 'ZS=F', name: 'Soybeans' },
-            { ticker: 'ZW=F', name: 'Wheat' },
-            { ticker: 'ZL=F', name: 'Soybean Oil' },
-            { ticker: 'ZM=F', name: 'Soybean Meal' },
-            { ticker: 'KE=F', name: 'Kansas Wheat' },
-            { ticker: 'CT=F', name: 'Cotton' },
-            { ticker: 'SB=F', name: 'Sugar' },
-            { ticker: 'CC=F', name: 'Cocoa' },
-            { ticker: 'KC=F', name: 'Coffee' },
-            { ticker: 'LBS=F', name: 'Lumber' },
-            { ticker: 'LE=F', name: 'Live Cattle' },
-            { ticker: 'HE=F', name: 'Lean Hogs' },
-            // CRYPTOCURRENCY
-            { ticker: 'BTC-USD', name: 'Bitcoin' },
-            { ticker: 'ETH-USD', name: 'Ethereum' },
-            // INDICES
-            { ticker: 'ES=F', name: 'E-mini S&P 500' },
-            { ticker: 'NQ=F', name: 'E-mini NASDAQ' },
-            { ticker: 'YM=F', name: 'E-mini Dow' },
-            { ticker: 'RTY=F', name: 'E-mini Russell 2000' },
-            { ticker: 'VIX=F', name: 'VIX Futures' },
-            // CURRENCIES
-            { ticker: '6E=F', name: 'EUR/USD' },
-            { ticker: '6J=F', name: 'JPY/USD' },
-            { ticker: '6B=F', name: 'GBP/USD' },
-            { ticker: '6A=F', name: 'AUD/USD' },
-            { ticker: '6C=F', name: 'CAD/USD' },
-            { ticker: '6S=F', name: 'CHF/USD' },
-            // { ticker: '6N=F', name: 'NZD/USD' },  // Not available in CFTC data
-            { ticker: '6M=F', name: 'MXN/USD' },
-            // TREASURIES
-            { ticker: 'ZB=F', name: '30-Year T-Bond' },
-            { ticker: 'ZN=F', name: '10-Year T-Note' },
-            { ticker: 'ZF=F', name: '5-Year T-Note' },
-            { ticker: 'ZT=F', name: '2-Year T-Note' }
-        ];
-
-        // Start COT Scan
-        async function startCOTScan() {
-            let key = document.getElementById('cotApiKey').value.trim();
-
-            // If field is empty, use global API key from .env
-            if (!key) {
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            // If still no key, reload from config
-            if (!key) {
-                await loadGlobalAPIKeys();
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            if (!key) {
-                alert("API Key not loaded. Please check your .env file for POLYGON_IO_API_KEY");
-                return;
-            }
-
-            const threshold = parseInt(document.getElementById('cotThreshold').value);
-
-            // Scan ALL markets automatically
-            const marketsToScan = ALL_COT_MARKETS;
-
-            cotScanStopped = false;
-            cotScanResults = [];
-            cotScanStartTime = Date.now();
-
-            document.getElementById('cotScanBtn').disabled = true;
-            document.getElementById('cotStopBtn').disabled = false;
-            document.getElementById('cotProgressSection').classList.remove('hidden');
-            document.getElementById('cotResultsContainer').innerHTML = '';
-
-            log(`COT SCAN: ${marketsToScan.length} MARKETS (Threshold: ${threshold}%)`);
-
-            // Scan loop
-            let scanned = 0;
-            let qualified = 0;
-
-            for (let i = 0; i < marketsToScan.length; i++) {
-                if (cotScanStopped) {
-                    log("COT SCAN STOPPED BY USER");
-                    break;
-                }
-
-                const market = marketsToScan[i];
-                log(`COT SCANNING ${market.name} (${i+1}/${marketsToScan.length})`);
-
-                const result = await analyzeCOTMarket(market.ticker, market.name, key);
-
-                if (result) {
-                    scanned++;
-
-                    // Check if extreme
-                    const isExtreme = (result.cotIndex >= (100 - threshold)) || (result.cotIndex <= threshold);
-
-                    if (isExtreme) {
-                        qualified++;
-                        cotScanResults.push(result);
-
-                        // Sort by COT Index (extremes first)
-                        cotScanResults.sort((a, b) => {
-                            const aExtreme = Math.min(a.cotIndex, 100 - a.cotIndex);
-                            const bExtreme = Math.min(b.cotIndex, 100 - b.cotIndex);
-                            return aExtreme - bExtreme;
-                        });
-
-                        renderCOTResults(cotScanResults);
-                    }
-                }
-
-                // Update progress
-                const progress = ((i + 1) / marketsToScan.length * 100).toFixed(1);
-                document.getElementById('cotProgressBar').style.width = progress + '%';
-                document.getElementById('cotProgressText').innerText = `${i+1} / ${marketsToScan.length} (${progress}%)`;
-                document.getElementById('cotScannedCount').innerText = scanned;
-                document.getElementById('cotQualifiedCount').innerText = qualified;
-
-                // Calculate ETA
-                const elapsed = (Date.now() - cotScanStartTime) / 1000;
-                const rate = (i + 1) / elapsed;
-                const remaining = (marketsToScan.length - (i + 1)) / rate;
-                const etaMin = Math.floor(remaining / 60);
-                const etaSec = Math.floor(remaining % 60);
-                document.getElementById('cotEtaDisplay').innerText = `${etaMin}m ${etaSec}s`;
-
-                await sleep(200); // Rate limit
-            }
-
-            log(`COT SCAN COMPLETE! ${qualified} EXTREMES FOUND (Threshold: ${threshold}%)`);
-            document.getElementById('cotScanBtn').disabled = false;
-            document.getElementById('cotStopBtn').disabled = true;
-        }
-
-        function stopCOTScan() {
-            cotScanStopped = true;
-            document.getElementById('cotStopBtn').disabled = true;
-        }
-
-        // Render COT Results (Heatmap Style)
-        function renderCOTResults(results) {
-            const container = document.getElementById('cotResultsContainer');
-            container.innerHTML = '';
+        function renderStocks(data, gridId, scannerType) {
+            const grid = document.getElementById(gridId);
+            const results = data.results || [];
 
             if (results.length === 0) {
-                container.innerHTML = `
-                    <div class="p-8 text-center bg-slate-800 rounded border border-slate-700">
-                        <p class="text-slate-400">No extremes found. Try lowering the threshold or scanning more markets.</p>
-                    </div>
-                `;
+                grid.innerHTML = '<div class="loading-overlay">No results available</div>';
                 return;
             }
 
-            results.forEach(r => {
-                // Determine card styling based on COT Index
-                let bgColor, borderColor, badgeClass;
+            grid.innerHTML = results.map(stock => {
+                const signalClass = getSignalClass(stock.signal);
+                const metrics = getScannerMetrics(stock, scannerType);
 
-                if (r.cotIndex >= 95) {
-                    bgColor = 'bg-gradient-to-r from-red-900/30 to-red-800/20';
-                    borderColor = 'border-red-500';
-                    badgeClass = 'bg-red-900 text-red-200 border border-red-600';
-                } else if (r.cotIndex <= 5) {
-                    bgColor = 'bg-gradient-to-r from-green-900/30 to-green-800/20';
-                    borderColor = 'border-green-500';
-                    badgeClass = 'bg-green-900 text-green-200 border border-green-600';
-                } else if (r.cotIndex >= 90) {
-                    bgColor = 'bg-gradient-to-r from-orange-900/30 to-orange-800/20';
-                    borderColor = 'border-orange-500';
-                    badgeClass = 'bg-orange-900 text-orange-200 border border-orange-600';
-                } else {
-                    bgColor = 'bg-gradient-to-r from-cyan-900/30 to-cyan-800/20';
-                    borderColor = 'border-cyan-500';
-                    badgeClass = 'bg-cyan-900 text-cyan-200 border border-cyan-600';
-                }
-
-                const regimeBadgeClass = r.regime === 'BULL'
-                    ? 'bg-green-900 text-green-200'
-                    : r.regime === 'BEAR'
-                    ? 'bg-red-900 text-red-200'
-                    : 'bg-slate-700 text-slate-300';
-
-                let html = `
-                <div class="result-card p-6 rounded-lg border-l-4 ${borderColor} ${bgColor}">
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <!-- Left: Market Info -->
-                        <div class="md:w-1/4 flex flex-col justify-center items-center md:items-start text-center md:text-left border-b md:border-b-0 md:border-r border-slate-700 pb-4 md:pb-0 pr-0 md:pr-4">
-                            <div class="text-3xl font-black text-white mb-1">${r.ticker}</div>
-                            <div class="text-sm text-slate-400 font-medium mb-2">${r.name}</div>
-                            <div class="text-xl text-slate-300 font-mono mb-3">${r.price ? '$' + r.price.toFixed(2) : 'N/A'}</div>
-
-                            <div class="text-5xl font-black mb-2" style="color: ${r.cotIndex >= 50 ? '#ef4444' : '#10b981'}">
-                                ${r.cotIndex.toFixed(1)}
-                            </div>
-                            <div class="text-xs text-slate-500 mb-3">COT Index</div>
-
-                            <div class="px-3 py-1 rounded text-xs font-bold uppercase mb-2 ${badgeClass}">
-                                ${r.signal}
-                            </div>
+                return `
+                    <div class="stock-card">
+                        <div class="stock-header">
+                            <div class="stock-symbol">${stock.symbol}</div>
+                            <div class="score-badge">${stock.score || 0}</div>
                         </div>
-
-                        <!-- Right: Analysis -->
-                        <div class="md:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <div class="text-xs text-slate-400 uppercase font-mono">📊 CFTC Data (Real)</div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">Net Position:</span>
-                                    <span class="text-white font-bold ml-2">${r.netPosition ? r.netPosition.toLocaleString() : 'N/A'}</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">Comm. Long:</span>
-                                    <span class="text-green-400 font-mono ml-2">${r.commLong ? r.commLong.toLocaleString() : 'N/A'}</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">Comm. Short:</span>
-                                    <span class="text-red-400 font-mono ml-2">${r.commShort ? r.commShort.toLocaleString() : 'N/A'}</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">Report Date:</span>
-                                    <span class="text-blue-400 font-mono ml-2">${r.reportDate || 'N/A'}</span>
-                                </div>
-                                <div class="text-sm mt-2 pt-2 border-t border-slate-700">
-                                    <span class="text-slate-500">Regime:</span>
-                                    <span class="${regimeBadgeClass} px-2 py-1 rounded text-xs font-bold ml-2">${r.regime}</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-slate-500">RSI (14):</span>
-                                    <span class="text-yellow-400 font-bold ml-2">${r.rsi ? r.rsi.toFixed(1) : 'N/A'}</span>
-                                </div>
-                            </div>
-
-                            <div class="space-y-2">
-                                <div class="text-xs text-slate-400 uppercase font-mono">🎯 Trading Strategy</div>
-                                ${r.cotIndex >= 95 ? `
-                                    <div class="p-3 bg-red-900/30 border border-red-600/50 rounded">
-                                        <div class="text-sm font-bold text-red-200 mb-1">📉 BEARISH EXTREME</div>
-                                        <div class="text-xs text-red-300">Price at 26-week high. Commercials likely bearish. Consider shorts or take profits on longs.</div>
-                                    </div>
-                                ` : r.cotIndex <= 5 ? `
-                                    <div class="p-3 bg-green-900/30 border border-green-600/50 rounded">
-                                        <div class="text-sm font-bold text-green-200 mb-1">📈 BULLISH EXTREME</div>
-                                        <div class="text-xs text-green-300">Price at 26-week low. Commercials likely bullish. Consider longs or accumulation.</div>
-                                    </div>
-                                ` : `
-                                    <div class="p-3 bg-slate-800 border border-slate-600 rounded">
-                                        <div class="text-sm font-bold text-slate-300 mb-1">⚠️ MODERATE EXTREME</div>
-                                        <div class="text-xs text-slate-400">Approaching extreme level. Monitor for confirmation.</div>
-                                    </div>
-                                `}
-                            </div>
-
-                            <div class="col-span-1 md:col-span-2 mt-2 p-3 bg-slate-800 rounded border border-slate-700">
-                                <div class="flex justify-between items-center">
-                                    <div class="text-xs text-slate-500">
-                                        ⚠️ COT Index: 0-100 scale. <5% = Bottom, >95% = Top (26-week range)
-                                    </div>
-                                    <a href="https://www.tradingview.com/chart/?symbol=${r.ticker}" target="_blank" class="px-4 py-2 bg-blue-900 hover:bg-blue-800 text-blue-200 rounded text-xs font-bold uppercase">
-                                        📈 VIEW CHART
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="stock-price">$${stock.price ? stock.price.toFixed(2) : '--'}</div>
+                        <div class="stock-metrics">
+                            ${metrics}
                         </div>
+                        <div class="signal-badge ${signalClass}">${stock.signal || 'N/A'}</div>
                     </div>
-                </div>
                 `;
-
-                container.innerHTML += html;
-            });
+            }).join('');
         }
 
-        // ==========================================
-        // END COT SCANNER LOGIC
-        // ==========================================
-
-        // ==========================================
-        // WHALE SCANNER LOGIC (Block Trades 25%+)
-        // ==========================================
-
-        let whaleScanStopped = false;
-        let whaleScanResults = [];
-        let whaleScanStartTime = 0;
-
-        // Whale API key auto-populated globally from .env
-
-        // Enable/disable whale ticker input based on checkbox
-        document.getElementById('whaleUseManualTickers')?.addEventListener('change', (e) => {
-            document.getElementById('whaleTickers').disabled = !e.target.checked;
-        });
-
-        async function startWhaleScan() {
-            let key = document.getElementById('whaleApiKey').value.trim();
-
-            // If field is empty, use global API key from .env
-            if (!key) {
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            // If still no key, reload from config
-            if (!key) {
-                await loadGlobalAPIKeys();
-                key = GLOBAL_API_KEYS.polygon;
-            }
-
-            if (!key) {
-                alert("API Key not loaded. Please check your .env file for POLYGON_IO_API_KEY");
-                return;
-            }
-
-            const threshold = parseInt(document.getElementById('whaleThreshold').value);
-            const useManual = document.getElementById('whaleUseManualTickers').checked;
-
-            whaleScanStopped = false;
-            whaleScanResults = [];
-            whaleScanStartTime = Date.now();
-
-            document.getElementById('whaleScanBtn').disabled = true;
-            document.getElementById('whaleStopBtn').disabled = false;
-            document.getElementById('whaleProgressSection').classList.remove('hidden');
-            document.getElementById('whaleResultsContainer').innerHTML = '';
-
-            // Get symbols to scan
-            let symbolsToScan = [];
-
-            if (useManual) {
-                const tickersRaw = document.getElementById('whaleTickers').value.toUpperCase();
-                if (!tickersRaw) { alert("Please enter tickers"); return; }
-                symbolsToScan = tickersRaw.split(',').map(t => t.trim()).filter(t => t.length > 0);
-            } else {
-                // Fetch all symbols from Polygon.io
-                const maxSymbols = parseInt(document.getElementById('regimeMaxSymbols')?.value || 2500);
-                const marketType = document.getElementById('regimeMarketType')?.value || 'all';
-                const sortBy = document.getElementById('regimeSortBy')?.value || 'market_cap';
-
-                const symbols = await fetchAllSymbols(key, marketType);
-                if (symbols.length === 0) return;
-
-                const sorted = sortSymbols(symbols, sortBy);
-                symbolsToScan = sorted.slice(0, maxSymbols).map(s => s.ticker);
-            }
-
-            log(`WHALE SCAN: ${symbolsToScan.length} SYMBOLS (>${threshold}% VOLUME SPIKE)`);
-
-            // Scan loop
-            let scanned = 0;
-            let skipped = 0;
-            let qualified = 0;
-
-            for (let i = 0; i < symbolsToScan.length; i++) {
-                if (whaleScanStopped) {
-                    log("WHALE SCAN STOPPED BY USER");
-                    break;
-                }
-
-                const ticker = symbolsToScan[i];
-                log(`WHALE SCANNING ${ticker} (${i+1}/${symbolsToScan.length})`);
-
-                const result = await analyzeWhaleActivity(ticker, key, threshold);
-
-                if (result) {
-                    scanned++;
-                    qualified++;
-                    whaleScanResults.push(result);
-
-                    // Sort by volume spike percentage (highest first)
-                    whaleScanResults.sort((a, b) => b.spikePercent - a.spikePercent);
-                    renderWhaleResults(whaleScanResults);
-                } else {
-                    skipped++;
-                }
-
-                // Update progress
-                const progress = ((i + 1) / symbolsToScan.length * 100).toFixed(1);
-                document.getElementById('whaleProgressBar').style.width = progress + '%';
-                document.getElementById('whaleProgressText').innerText = `${i+1} / ${symbolsToScan.length} (${progress}%)`;
-                document.getElementById('whaleScannedCount').innerText = scanned;
-                document.getElementById('whaleSkippedCount').innerText = skipped;
-                document.getElementById('whaleQualifiedCount').innerText = qualified;
-
-                // Calculate ETA
-                const elapsed = (Date.now() - whaleScanStartTime) / 1000;
-                const rate = (i + 1) / elapsed;
-                const remaining = (symbolsToScan.length - (i + 1)) / rate;
-                const etaMin = Math.floor(remaining / 60);
-                const etaSec = Math.floor(remaining % 60);
-                document.getElementById('whaleEtaDisplay').innerText = `${etaMin}m ${etaSec}s`;
-
-                await sleep(500); // Rate limit
-            }
-
-            log(`WHALE SCAN COMPLETE! ${qualified} WHALE ALERTS DETECTED`);
-            document.getElementById('whaleScanBtn').disabled = false;
-            document.getElementById('whaleStopBtn').disabled = true;
-        }
-
-        function stopWhaleScan() {
-            whaleScanStopped = true;
-            document.getElementById('whaleStopBtn').disabled = true;
-        }
-
-        // Analyze a single ticker for whale activity (block trades)
-        async function analyzeWhaleActivity(ticker, apiKey, thresholdPercent) {
-            try {
-                // Fetch 50 days of bars to calculate average volume
-                const bars = await fetchBars(ticker, apiKey, 50);
-                if (!bars || bars.length < 20) return null;
-
-                // Calculate 20-day average volume (excluding today)
-                const historicalBars = bars.slice(0, -1);
-                const avgVolume = historicalBars.reduce((sum, bar) => sum + bar.v, 0) / historicalBars.length;
-
-                // Get today's volume
-                const todayBar = bars[bars.length - 1];
-                const todayVolume = todayBar.v;
-                const currentPrice = todayBar.c;
-
-                // Calculate volume spike percentage
-                const spikePercent = ((todayVolume - avgVolume) / avgVolume) * 100;
-
-                // Check if volume spike meets threshold
-                if (spikePercent < thresholdPercent) return null;
-
-                // Calculate dollar volume (liquidity check)
-                const dollarVolume = todayVolume * currentPrice;
-
-                return {
-                    ticker: ticker,
-                    price: currentPrice,
-                    avgVolume: avgVolume,
-                    todayVolume: todayVolume,
-                    spikePercent: spikePercent,
-                    dollarVolume: dollarVolume,
-                    timestamp: new Date(todayBar.t).toLocaleString()
-                };
-
-            } catch (error) {
-                console.error(`Error analyzing ${ticker}:`, error);
-                return null;
-            }
-        }
-
-        // Render Whale Scanner Results
-        function renderWhaleResults(results) {
-            const container = document.getElementById('whaleResultsContainer');
-            container.innerHTML = '';
-
-            results.forEach(r => {
-                // Determine whale size based on spike percentage
-                let whaleEmoji = '🐋';
-                let sizeClass = 'bg-blue-900 text-blue-200';
-                let sizeLabel = 'WHALE';
-
-                if (r.spikePercent >= 200) {
-                    whaleEmoji = '🐋🐋🐋';
-                    sizeClass = 'bg-purple-900 text-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.6)]';
-                    sizeLabel = 'MEGA WHALE';
-                } else if (r.spikePercent >= 100) {
-                    whaleEmoji = '🐋🐋';
-                    sizeClass = 'bg-indigo-900 text-indigo-200 shadow-[0_0_15px_rgba(99,102,241,0.5)]';
-                    sizeLabel = 'BIG WHALE';
-                } else if (r.spikePercent >= 50) {
-                    whaleEmoji = '🐋';
-                    sizeClass = 'bg-blue-900 text-blue-200 shadow-[0_0_10px_rgba(59,130,246,0.4)]';
-                    sizeLabel = 'WHALE';
-                }
-
-                const html = `
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 hover:border-slate-600 transition-all">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-2">
-                                <div class="text-3xl font-black text-white">${r.ticker}</div>
-                                <div class="px-3 py-1 rounded text-xs font-bold uppercase ${sizeClass}">
-                                    ${whaleEmoji} ${sizeLabel}
-                                </div>
-                            </div>
-                            <div class="text-xl text-slate-400 font-mono">$${r.price.toFixed(2)}</div>
+        function getScannerMetrics(stock, scannerType) {
+            switch(scannerType) {
+                case 'momentum':
+                    return `
+                        <div class="metric">
+                            <div class="metric-label">SMA 20</div>
+                            <div class="metric-value">${stock.sma_20 ? stock.sma_20.toFixed(2) : '--'}</div>
                         </div>
-                        <div class="text-right">
-                            <div class="text-4xl font-black text-white mb-1">+${r.spikePercent.toFixed(1)}%</div>
-                            <div class="text-xs text-slate-500 uppercase">Volume Spike</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm border-t border-slate-800 pt-4">
-                        <div class="flex flex-col">
-                            <span class="text-slate-500 text-xs uppercase mb-1">Today's Volume</span>
-                            <span class="text-white font-mono font-bold">${formatVolume(r.todayVolume)}</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-slate-500 text-xs uppercase mb-1">20-Day Avg Volume</span>
-                            <span class="text-slate-400 font-mono">${formatVolume(r.avgVolume)}</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-slate-500 text-xs uppercase mb-1">Dollar Volume</span>
-                            <span class="text-green-400 font-mono font-bold">$${formatDollarVolume(r.dollarVolume)}</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-4 border-t border-slate-800">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-slate-500">Last Updated:</span>
-                            <span class="text-slate-400 font-mono">${r.timestamp}</span>
-                        </div>
-                    </div>
-                </div>
-                `;
-
-                container.innerHTML += html;
-            });
-        }
-
-        // Format volume numbers (K, M, B)
-        function formatVolume(volume) {
-            if (volume >= 1e9) return (volume / 1e9).toFixed(2) + 'B';
-            if (volume >= 1e6) return (volume / 1e6).toFixed(2) + 'M';
-            if (volume >= 1e3) return (volume / 1e3).toFixed(2) + 'K';
-            return volume.toFixed(0);
-        }
-
-        // Format dollar volume
-        function formatDollarVolume(dollars) {
-            if (dollars >= 1e9) return (dollars / 1e9).toFixed(2) + 'B';
-            if (dollars >= 1e6) return (dollars / 1e6).toFixed(2) + 'M';
-            if (dollars >= 1e3) return (dollars / 1e3).toFixed(2) + 'K';
-            return dollars.toFixed(0);
-        }
-
-        // ==========================================
-        // END WHALE SCANNER LOGIC
-        // ==========================================
-
-        // --- RENDERING ---
-        function renderResults(results) {
-            const container = document.getElementById('resultsContainer');
-            container.innerHTML = '';
-
-            results.forEach(r => {
-                let borderClass = 'score-low';
-                let badgeClass = 'bg-gray-900 text-gray-400';
-                let badgeText = 'SKIP';
-
-                // LONG MODE: Green = Bullish
-                if (scanMode === 'long') {
-                    if(r.score >= 5) { borderClass = 'score-med'; badgeClass = 'bg-yellow-900 text-yellow-200'; badgeText = 'WAIT'; }
-                    if(r.score >= 7) { borderClass = 'score-med'; badgeClass = 'bg-green-900 text-green-200'; badgeText = 'GO LONG'; }
-                    if(r.score >= 8.5) { borderClass = 'score-high'; badgeClass = 'bg-emerald-900 text-emerald-200 shadow-[0_0_15px_rgba(16,185,129,0.4)]'; badgeText = '🚀 STRONG BUY'; }
-                }
-                // SHORT MODE: Red = Bearish
-                else {
-                    if(r.score >= 5) { borderClass = 'score-med'; badgeClass = 'bg-orange-900 text-orange-200'; badgeText = 'WATCH'; }
-                    if(r.score >= 7) { borderClass = 'score-med'; badgeClass = 'bg-red-900 text-red-200'; badgeText = 'GO SHORT'; }
-                    if(r.score >= 8.5) { borderClass = 'score-high'; badgeClass = 'bg-rose-900 text-rose-200 shadow-[0_0_15px_rgba(225,29,72,0.4)]'; badgeText = '📉 STRONG SELL'; }
-                }
-
-                const percent = Math.min(100, (r.score / 9.5) * 100).toFixed(0);
-
-                let html = `
-                <div class="result-card p-6 rounded-lg ${borderClass} flex flex-col md:flex-row gap-6">
-                    <div class="md:w-1/4 border-b md:border-b-0 md:border-r border-slate-700 pb-4 md:pb-0 pr-0 md:pr-4 flex flex-col justify-center items-center md:items-start text-center md:text-left">
-                        <div class="text-3xl font-black text-white mb-1">${r.ticker}</div>
-                        <div class="text-xs text-slate-500 font-medium mb-2 max-w-[200px] truncate" title="${r.name || r.ticker}">${r.name || r.ticker}</div>
-                        <div class="text-xl text-slate-400 font-mono mb-3">$${r.price.toFixed(2)}</div>
-                        <div class="text-4xl font-black text-white mb-2">${percent}%</div>
-                        <div class="px-3 py-1 rounded text-xs font-bold uppercase ${badgeClass}">${badgeText}</div>
-                    </div>
-                    <div class="md:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8 text-sm">
-                `;
-
-                r.checks.forEach(c => {
-                    const icon = c.pass ? '✓' : '✕';
-                    const color = c.pass ? 'check-pass' : 'check-fail';
-                    html += `
-                        <div class="flex justify-between items-center ${color}">
-                            <span>${icon} ${c.name}</span>
-                            <span class="font-mono text-xs opacity-70">${c.val}</span>
+                        <div class="metric">
+                            <div class="metric-label">RSI</div>
+                            <div class="metric-value">${stock.rsi ? stock.rsi.toFixed(1) : '--'}</div>
                         </div>
                     `;
-                });
-
-                html += `</div></div>`;
-                container.innerHTML += html;
-            });
+                case 'breakout':
+                    return `
+                        <div class="metric">
+                            <div class="metric-label">Day High</div>
+                            <div class="metric-value">${stock.day_high ? stock.day_high.toFixed(2) : '--'}</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Volume</div>
+                            <div class="metric-value">${stock.volume ? formatVolume(stock.volume) : '--'}</div>
+                        </div>
+                    `;
+                case 'oversold':
+                    return `
+                        <div class="metric">
+                            <div class="metric-label">RSI</div>
+                            <div class="metric-value">${stock.rsi ? stock.rsi.toFixed(1) : '--'}</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Change</div>
+                            <div class="metric-value">${stock.change_pct ? stock.change_pct.toFixed(2) + '%' : '--'}</div>
+                        </div>
+                    `;
+                case 'volume':
+                    return `
+                        <div class="metric">
+                            <div class="metric-label">Avg Vol</div>
+                            <div class="metric-value">${stock.avg_volume ? formatVolume(stock.avg_volume) : '--'}</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Vol Ratio</div>
+                            <div class="metric-value">${stock.volume_ratio ? stock.volume_ratio.toFixed(2) + 'x' : '--'}</div>
+                        </div>
+                    `;
+                case 'trend':
+                    return `
+                        <div class="metric">
+                            <div class="metric-label">SMA 50</div>
+                            <div class="metric-value">${stock.sma_50 ? stock.sma_50.toFixed(2) : '--'}</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Strength</div>
+                            <div class="metric-value">${stock.trend_strength || '--'}</div>
+                        </div>
+                    `;
+                default:
+                    return '';
+            }
         }
+
+        function getSignalClass(signal) {
+            if (!signal) return 'signal-hold';
+            const sig = signal.toUpperCase();
+            if (sig === 'BUY') return 'signal-buy';
+            if (sig === 'SELL') return 'signal-sell';
+            if (sig === 'BREAKOUT') return 'signal-breakout';
+            if (sig === 'SURGE') return 'signal-surge';
+            if (sig === 'TREND') return 'signal-trend';
+            return 'signal-hold';
+        }
+
+        function generateDemoData(scannerType) {
+            // Generate realistic demo data for scanner
+            const symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'AMD', 'NFLX', 'INTC'];
+            const results = [];
+
+            for (let i = 0; i < 10; i++) {
+                const basePrice = 50 + Math.random() * 450;
+                const stock = {
+                    symbol: symbols[i],
+                    price: basePrice,
+                    volume: Math.floor(Math.random() * 50000000) + 1000000,
+                    score: Math.floor(Math.random() * 100)
+                };
+
+                // Add scanner-specific fields
+                switch(scannerType) {
+                    case 'momentum':
+                        stock.sma_20 = basePrice * (0.95 + Math.random() * 0.1);
+                        stock.rsi = 40 + Math.random() * 40;
+                        stock.signal = stock.rsi > 60 ? 'BUY' : 'HOLD';
+                        break;
+                    case 'breakout':
+                        stock.day_high = basePrice * (1 + Math.random() * 0.05);
+                        stock.signal = 'BREAKOUT';
+                        break;
+                    case 'oversold':
+                        stock.rsi = 20 + Math.random() * 20;
+                        stock.change_pct = -(2 + Math.random() * 8);
+                        stock.signal = 'BUY';
+                        break;
+                    case 'volume':
+                        stock.avg_volume = stock.volume / (2 + Math.random() * 2);
+                        stock.volume_ratio = 2 + Math.random() * 3;
+                        stock.signal = 'SURGE';
+                        break;
+                    case 'trend':
+                        stock.sma_50 = basePrice * (0.90 + Math.random() * 0.15);
+                        stock.trend_strength = ['Strong', 'Moderate', 'Weak'][Math.floor(Math.random() * 3)];
+                        stock.signal = 'TREND';
+                        break;
+                }
+
+                results.push(stock);
+            }
+
+            return { results, status: 'demo_data' };
+        }
+
+        function formatVolume(vol) {
+            if (vol >= 1000000) return (vol / 1000000).toFixed(1) + 'M';
+            if (vol >= 1000) return (vol / 1000).toFixed(1) + 'K';
+            return vol.toString();
+        }
+
+        function updateLastUpdate() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+        }
+
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', () => {
+            loadScannerData('momentum');
+
+            // Auto-refresh every 60 seconds
+            setInterval(() => {
+                if (currentScanner) {
+                    loadScannerData(currentScanner);
+                }
+            }, 60000);
+        });
     </script>
 </body>
 </html>
