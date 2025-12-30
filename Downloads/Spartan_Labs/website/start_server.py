@@ -252,6 +252,10 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 if active_only:
                     where_clauses.append("active = TRUE")
 
+                # EXCLUDE OTC stocks (type 'OS')
+                where_clauses.append("type != %s")
+                params_list.append('OS')
+
                 if asset_type:
                     where_clauses.append("type = %s")
                     params_list.append(asset_type)
