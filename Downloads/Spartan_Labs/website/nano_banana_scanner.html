@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏛️ Nano Banana Scanner - Spartan Research Station</title>
+    <title>🍌 Nano Banana W/M Scanner - 12,000+ Instruments</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <script src="js/agent_heartbeat.js?v=1766988597"></script>
-    <script src="js/api_heartbeat_wrapper.js?v=1766988597"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,7 +17,7 @@
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
         }
 
@@ -27,560 +25,837 @@
             background: rgba(18, 32, 58, 0.95);
             padding: 25px 40px;
             border-radius: 15px;
-            border-bottom: 3px solid #8B0000;
-            margin-bottom: 30px;
+            border-bottom: 3px solid #FFD700;
+            margin-bottom: 25px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .header-left h1 {
-            font-size: 2.2em;
+        h1 {
+            font-size: 2.5em;
             color: #FFD700;
             font-weight: 800;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .header-left .description {
-            color: #b0b8c8;
-            font-size: 1em;
-        }
-
-        .back-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #8B0000, #DC143C);
-            color: #ffffff;
-            padding: 12px 30px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
-        }
-
-        .status-bar {
-            background: rgba(0, 255, 136, 0.15);
-            border: 1px solid #00ff88;
-            border-radius: 10px;
-            padding: 15px 25px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .status-bar .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-bar .live-dot {
-            width: 12px;
-            height: 12px;
-            background: #00ff88;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        .status-bar .status-text {
-            color: #00ff88;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-
-        .status-bar .last-update {
-            color: #b0b8c8;
-            font-size: 0.9em;
-        }
-
-        .scanner-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            background: rgba(18, 32, 58, 0.7);
-            color: #b0b8c8;
-            padding: 12px 25px;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .tab:hover {
-            background: rgba(18, 32, 58, 0.9);
-            border-color: #FFD700;
-        }
-
-        .tab.active {
-            background: linear-gradient(135deg, #8B0000, #DC143C);
-            color: #ffffff;
-            border-color: #FFD700;
-        }
-
-        .scanner-content {
-            display: none;
-        }
-
-        .scanner-content.active {
-            display: block;
-        }
-
-        .stocks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .stock-card {
-            background: rgba(18, 32, 58, 0.9);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid #FFD700;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .stock-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
-        }
-
-        .stock-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .stock-symbol {
-            font-size: 1.5em;
-            font-weight: 800;
-            color: #FFD700;
-        }
-
-        .stock-price {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: #00ff88;
             margin-bottom: 10px;
         }
 
-        .stock-metrics {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .metric {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
-            border-radius: 6px;
-        }
-
-        .metric-label {
+        .subtitle {
             color: #b0b8c8;
-            font-size: 0.75em;
-            text-transform: uppercase;
-            margin-bottom: 3px;
-        }
-
-        .metric-value {
-            color: #ffffff;
             font-size: 1.1em;
-            font-weight: 600;
+            margin-bottom: 20px;
         }
 
-        .score-badge {
-            display: inline-flex;
+        .controls {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .control-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #000;
-            font-size: 1.3em;
-            font-weight: 800;
         }
 
-        .signal-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-top: 10px;
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .signal-buy {
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
-            border: 1px solid #00ff88;
-        }
-
-        .signal-sell {
-            background: rgba(255, 82, 82, 0.2);
-            color: #FF5252;
-            border: 1px solid #FF5252;
-        }
-
-        .signal-hold {
-            background: rgba(255, 215, 0, 0.2);
-            color: #FFD700;
-            border: 1px solid #FFD700;
-        }
-
-        .signal-breakout {
-            background: rgba(138, 43, 226, 0.2);
-            color: #BA55D3;
-            border: 1px solid #BA55D3;
-        }
-
-        .signal-surge {
-            background: rgba(0, 191, 255, 0.2);
-            color: #00BFFF;
-            border: 1px solid #00BFFF;
-        }
-
-        .signal-trend {
-            background: rgba(255, 140, 0, 0.2);
-            color: #FF8C00;
-            border: 1px solid #FF8C00;
-        }
-
-        .loading-overlay {
-            text-align: center;
-            padding: 60px 20px;
-            color: #FFD700;
-            font-size: 1.2em;
-        }
-
-        .error-message {
-            background: rgba(255, 82, 82, 0.15);
-            border: 1px solid #FF5252;
-            color: #FF5252;
-            padding: 15px;
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #4a5568;
+            background: rgba(30, 41, 59, 0.6);
+            color: #fff;
             border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .filter-btn:hover {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #0a1628;
+            border-color: #FFD700;
+        }
+
+        .scan-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #0a1628;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .scan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
+        }
+
+        .scan-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #FFD700;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .search-box {
+            padding: 12px 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            width: 300px;
+        }
+
+        .search-box::placeholder {
+            color: #9ca3af;
+        }
+
+        .results-table {
+            background: rgba(18, 32, 58, 0.95);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 700;
+            color: #FFD700;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        th:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        th.sorted-asc::after {
+            content: ' ▲';
+            color: #00ff88;
+        }
+
+        th.sorted-desc::after {
+            content: ' ▼';
+            color: #00ff88;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+            transition: all 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        td {
+            padding: 15px 20px;
+        }
+
+        .pattern-w {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 204, 106, 0.2));
+            border-left: 4px solid #00ff88;
+        }
+
+        .pattern-m {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+            border-left: 4px solid #ef4444;
+        }
+
+        .symbol-cell {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #FFD700;
+        }
+
+        .pattern-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .pattern-badge.W {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #0a1628;
+        }
+
+        .pattern-badge.M {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+        }
+
+        .signal-bullish {
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        .signal-bearish {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .price-positive {
+            color: #00ff88;
+        }
+
+        .price-negative {
+            color: #ef4444;
+        }
+
+        .progress-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 22, 40, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .progress-overlay.active {
+            display: flex;
+        }
+
+        .progress-content {
+            background: rgba(30, 41, 59, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #FFD700;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar {
+            width: 400px;
+            height: 30px;
+            background: rgba(75, 85, 99, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
             margin: 20px 0;
         }
 
-        .scanner-title {
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 1.2em;
             color: #FFD700;
-            font-size: 1.4em;
-            font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+        }
+
+        .progress-details {
+            color: #b0b8c8;
+            margin-top: 10px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+            font-size: 1.2em;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(139, 0, 0, 0.8);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(220, 20, 60, 0.9);
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="header-left">
-                <h1>🏛️ Nano Banana Scanner</h1>
-                <p class="description">Ultra-short-term pattern recognition powered by Polygon.io</p>
-            </div>
-            <a href="index.html" class="back-button">← Back to Dashboard</a>
+            <a href="index.html" class="back-btn">← Back to Dashboard</a>
+            <h1>🍌 Nano Banana W/M Scanner</h1>
+            <p class="subtitle">Real-time W (Double Bottom) & M (Double Top) pattern detection across 12,000+ instruments using Polygon.io</p>
         </header>
 
-        <div class="status-bar">
-            <div class="live-indicator">
-                <div class="live-dot"></div>
-                <span class="status-text">Data Loaded Successfully</span>
+        <div class="controls">
+            <div class="control-row">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-type="all">All Markets</button>
+                    <button class="filter-btn" data-type="stocks">📈 Stocks</button>
+                    <button class="filter-btn" data-type="etfs">📊 ETFs</button>
+                    <button class="filter-btn" data-type="crypto">₿ Crypto</button>
+                    <button class="filter-btn" data-type="forex">💱 Forex</button>
+                    <button class="filter-btn" data-type="futures">🌾 Futures</button>
+                    <button class="filter-btn" data-type="bonds">💰 Bonds</button>
+                </div>
             </div>
-            <div class="last-update">Last update: <span id="lastUpdate">--</span></div>
-        </div>
 
-        <div class="scanner-tabs">
-            <div class="tab active" onclick="switchScanner('momentum')">📈 Momentum</div>
-            <div class="tab" onclick="switchScanner('breakout')">💥 Breakout</div>
-            <div class="tab" onclick="switchScanner('oversold')">📉 Oversold</div>
-            <div class="tab" onclick="switchScanner('volume')">📊 Volume Spike</div>
-            <div class="tab" onclick="switchScanner('trend')">🔥 Trend Strength</div>
-        </div>
-
-        <div id="momentum" class="scanner-content active">
-            <h2 class="scanner-title">Momentum Scanner</h2>
-            <div id="momentum-grid" class="stocks-grid">
-                <div class="loading-overlay">Loading momentum data...</div>
+            <div class="control-row">
+                <input type="text" class="search-box" id="searchBox" placeholder="Search by symbol or name...">
+                <button class="scan-btn" id="scanBtn">🔍 Scan All Markets</button>
             </div>
-        </div>
 
-        <div id="breakout" class="scanner-content">
-            <h2 class="scanner-title">Breakout Scanner</h2>
-            <div id="breakout-grid" class="stocks-grid">
-                <div class="loading-overlay">Loading breakout data...</div>
-            </div>
-        </div>
-
-        <div id="oversold" class="scanner-content">
-            <h2 class="scanner-title">Oversold Scanner</h2>
-            <div id="oversold-grid" class="stocks-grid">
-                <div class="loading-overlay">Loading oversold data...</div>
-            </div>
-        </div>
-
-        <div id="volume" class="scanner-content">
-            <h2 class="scanner-title">Volume Spike Scanner</h2>
-            <div id="volume-grid" class="stocks-grid">
-                <div class="loading-overlay">Loading volume data...</div>
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div class="stat-label">Total Scanned</div>
+                    <div class="stat-value" id="totalScanned">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">W Patterns Found</div>
+                    <div class="stat-value" id="wPatternsFound" style="color: #00ff88;">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">M Patterns Found</div>
+                    <div class="stat-value" id="mPatternsFound" style="color: #ef4444;">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Last Update</div>
+                    <div class="stat-value" id="lastUpdate" style="font-size: 1.2em;">--:--</div>
+                </div>
             </div>
         </div>
 
-        <div id="trend" class="scanner-content">
-            <h2 class="scanner-title">Trend Strength Scanner</h2>
-            <div id="trend-grid" class="stocks-grid">
-                <div class="loading-overlay">Loading trend data...</div>
+        <div class="results-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-sort="symbol">Symbol</th>
+                        <th data-sort="name">Name</th>
+                        <th data-sort="type">Type</th>
+                        <th data-sort="pattern">Pattern</th>
+                        <th data-sort="signal">Signal</th>
+                        <th data-sort="price">Price</th>
+                        <th data-sort="change">Change %</th>
+                        <th data-sort="volume">Volume</th>
+                        <th data-sort="depth">Pattern Depth</th>
+                        <th data-sort="confidence">Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <tr>
+                        <td colspan="10" class="no-results">
+                            Click "Scan All Markets" to start detecting W/M patterns
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="progress-overlay" id="progressOverlay">
+        <div class="progress-content">
+            <h2 style="color: #FFD700; margin-bottom: 20px;">🔍 Scanning Markets...</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
+            <div class="progress-text" id="progressText">Initializing...</div>
+            <div class="progress-details" id="progressDetails">Loading symbols from Polygon.io...</div>
         </div>
     </div>
 
     <script>
-        let currentScanner = 'momentum';
-        const scannerData = {};
+        // Configuration
+        const POLYGON_API_KEY = '08bqd7Ew8fw1b7QcixwkTea1UvJHdRkD';
+        const POLYGON_BASE_URL = 'https://api.polygon.io';
+        const PATTERN_WINDOW_DAYS = 15;
+        const MIN_PATTERN_DEPTH = 3; // Minimum % depth for valid pattern
 
-        function switchScanner(scannerType) {
-            // Update tabs
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
+        // State
+        let allResults = [];
+        let currentFilter = 'all';
+        let currentSort = { column: 'depth', direction: 'desc' };
+        let isScanning = false;
 
-            // Update content
-            document.querySelectorAll('.scanner-content').forEach(content => {
-                content.classList.remove('active');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.type;
+                    filterAndRenderResults();
+                });
             });
-            document.getElementById(scannerType).classList.add('active');
 
-            currentScanner = scannerType;
+            // Search box
+            document.getElementById('searchBox').addEventListener('input', (e) => {
+                filterAndRenderResults();
+            });
 
-            // Load data if not cached
-            if (!scannerData[scannerType]) {
-                loadScannerData(scannerType);
-            }
+            // Scan button
+            document.getElementById('scanBtn').addEventListener('click', startScan);
+
+            // Table sorting
+            document.querySelectorAll('th[data-sort]').forEach(th => {
+                th.addEventListener('click', () => {
+                    const column = th.dataset.sort;
+                    if (currentSort.column === column) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.column = column;
+                        currentSort.direction = 'desc';
+                    }
+                    sortAndRenderResults();
+                });
+            });
         }
 
-        async function loadScannerData(scannerType) {
-            const gridId = `${scannerType}-grid`;
-            const grid = document.getElementById(gridId);
+        async function startScan() {
+            if (isScanning) return;
+            isScanning = true;
+
+            document.getElementById('scanBtn').disabled = true;
+            document.getElementById('progressOverlay').classList.add('active');
+            allResults = [];
+            updateStats();
 
             try {
-                const response = await fetchWithHeartbeat(`/api/scanner/${scannerType}`);
+                // Step 1: Get all tickers from Polygon.io
+                updateProgress(5, 'Fetching symbols from Polygon.io...', 'Loading ticker list...');
 
-                // Check if response has data (success) or is a failed fetch response
-                if (!response || !response.data) {
-                    // API endpoint doesn't exist or returned error - use demo data
-                    const demoData = generateDemoData(scannerType);
-                    scannerData[scannerType] = demoData;
-                    renderStocks(demoData, gridId, scannerType);
-                    updateLastUpdate();
-                    return;
+                const tickers = await fetchAllTickers();
+
+                if (!tickers || tickers.length === 0) {
+                    throw new Error('No tickers found');
                 }
 
-                const data = response.data;
+                updateProgress(10, `Found ${tickers.length.toLocaleString()} symbols`, 'Starting pattern detection...');
 
-                if (data.error) {
-                    grid.innerHTML = `<div class="error-message">Error: ${data.error}</div>`;
-                    return;
+                // Step 2: Scan in batches
+                const batchSize = 50; // Process 50 symbols at a time
+                const totalBatches = Math.ceil(tickers.length / batchSize);
+
+                for (let i = 0; i < totalBatches; i++) {
+                    const start = i * batchSize;
+                    const end = Math.min(start + batchSize, tickers.length);
+                    const batch = tickers.slice(start, end);
+
+                    const progress = 10 + ((i + 1) / totalBatches) * 85;
+                    updateProgress(
+                        progress,
+                        `Scanning batch ${i + 1} of ${totalBatches}`,
+                        `Processed ${end} / ${tickers.length} symbols | Found ${allResults.length} patterns`
+                    );
+
+                    await scanBatch(batch);
+
+                    // Rate limiting - wait 1 second between batches
+                    if (i < totalBatches - 1) {
+                        await sleep(1000);
+                    }
                 }
 
-                scannerData[scannerType] = data;
-                renderStocks(data, gridId, scannerType);
-                updateLastUpdate();
+                updateProgress(100, 'Scan complete!', `Found ${allResults.length} W/M patterns`);
+                await sleep(1000);
 
             } catch (error) {
-                grid.innerHTML = `<div class="error-message">Failed to load ${scannerType} data: ${error?.message || 'Unknown error'}</div>`;
+                console.error('Scan error:', error);
+                alert(`Scan failed: ${error.message}`);
+            } finally {
+                document.getElementById('progressOverlay').classList.remove('active');
+                document.getElementById('scanBtn').disabled = false;
+                isScanning = false;
+                filterAndRenderResults();
+                updateStats();
             }
         }
 
-        function renderStocks(data, gridId, scannerType) {
-            const grid = document.getElementById(gridId);
-            const results = data.results || [];
+        async function fetchAllTickers() {
+            try {
+                // Get all active tickers from Polygon.io
+                const url = `${POLYGON_BASE_URL}/v3/reference/tickers?active=true&limit=1000&apiKey=${POLYGON_API_KEY}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Polygon API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.results || [];
+            } catch (error) {
+                console.error('Error fetching tickers:', error);
+                throw error;
+            }
+        }
+
+        async function scanBatch(batch) {
+            const promises = batch.map(ticker => scanSymbol(ticker));
+            const results = await Promise.all(promises);
+
+            // Add valid patterns to results
+            results.forEach(result => {
+                if (result && result.pattern) {
+                    allResults.push(result);
+                }
+            });
+        }
+
+        async function scanSymbol(ticker) {
+            try {
+                // Get historical data for the symbol
+                const bars = await fetchHistoricalData(ticker.ticker);
+
+                if (!bars || bars.length < 10) {
+                    return null; // Not enough data
+                }
+
+                // Detect W/M patterns
+                const pattern = detectPattern(bars);
+
+                if (!pattern) {
+                    return null;
+                }
+
+                // Return result
+                return {
+                    symbol: ticker.ticker,
+                    name: ticker.name || ticker.ticker,
+                    type: ticker.market || ticker.type || 'stocks',
+                    pattern: pattern.type, // 'W' or 'M'
+                    signal: pattern.signal, // 'BULLISH' or 'BEARISH'
+                    price: bars[bars.length - 1].c,
+                    change: calculateChange(bars),
+                    volume: bars[bars.length - 1].v,
+                    depth: pattern.depth,
+                    confidence: pattern.confidence
+                };
+            } catch (error) {
+                // Silently fail for individual symbols
+                return null;
+            }
+        }
+
+        async function fetchHistoricalData(symbol) {
+            try {
+                // Get last 30 days of data
+                const to = new Date().toISOString().split('T')[0];
+                const from = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+                const url = `${POLYGON_BASE_URL}/v2/aggs/ticker/${symbol}/range/1/day/${from}/${to}?apiKey=${POLYGON_API_KEY}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    return null;
+                }
+
+                const data = await response.json();
+                return data.results || [];
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function detectPattern(bars) {
+            if (bars.length < 10) return null;
+
+            // Extract closing prices
+            const closes = bars.map(b => b.c);
+
+            // Look for W pattern (double bottom)
+            const wPattern = detectWPattern(closes);
+            if (wPattern) {
+                return {
+                    type: 'W',
+                    signal: 'BULLISH',
+                    depth: wPattern.depth,
+                    confidence: wPattern.confidence
+                };
+            }
+
+            // Look for M pattern (double top)
+            const mPattern = detectMPattern(closes);
+            if (mPattern) {
+                return {
+                    type: 'M',
+                    signal: 'BEARISH',
+                    depth: mPattern.depth,
+                    confidence: mPattern.confidence
+                };
+            }
+
+            return null;
+        }
+
+        function detectWPattern(prices) {
+            // W Pattern: Find two troughs with second trough higher than first
+            // Pattern: High → Low1 → High → Low2 → High (Low2 > Low1)
+
+            const window = Math.min(PATTERN_WINDOW_DAYS, prices.length);
+            const recent = prices.slice(-window);
+
+            // Find local minima (troughs)
+            const troughs = [];
+            for (let i = 1; i < recent.length - 1; i++) {
+                if (recent[i] < recent[i-1] && recent[i] < recent[i+1]) {
+                    troughs.push({ index: i, price: recent[i] });
+                }
+            }
+
+            if (troughs.length < 2) return null;
+
+            // Check last two troughs
+            const trough1 = troughs[troughs.length - 2];
+            const trough2 = troughs[troughs.length - 1];
+
+            // Second trough should be higher (bullish)
+            if (trough2.price <= trough1.price) return null;
+
+            // Find peak between troughs
+            let peak = trough1.price;
+            for (let i = trough1.index + 1; i < trough2.index; i++) {
+                if (recent[i] > peak) peak = recent[i];
+            }
+
+            // Calculate pattern depth
+            const depth = ((peak - trough1.price) / trough1.price) * 100;
+
+            if (depth < MIN_PATTERN_DEPTH) return null;
+
+            // Calculate confidence based on price recovery
+            const currentPrice = prices[prices.length - 1];
+            const recovery = ((currentPrice - trough2.price) / (peak - trough2.price)) * 100;
+            const confidence = Math.min(95, Math.max(50, recovery));
+
+            return {
+                depth: depth.toFixed(2),
+                confidence: confidence.toFixed(0)
+            };
+        }
+
+        function detectMPattern(prices) {
+            // M Pattern: Find two peaks with second peak lower than first
+            // Pattern: Low → High1 → Low → High2 → Low (High2 < High1)
+
+            const window = Math.min(PATTERN_WINDOW_DAYS, prices.length);
+            const recent = prices.slice(-window);
+
+            // Find local maxima (peaks)
+            const peaks = [];
+            for (let i = 1; i < recent.length - 1; i++) {
+                if (recent[i] > recent[i-1] && recent[i] > recent[i+1]) {
+                    peaks.push({ index: i, price: recent[i] });
+                }
+            }
+
+            if (peaks.length < 2) return null;
+
+            // Check last two peaks
+            const peak1 = peaks[peaks.length - 2];
+            const peak2 = peaks[peaks.length - 1];
+
+            // Second peak should be lower (bearish)
+            if (peak2.price >= peak1.price) return null;
+
+            // Find trough between peaks
+            let trough = peak1.price;
+            for (let i = peak1.index + 1; i < peak2.index; i++) {
+                if (recent[i] < trough) trough = recent[i];
+            }
+
+            // Calculate pattern depth
+            const depth = ((peak1.price - trough) / peak1.price) * 100;
+
+            if (depth < MIN_PATTERN_DEPTH) return null;
+
+            // Calculate confidence based on price decline
+            const currentPrice = prices[prices.length - 1];
+            const decline = ((peak2.price - currentPrice) / (peak2.price - trough)) * 100;
+            const confidence = Math.min(95, Math.max(50, decline));
+
+            return {
+                depth: depth.toFixed(2),
+                confidence: confidence.toFixed(0)
+            };
+        }
+
+        function calculateChange(bars) {
+            if (bars.length < 2) return 0;
+            const current = bars[bars.length - 1].c;
+            const previous = bars[bars.length - 2].c;
+            return (((current - previous) / previous) * 100).toFixed(2);
+        }
+
+        function filterAndRenderResults() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+            let filtered = allResults;
+
+            // Apply type filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(r => r.type.toLowerCase() === currentFilter);
+            }
+
+            // Apply search filter
+            if (searchTerm) {
+                filtered = filtered.filter(r =>
+                    r.symbol.toLowerCase().includes(searchTerm) ||
+                    r.name.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            renderResults(filtered);
+        }
+
+        function sortAndRenderResults() {
+            filterAndRenderResults();
+        }
+
+        function renderResults(results) {
+            const tbody = document.getElementById('resultsBody');
 
             if (results.length === 0) {
-                grid.innerHTML = '<div class="loading-overlay">No results available</div>';
+                tbody.innerHTML = '<tr><td colspan="10" class="no-results">No patterns found matching your filters</td></tr>';
                 return;
             }
 
-            grid.innerHTML = results.map(stock => {
-                const signalClass = getSignalClass(stock.signal);
-                const metrics = getScannerMetrics(stock, scannerType);
+            // Sort results
+            results.sort((a, b) => {
+                let aVal = a[currentSort.column];
+                let bVal = b[currentSort.column];
+
+                // Handle numeric vs string sorting
+                if (typeof aVal === 'number' && typeof bVal === 'number') {
+                    return currentSort.direction === 'asc' ? aVal - bVal : bVal - aVal;
+                }
+
+                // String sorting
+                aVal = String(aVal).toLowerCase();
+                bVal = String(bVal).toLowerCase();
+
+                if (currentSort.direction === 'asc') {
+                    return aVal.localeCompare(bVal);
+                } else {
+                    return bVal.localeCompare(aVal);
+                }
+            });
+
+            // Update column headers
+            document.querySelectorAll('th[data-sort]').forEach(th => {
+                th.classList.remove('sorted-asc', 'sorted-desc');
+                if (th.dataset.sort === currentSort.column) {
+                    th.classList.add(`sorted-${currentSort.direction}`);
+                }
+            });
+
+            // Render rows
+            tbody.innerHTML = results.map(r => {
+                const patternClass = r.pattern === 'W' ? 'pattern-w' : 'pattern-m';
+                const signalClass = r.signal === 'BULLISH' ? 'signal-bullish' : 'signal-bearish';
+                const changeClass = parseFloat(r.change) >= 0 ? 'price-positive' : 'price-negative';
 
                 return `
-                    <div class="stock-card">
-                        <div class="stock-header">
-                            <div class="stock-symbol">${stock.symbol}</div>
-                            <div class="score-badge">${stock.score || 0}</div>
-                        </div>
-                        <div class="stock-price">$${stock.price ? stock.price.toFixed(2) : '--'}</div>
-                        <div class="stock-metrics">
-                            ${metrics}
-                        </div>
-                        <div class="signal-badge ${signalClass}">${stock.signal || 'N/A'}</div>
-                    </div>
+                    <tr class="${patternClass}">
+                        <td class="symbol-cell">${r.symbol}</td>
+                        <td>${r.name}</td>
+                        <td>${capitalizeFirst(r.type)}</td>
+                        <td><span class="pattern-badge ${r.pattern}">${r.pattern}</span></td>
+                        <td class="${signalClass}">${r.signal}</td>
+                        <td>$${parseFloat(r.price).toFixed(2)}</td>
+                        <td class="${changeClass}">${r.change > 0 ? '+' : ''}${r.change}%</td>
+                        <td>${formatVolume(r.volume)}</td>
+                        <td>${r.depth}%</td>
+                        <td>${r.confidence}%</td>
+                    </tr>
                 `;
             }).join('');
         }
 
-        function getScannerMetrics(stock, scannerType) {
-            switch(scannerType) {
-                case 'momentum':
-                    return `
-                        <div class="metric">
-                            <div class="metric-label">SMA 20</div>
-                            <div class="metric-value">${stock.sma_20 ? stock.sma_20.toFixed(2) : '--'}</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">RSI</div>
-                            <div class="metric-value">${stock.rsi ? stock.rsi.toFixed(1) : '--'}</div>
-                        </div>
-                    `;
-                case 'breakout':
-                    return `
-                        <div class="metric">
-                            <div class="metric-label">Day High</div>
-                            <div class="metric-value">${stock.day_high ? stock.day_high.toFixed(2) : '--'}</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">Volume</div>
-                            <div class="metric-value">${stock.volume ? formatVolume(stock.volume) : '--'}</div>
-                        </div>
-                    `;
-                case 'oversold':
-                    return `
-                        <div class="metric">
-                            <div class="metric-label">RSI</div>
-                            <div class="metric-value">${stock.rsi ? stock.rsi.toFixed(1) : '--'}</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">Change</div>
-                            <div class="metric-value">${stock.change_pct ? stock.change_pct.toFixed(2) + '%' : '--'}</div>
-                        </div>
-                    `;
-                case 'volume':
-                    return `
-                        <div class="metric">
-                            <div class="metric-label">Avg Vol</div>
-                            <div class="metric-value">${stock.avg_volume ? formatVolume(stock.avg_volume) : '--'}</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">Vol Ratio</div>
-                            <div class="metric-value">${stock.volume_ratio ? stock.volume_ratio.toFixed(2) + 'x' : '--'}</div>
-                        </div>
-                    `;
-                case 'trend':
-                    return `
-                        <div class="metric">
-                            <div class="metric-label">SMA 50</div>
-                            <div class="metric-value">${stock.sma_50 ? stock.sma_50.toFixed(2) : '--'}</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">Strength</div>
-                            <div class="metric-value">${stock.trend_strength || '--'}</div>
-                        </div>
-                    `;
-                default:
-                    return '';
-            }
+        function updateStats() {
+            document.getElementById('totalScanned').textContent = allResults.length;
+            document.getElementById('wPatternsFound').textContent = allResults.filter(r => r.pattern === 'W').length;
+            document.getElementById('mPatternsFound').textContent = allResults.filter(r => r.pattern === 'M').length;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
         }
 
-        function getSignalClass(signal) {
-            if (!signal) return 'signal-hold';
-            const sig = signal.toUpperCase();
-            if (sig === 'BUY') return 'signal-buy';
-            if (sig === 'SELL') return 'signal-sell';
-            if (sig === 'BREAKOUT') return 'signal-breakout';
-            if (sig === 'SURGE') return 'signal-surge';
-            if (sig === 'TREND') return 'signal-trend';
-            return 'signal-hold';
-        }
-
-        function generateDemoData(scannerType) {
-            // Generate realistic demo data for scanner
-            const symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'AMD', 'NFLX', 'INTC'];
-            const results = [];
-
-            for (let i = 0; i < 10; i++) {
-                const basePrice = 50 + Math.random() * 450;
-                const stock = {
-                    symbol: symbols[i],
-                    price: basePrice,
-                    volume: Math.floor(Math.random() * 50000000) + 1000000,
-                    score: Math.floor(Math.random() * 100)
-                };
-
-                // Add scanner-specific fields
-                switch(scannerType) {
-                    case 'momentum':
-                        stock.sma_20 = basePrice * (0.95 + Math.random() * 0.1);
-                        stock.rsi = 40 + Math.random() * 40;
-                        stock.signal = stock.rsi > 60 ? 'BUY' : 'HOLD';
-                        break;
-                    case 'breakout':
-                        stock.day_high = basePrice * (1 + Math.random() * 0.05);
-                        stock.signal = 'BREAKOUT';
-                        break;
-                    case 'oversold':
-                        stock.rsi = 20 + Math.random() * 20;
-                        stock.change_pct = -(2 + Math.random() * 8);
-                        stock.signal = 'BUY';
-                        break;
-                    case 'volume':
-                        stock.avg_volume = stock.volume / (2 + Math.random() * 2);
-                        stock.volume_ratio = 2 + Math.random() * 3;
-                        stock.signal = 'SURGE';
-                        break;
-                    case 'trend':
-                        stock.sma_50 = basePrice * (0.90 + Math.random() * 0.15);
-                        stock.trend_strength = ['Strong', 'Moderate', 'Weak'][Math.floor(Math.random() * 3)];
-                        stock.signal = 'TREND';
-                        break;
-                }
-
-                results.push(stock);
-            }
-
-            return { results, status: 'demo_data' };
+        function updateProgress(percent, text, details) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
+            document.getElementById('progressDetails').textContent = details;
         }
 
         function formatVolume(vol) {
-            if (vol >= 1000000) return (vol / 1000000).toFixed(1) + 'M';
-            if (vol >= 1000) return (vol / 1000).toFixed(1) + 'K';
-            return vol.toString();
+            if (vol >= 1000000000) return (vol / 1000000000).toFixed(2) + 'B';
+            if (vol >= 1000000) return (vol / 1000000).toFixed(2) + 'M';
+            if (vol >= 1000) return (vol / 1000).toFixed(2) + 'K';
+            return vol ? vol.toFixed(0) : '0';
         }
 
-        function updateLastUpdate() {
-            const now = new Date();
-            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
-        // Load initial data
-        document.addEventListener('DOMContentLoaded', () => {
-            loadScannerData('momentum');
-
-            // Auto-refresh every 60 seconds
-            setInterval(() => {
-                if (currentScanner) {
-                    loadScannerData(currentScanner);
-                }
-            }, 60000);
-        });
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
     </script>
 </body>
 </html>
