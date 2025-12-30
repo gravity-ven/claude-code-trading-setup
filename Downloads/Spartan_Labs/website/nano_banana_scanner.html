@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍌 Nano Banana W/M Scanner - 12,000+ Instruments</title>
+    <title>🍌 Nano Banana W/M Scanner - PostgreSQL Database</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -338,7 +338,7 @@
         <header>
             <a href="index.html" class="back-btn">← Back to Dashboard</a>
             <h1>🍌 Nano Banana W/M Scanner</h1>
-            <p class="subtitle">Real-time W (Double Bottom) & M (Double Top) pattern detection across 12,000+ instruments using Polygon.io</p>
+            <p class="subtitle">Real-time W (Double Bottom) & M (Double Top) pattern detection across all instruments from PostgreSQL database</p>
         </header>
 
         <div class="controls">
@@ -531,18 +531,30 @@
 
         async function fetchAllTickers() {
             try {
-                // Get all active tickers from Polygon.io
-                const url = `${POLYGON_BASE_URL}/v3/reference/tickers?active=true&limit=1000&apiKey=${POLYGON_API_KEY}`;
+                // Get all active tickers from PostgreSQL database
+                const url = `/api/db/polygon-symbols?active=true&limit=10000`;
                 const response = await fetch(url);
 
                 if (!response.ok) {
-                    throw new Error(`Polygon API error: ${response.status}`);
+                    throw new Error(`Database API error: ${response.status}`);
                 }
 
                 const data = await response.json();
-                return data.results || [];
+
+                // Convert PostgreSQL format to Polygon.io compatible format
+                const symbols = data.symbols || [];
+                return symbols.map(s => ({
+                    ticker: s.ticker,
+                    name: s.name,
+                    market: s.market,
+                    locale: s.locale,
+                    type: s.type,
+                    active: s.active,
+                    currency_name: s.currency_symbol,
+                    primary_exchange: s.primary_exchange
+                }));
             } catch (error) {
-                console.error('Error fetching tickers:', error);
+                console.error('Error fetching tickers from PostgreSQL:', error);
                 throw error;
             }
         }

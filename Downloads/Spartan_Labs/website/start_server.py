@@ -78,6 +78,8 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_db_search(parsed_path.query)
         elif path == '/api/db/symbols':
             self.handle_db_symbols(parsed_path.query)
+        elif path == '/api/db/polygon-symbols':
+            self.handle_polygon_symbols(parsed_path.query)
         # Market Data Endpoints
         elif path.startswith('/api/market/symbol/'):
             symbol = path.split('/')[-1]
@@ -124,23 +126,6 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_recession_probability()
         elif path == '/api/market/narrative':
             self.handle_market_narrative()
-        # React Frontend API Endpoints (stub implementations)
-        elif path == '/api/market/indices':
-            self.handle_market_indices()
-        elif path == '/api/economic/fred':
-            self.handle_economic_fred()
-        elif path == '/api/barometers':
-            self.handle_barometers_api()
-        elif path == '/api/correlation':
-            self.handle_correlation_api()
-        elif path == '/api/swing-opportunities':
-            self.handle_swing_opportunities()
-        elif path == '/api/garp-stocks':
-            self.handle_garp_stocks()
-        elif path == '/api/cot-reports':
-            self.handle_cot_reports()
-        elif path == '/api/news':
-            self.handle_news_api()
         # Health check endpoint
         elif path == '/health':
             self.send_json_response({'status': 'ok', 'server': 'Spartan Main Server', 'port': PORT})
@@ -239,6 +224,80 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 'limit': limit
             })
         except Exception as e:
+            self.send_json_response({'error': str(e)}, status=500)
+
+    def handle_polygon_symbols(self, query_string):
+        """Get symbols from PostgreSQL polygon_symbols table"""
+        try:
+            params = parse_qs(query_string)
+            limit = int(params.get('limit', ['10000'])[0])
+            offset = int(params.get('offset', ['0'])[0])
+            asset_type = params.get('type', [''])[0]  # Optional filter by type
+            active_only = params.get('active', ['true'])[0].lower() == 'true'
+
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'spartan'),
+                password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                host='localhost',
+                port=5432
+            )
+
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Build query with filters
+                where_clauses = []
+                params_list = []
+
+                if active_only:
+                    where_clauses.append("active = TRUE")
+
+                if asset_type:
+                    where_clauses.append("type = %s")
+                    params_list.append(asset_type)
+
+                where_sql = " AND ".join(where_clauses) if where_clauses else "1=1"
+
+                # Get total count
+                count_query = f"SELECT COUNT(*) as total FROM polygon_symbols WHERE {where_sql}"
+                cur.execute(count_query, params_list)
+                total = cur.fetchone()['total']
+
+                # Get paginated symbols
+                query = f"""
+                    SELECT
+                        ticker,
+                        name,
+                        market,
+                        locale,
+                        type,
+                        active,
+                        currency_symbol,
+                        primary_exchange
+                    FROM polygon_symbols
+                    WHERE {where_sql}
+                    ORDER BY ticker
+                    LIMIT %s OFFSET %s
+                """
+                cur.execute(query, params_list + [limit, offset])
+                symbols = cur.fetchall()
+
+                # Convert to list of dicts
+                symbols_list = [dict(row) for row in symbols]
+
+            db_conn.close()
+
+            self.send_json_response({
+                'symbols': symbols_list,
+                'total': total,
+                'offset': offset,
+                'limit': limit,
+                'source': 'postgresql'
+            })
+
+        except Exception as e:
+            print(f"Error in handle_polygon_symbols: {e}")
+            traceback.print_exc()
             self.send_json_response({'error': str(e)}, status=500)
 
     def handle_market_symbol(self, symbol):
@@ -1033,81 +1092,6 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
-
-    # ============================================================================
-    # React Frontend API Handlers (Stub Implementations)
-    # ============================================================================
-
-    def handle_market_indices(self):
-        """Return market indices data"""
-        self.send_json_response({
-            "indices": [
-                {"symbol": "SPY", "name": "S&P 500 ETF", "price": None, "change": None, "change_percent": None},
-                {"symbol": "QQQ", "name": "NASDAQ 100 ETF", "price": None, "change": None, "change_percent": None},
-                {"symbol": "DIA", "name": "Dow Jones ETF", "price": None, "change": None, "change_percent": None},
-                {"symbol": "IWM", "name": "Russell 2000 ETF", "price": None, "change": None, "change_percent": None}
-            ],
-            "status": "unavailable",
-            "message": "Real-time data integration in progress"
-        })
-
-    def handle_economic_fred(self):
-        """Return FRED economic indicators"""
-        self.send_json_response({
-            "indicators": [],
-            "status": "unavailable",
-            "message": "FRED API integration in progress"
-        })
-
-    def handle_barometers_api(self):
-        """Return market barometers"""
-        self.send_json_response({
-            "barometers": [],
-            "status": "unavailable",
-            "message": "Market barometer calculations in progress"
-        })
-
-    def handle_correlation_api(self):
-        """Return correlation matrix"""
-        self.send_json_response({
-            "matrix": [],
-            "assets": [],
-            "status": "unavailable",
-            "message": "Correlation analysis in progress"
-        })
-
-    def handle_swing_opportunities(self):
-        """Return swing trading opportunities"""
-        self.send_json_response({
-            "opportunities": [],
-            "timeframes": ["1-2 weeks", "1-3 months", "6-18 months"],
-            "status": "unavailable",
-            "message": "Swing analysis in progress"
-        })
-
-    def handle_garp_stocks(self):
-        """Return GARP screener results"""
-        self.send_json_response({
-            "stocks": [],
-            "status": "unavailable",
-            "message": "GARP screening in progress"
-        })
-
-    def handle_cot_reports(self):
-        """Return COT (Commitment of Traders) reports"""
-        self.send_json_response({
-            "reports": [],
-            "status": "unavailable",
-            "message": "COT data integration in progress"
-        })
-
-    def handle_news_api(self):
-        """Return market news and insights"""
-        self.send_json_response({
-            "news": [],
-            "status": "unavailable",
-            "message": "News feed integration in progress"
-        })
 
     def log_message(self, format, *args):
         """Custom log format"""
