@@ -262,11 +262,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(10, 22, 40, 0.95);
+            background: rgba(10, 22, 40, 0.70);
             display: none;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding-top: 80px;
             z-index: 9999;
+            backdrop-filter: blur(2px);
         }
 
         .progress-overlay.active {
@@ -696,10 +698,13 @@
             const promises = batch.map(ticker => scanSymbol(ticker));
             const results = await Promise.all(promises);
 
-            // Add valid patterns to results
+            // Add valid patterns to results and render immediately
             results.forEach(result => {
                 if (result && result.pattern) {
                     allResults.push(result);
+                    // REAL-TIME UPDATE: Render immediately when pattern found
+                    filterAndRenderResults();
+                    updateStats();
                 }
             });
         }
