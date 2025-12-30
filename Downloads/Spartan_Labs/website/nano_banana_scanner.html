@@ -257,40 +257,30 @@
         }
 
         .progress-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 22, 40, 0.70);
+            background: rgba(30, 41, 59, 0.95);
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
             display: none;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 80px;
-            z-index: 9999;
-            backdrop-filter: blur(2px);
         }
 
         .progress-overlay.active {
-            display: flex;
+            display: block;
         }
 
         .progress-content {
-            background: rgba(30, 41, 59, 0.95);
-            padding: 40px;
-            border-radius: 15px;
             text-align: center;
-            border: 2px solid #FFD700;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
         }
 
         .progress-bar {
-            width: 400px;
+            width: 100%;
+            max-width: 600px;
             height: 30px;
             background: rgba(75, 85, 99, 0.5);
             border-radius: 15px;
             overflow: hidden;
-            margin: 20px 0;
+            margin: 20px auto;
         }
 
         .progress-fill {
@@ -458,6 +448,18 @@
             </div>
         </div>
 
+        <!-- Progress Indicator (Inline) -->
+        <div class="progress-overlay" id="progressOverlay">
+            <div class="progress-content">
+                <h2 style="color: #FFD700; margin-bottom: 20px;">🔍 Scanning Markets...</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Initializing...</div>
+                <div class="progress-details" id="progressDetails">Loading symbols from PostgreSQL...</div>
+            </div>
+        </div>
+
         <div class="results-table">
             <table>
                 <thead>
@@ -508,17 +510,6 @@
                     Ideas: RSI scanner, MACD scanner, Bollinger Bands scanner, etc.
                 </p>
             </div>
-        </div>
-    </div>
-
-    <div class="progress-overlay" id="progressOverlay">
-        <div class="progress-content">
-            <h2 style="color: #FFD700; margin-bottom: 20px;">🔍 Scanning Markets...</h2>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text" id="progressText">Initializing...</div>
-            <div class="progress-details" id="progressDetails">Loading symbols from Polygon.io...</div>
         </div>
     </div>
 
