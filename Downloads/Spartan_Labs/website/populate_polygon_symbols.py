@@ -77,6 +77,13 @@ def insert_symbols(conn, symbols):
     if len(symbols) != len(unique_symbols):
         print(f"⚠️  Removed {len(symbols) - len(unique_symbols)} duplicate symbols")
 
+    # CRITICAL: Exclude OTC stocks (type = 'OS')
+    non_otc_symbols = {k: v for k, v in unique_symbols.items() if v.get('type') != 'OS'}
+    otc_count = len(unique_symbols) - len(non_otc_symbols)
+    if otc_count > 0:
+        print(f"🚫 Excluded {otc_count} OTC stocks (type = 'OS')")
+    unique_symbols = non_otc_symbols
+
     # Prepare data for insertion
     values = []
     for symbol in unique_symbols.values():
