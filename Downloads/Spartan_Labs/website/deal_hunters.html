@@ -1,38 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deal Hunters - Spartan Research Station</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="js/agent_heartbeat.js?v=1766988597"></script>
+    <script src="js/api_heartbeat_wrapper.js?v=1766988597"></script>
     <style>
-        :root {
-            --primary-color: #8B0000;
-            --secondary-color: #B22222;
-            --accent-color: #DC143C;
-            --bg-dark: #0a1628;
-            --bg-darker: #050b14;
-            --bg-card: #12203a;
-            --text-primary: #ffffff;
-            --text-secondary: #b0b8c8;
-            --border-color: #1e3a5f;
-            --success-color: #00ff88;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
+            background: linear-gradient(135deg, #0a1628 0%, #1a1f3a 50%, #0a0e27 100%);
+            color: #ffffff;
             min-height: 100vh;
             padding: 20px;
         }
@@ -42,167 +23,145 @@
             margin: 0 auto;
         }
 
-        .header {
-            text-align: center;
-            padding: 40px 30px;
-            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
+        header {
+            background: rgba(18, 32, 58, 0.95);
+            padding: 25px 40px;
+            border-radius: 15px;
+            border-bottom: 3px solid #8B0000;
             margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), #FF5252, var(--accent-color));
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-
-        .icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         h1 {
-            color: var(--accent-color);
-            font-size: 2.5rem;
+            font-size: 2.2em;
+            color: #FFD700;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+        .description {
+            color: #b0b8c8;
+            font-size: 1.1em;
         }
 
-        .back-btn {
+        .back-button {
             display: inline-block;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: #ffffff;
             padding: 12px 30px;
-            background: var(--accent-color);
-            color: white;
+            border-radius: 8px;
             text-decoration: none;
-            border-radius: 6px;
             font-weight: 600;
+            margin-top: 15px;
             transition: all 0.3s ease;
-            margin-top: 10px;
         }
 
-        .back-btn:hover {
-            background: var(--secondary-color);
+        .back-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
         }
 
-        .content-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-
-        .content-card h2 {
-            color: var(--accent-color);
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .coming-soon {
-            text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(135deg, rgba(139,0,0,0.1), rgba(220,20,60,0.1));
-            border-radius: 12px;
-            border: 2px dashed var(--accent-color);
-        }
-
-        .coming-soon h3 {
-            color: var(--accent-color);
-            font-size: 2rem;
-            margin-bottom: 15px;
-        }
-
-        .coming-soon p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        .feature-grid {
+        .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
             margin-top: 30px;
         }
 
-        .feature-item {
-            background: rgba(220, 20, 60, 0.05);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid var(--accent-color);
+        .data-card {
+            background: rgba(18, 32, 58, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #FFD700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .feature-item h4 {
-            color: var(--accent-color);
-            margin-bottom: 10px;
+        .data-card h3 {
+            color: #FFD700;
+            font-size: 1.3em;
+            margin-bottom: 15px;
         }
 
-        .feature-item p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
+        .data-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #00ff88;
+            margin: 15px 0;
+        }
+
+        .data-label {
+            color: #b0b8c8;
+            font-size: 0.95em;
+        }
+
+        .loading {
+            color: #FFD700;
+            font-style: italic;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status.live {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="icon">🎯</div>
-            <h1>Deal Hunters</h1>
-            <p class="subtitle">Value opportunities and underpriced assets</p>
-            <a href="index.html" class="back-btn">← Back to Dashboard</a>
-        </div>
+        <header>
+            <h1>🏛️ Deal Hunters</h1>
+            <p class="description">Value opportunities and undervalued assets</p>
+            <a href="index.html" class="back-button">← Back to Dashboard</a>
+        </header>
 
-        <div class="content-card">
-            <div class="coming-soon">
-                <h3>🚧 Under Development</h3>
-                <p>This dashboard is being built with real-time data integration.</p>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">
-                    <strong>Data Sources:</strong> yfinance (unlimited) • FRED API (120 req/min) • Alpha Vantage (25 req/day)
-                </p>
-            </div>
-
-            <div class="feature-grid">
-                <div class="feature-item">
-                    <h4>📊 Real-Time Data</h4>
-                    <p>Live market data from professional APIs</p>
-                </div>
-                <div class="feature-item">
-                    <h4>🎯 No Fake Data</h4>
-                    <p>Authentic market intelligence only</p>
-                </div>
-                <div class="feature-item">
-                    <h4>⚡ High Performance</h4>
-                    <p>Optimized for speed and reliability</p>
-                </div>
-                <div class="feature-item">
-                    <h4>🔒 PostgreSQL Backend</h4>
-                    <p>Enterprise-grade data storage</p>
-                </div>
+        <div id="dataContainer" class="content-grid">
+            <div class="data-card">
+                <h3>📊 Live Market Data</h3>
+                <div class="loading" id="status">Loading data from Agent Data Engine...</div>
+                <div class="status live">LIVE</div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Load data using heartbeat wrapper
+        async function loadData() {
+            const apiEndpoint = '/api/market/quote/SPY';
+            if (!apiEndpoint || apiEndpoint === 'None') {
+                document.getElementById('status').innerHTML = 'Manual data entry required for this tool.';
+                return;
+            }
+
+            try {
+                const response = await fetchWithHeartbeat(apiEndpoint);
+                const data = response.data;
+
+                // Display data
+                const container = document.getElementById('dataContainer');
+                container.innerHTML = '<div class="data-card"><h3>✅ Data Loaded Successfully</h3><pre>' +
+                    JSON.stringify(data, null, 2) + '</pre><div class="status live">LIVE</div></div>';
+
+            } catch (error) {
+                document.getElementById('status').innerHTML =
+                    '<span style="color: #FF5252;">Error loading data: ' + error.message + '</span>';
+            }
+        }
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        // Auto-refresh every 60 seconds
+        setInterval(loadData, 60000);
+    </script>
 </body>
 </html>

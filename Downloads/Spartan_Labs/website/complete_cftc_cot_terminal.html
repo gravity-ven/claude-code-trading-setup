@@ -1,1077 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Cache Prevention -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <meta name="cache-control" content="max-age=0">
-    <meta name="last-modified" content="2025-11-18 22:00:00">
-    <meta name="build-version" content="v1.0-CFTC-COT-TERMINAL">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CFTC COT Intelligence Terminal - Spartan Research Station</title>
-
-    <!-- Fonts -->
+    <title>CFTC COT Terminal - Spartan Research Station</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Chart.js for visualization -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
+    <script src="js/agent_heartbeat.js?v=1766988597"></script>
+    <script src="js/api_heartbeat_wrapper.js?v=1766988597"></script>
     <style>
-        :root {
-            /* Spartan Color Palette */
-            --primary-color: #8B0000;
-            --secondary-color: #B22222;
-            --accent-color: #DC143C;
-            --accent-2-color: #FF5252;
-            --accent-3-color: #FF6B6B;
-            --bg-dark: #0a1628;
-            --bg-darker: #050b14;
-            --bg-card: #12203a;
-            --text-primary: #ffffff;
-            --text-secondary: #b0b8c8;
-            --text-muted: #7a8a9a;
-            --border-color: #1e3a5f;
-            --success-color: #00ff88;
-            --warning-color: #ff9500;
-            --danger-color: #FF5252;
-            --info-color: #0096FF;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
+            background: linear-gradient(135deg, #0a1628 0%, #1a1f3a 50%, #0a0e27 100%);
+            color: #ffffff;
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1800px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 50px 30px;
-            background: linear-gradient(135deg, var(--primary-color), var(--bg-darker));
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
+        header {
+            background: rgba(18, 32, 58, 0.95);
+            padding: 25px 40px;
+            border-radius: 15px;
+            border-bottom: 3px solid #8B0000;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color), var(--accent-color));
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-
-        .header-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            filter: drop-shadow(2px 2px 4px rgba(220, 20, 60, 0.3));
-        }
-
-        .header h1 {
-            color: var(--accent-color);
-            font-size: 3rem;
-            margin: 0 0 15px 0;
+        h1 {
+            font-size: 2.2em;
+            color: #FFD700;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
         }
 
-        .header p {
-            color: var(--text-secondary);
-            font-size: 1.3rem;
-            margin: 0 0 20px 0;
-            font-weight: 400;
-            letter-spacing: 0.5px;
+        .description {
+            color: #b0b8c8;
+            font-size: 1.1em;
         }
 
-        .header-subtitle {
-            color: var(--text-muted);
-            font-size: 0.95rem;
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: #ffffff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .data-card {
+            background: rgba(18, 32, 58, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #FFD700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .data-card h3 {
+            color: #FFD700;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .data-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #00ff88;
+            margin: 15px 0;
+        }
+
+        .data-label {
+            color: #b0b8c8;
+            font-size: 0.95em;
+        }
+
+        .loading {
+            color: #FFD700;
+            font-style: italic;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
             margin-top: 10px;
         }
 
-        /* Navigation */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 30px;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-bottom: 30px;
-        }
-
-        .back-btn:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.3);
-        }
-
-        /* Market Selector */
-        .market-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .market-btn {
-            padding: 12px 28px;
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-
-        .market-btn:hover {
-            background: var(--bg-darker);
-            color: var(--text-primary);
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .market-btn.active {
-            background: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 30px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 30px;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.15);
-        }
-
-        .card-title {
-            font-size: 1.8rem;
-            color: var(--accent-color);
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Grid Layouts */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .metric-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 25px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-2-color));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .metric-card:hover::before {
-            opacity: 1;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(139, 0, 0, 0.2);
-            border-color: var(--accent-color);
-        }
-
-        .metric-title {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .metric-value {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin: 10px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .metric-value.bullish {
-            color: var(--success-color);
-        }
-
-        .metric-value.bearish {
-            color: var(--danger-color);
-        }
-
-        .metric-value.neutral {
-            color: var(--text-primary);
-        }
-
-        .metric-change {
-            font-size: 0.95rem;
-            margin-top: 8px;
-            font-weight: 500;
-        }
-
-        .metric-source {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Table Styles */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 30px;
-        }
-
-        .cot-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--bg-card);
-        }
-
-        .cot-table thead {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .cot-table th {
-            padding: 15px;
-            text-align: left;
-            color: var(--text-primary);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.85rem;
-            border-bottom: 2px solid var(--accent-color);
-        }
-
-        .cot-table td {
-            padding: 12px 15px;
-            color: var(--text-primary);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .cot-table tbody tr {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .cot-table tbody tr:hover {
-            background: var(--bg-darker);
-            transform: scale(1.01);
-            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.2);
-        }
-
-        .cot-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Chart Container */
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 20px 0;
-            background: var(--bg-darker);
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        /* Badge Styles */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-bullish {
-            background: var(--success-color);
-            color: #000;
-        }
-
-        .badge-bearish {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .badge-neutral {
-            background: var(--text-muted);
-            color: white;
-        }
-
-        .badge-extreme {
-            background: var(--warning-color);
-            color: #000;
-        }
-
-        /* Loading Spinner */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Status Indicator */
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .status-indicator.active {
-            background: var(--success-color);
-            box-shadow: 0 0 10px var(--success-color);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status-indicator.inactive {
-            background: var(--danger-color);
-            box-shadow: 0 0 10px var(--danger-color);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Info Box */
-        .info-box {
-            background: rgba(220, 20, 60, 0.1);
-            border: 1px solid rgba(220, 20, 60, 0.3);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-
-        .info-box h3 {
-            color: var(--accent-color);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .info-box p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 30px 20px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .metrics-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .market-selector {
-                flex-direction: column;
-            }
-
-            .market-btn {
-                width: 100%;
-            }
-
-            .chart-container {
-                height: 300px;
-            }
+        .status.live {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Back Navigation -->
-        <a href="index.html" class="back-btn">
-            <span>←</span> Back to Main Dashboard
-        </a>
+        <header>
+            <h1>🏛️ CFTC COT Terminal</h1>
+            <p class="description">Commitment of Traders analysis</p>
+            <a href="index.html" class="back-button">← Back to Dashboard</a>
+        </header>
 
-        <!-- Header -->
-        <div class="header">
-            <div class="header-icon">📊</div>
-            <h1>CFTC COT INTELLIGENCE TERMINAL</h1>
-            <p>Commitment of Traders Analysis - Professional Market Positioning Data</p>
-            <div class="header-subtitle">
-                <span class="status-indicator active"></span>
-                Real-time COT positioning data • Weekly CFTC reports • Smart money tracking
+        <div id="dataContainer" class="content-grid">
+            <div class="data-card">
+                <h3>📊 Live Market Data</h3>
+                <div class="loading" id="status">Loading data from Agent Data Engine...</div>
+                <div class="status live">LIVE</div>
             </div>
         </div>
-
-        <!-- Info Box -->
-        <div class="info-box">
-            <h3>What is COT Data?</h3>
-            <p>
-                The CFTC Commitment of Traders (COT) report shows positioning data from futures and options markets.
-                It breaks down positions into three categories: <strong>Commercial Hedgers</strong> (smart money - producers, banks),
-                <strong>Non-Commercial Traders</strong> (speculators - large funds, hedge funds), and
-                <strong>Non-Reportable</strong> (small traders - retail). Commercial positions often provide contrarian signals,
-                while extreme speculator positioning can indicate market tops/bottoms.
-            </p>
-        </div>
-
-        <!-- Market Selector -->
-        <div class="market-selector">
-            <button class="market-btn active" onclick="selectMarket('ES')">S&P 500 (ES)</button>
-            <button class="market-btn" onclick="selectMarket('NQ')">NASDAQ (NQ)</button>
-            <button class="market-btn" onclick="selectMarket('GC')">Gold (GC)</button>
-            <button class="market-btn" onclick="selectMarket('CL')">Crude Oil (CL)</button>
-            <button class="market-btn" onclick="selectMarket('6E')">Euro (6E)</button>
-            <button class="market-btn" onclick="selectMarket('ZB')">30Y Bond (ZB)</button>
-            <button class="market-btn" onclick="selectMarket('ZN')">10Y Note (ZN)</button>
-            <button class="market-btn" onclick="selectMarket('SI')">Silver (SI)</button>
-        </div>
-
-        <!-- Current Market Summary -->
-        <div class="card">
-            <h2 class="card-title">📈 Current COT Positioning - <span id="current-market">S&P 500 E-Mini (ES)</span></h2>
-
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-title">Commercial Net Position</div>
-                    <div class="metric-value bearish" id="commercial-net">-125,432</div>
-                    <div class="metric-change" style="color: var(--danger-color);">↓ Increased Short -8.5% WoW</div>
-                    <div class="metric-source">CFTC Report • Updated Weekly</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-title">Non-Commercial Net Position</div>
-                    <div class="metric-value bullish" id="noncommercial-net">+98,765</div>
-                    <div class="metric-change" style="color: var(--success-color);">↑ Increased Long +12.3% WoW</div>
-                    <div class="metric-source">Large Speculators (Funds)</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-title">Non-Reportable Net Position</div>
-                    <div class="metric-value neutral" id="nonreportable-net">+26,667</div>
-                    <div class="metric-change" style="color: var(--success-color);">↑ Small Traders Bullish +3.2% WoW</div>
-                    <div class="metric-source">Retail Positioning</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-title">COT Index (Percentile)</div>
-                    <div class="metric-value" id="cot-index" style="color: var(--warning-color);">78%</div>
-                    <div class="metric-change" style="color: var(--text-secondary);">Speculator positioning near 3-year high</div>
-                    <div class="metric-source">Extremes Signal Caution</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-title">Commercial/Spec Ratio</div>
-                    <div class="metric-value" id="cs-ratio" style="color: var(--accent-color);">-1.27</div>
-                    <div class="metric-change" style="color: var(--text-secondary);">Divergence signals potential reversal</div>
-                    <div class="metric-source">Smart Money vs Funds</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-title">Market Sentiment</div>
-                    <div class="metric-value" id="market-sentiment">
-                        <span class="badge badge-extreme">EXTREME BULLISH</span>
-                    </div>
-                    <div class="metric-change" style="color: var(--warning-color);">⚠️ Potential Contrarian Setup</div>
-                    <div class="metric-source">COT-Based Signal</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Historical COT Chart -->
-        <div class="card">
-            <h2 class="card-title">📉 Historical Net Positioning (52 Weeks)</h2>
-            <div class="chart-container">
-                <canvas id="cotHistoricalChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Detailed Position Breakdown -->
-        <div class="card">
-            <h2 class="card-title">📋 Detailed Position Breakdown</h2>
-            <div class="table-container">
-                <table class="cot-table">
-                    <thead>
-                        <tr>
-                            <th>Trader Category</th>
-                            <th>Long Contracts</th>
-                            <th>Short Contracts</th>
-                            <th>Net Position</th>
-                            <th>% of Open Interest</th>
-                            <th>Weekly Change</th>
-                            <th>Signal</th>
-                        </tr>
-                    </thead>
-                    <tbody id="position-breakdown">
-                        <tr>
-                            <td><strong>Commercial Hedgers</strong></td>
-                            <td>458,234</td>
-                            <td>583,666</td>
-                            <td style="color: var(--danger-color);"><strong>-125,432</strong></td>
-                            <td>48.2%</td>
-                            <td style="color: var(--danger-color);">-8.5%</td>
-                            <td><span class="badge badge-bullish">CONTRARIAN BUY</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Non-Commercial (Large Specs)</strong></td>
-                            <td>312,456</td>
-                            <td>213,691</td>
-                            <td style="color: var(--success-color);"><strong>+98,765</strong></td>
-                            <td>35.6%</td>
-                            <td style="color: var(--success-color);">+12.3%</td>
-                            <td><span class="badge badge-extreme">EXTREME LONG</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Non-Reportable (Retail)</strong></td>
-                            <td>89,234</td>
-                            <td>62,567</td>
-                            <td style="color: var(--success-color);"><strong>+26,667</strong></td>
-                            <td>16.2%</td>
-                            <td style="color: var(--success-color);">+3.2%</td>
-                            <td><span class="badge badge-neutral">FOLLOWING TREND</span></td>
-                        </tr>
-                        <tr style="background: rgba(220, 20, 60, 0.05);">
-                            <td><strong>TOTAL OPEN INTEREST</strong></td>
-                            <td><strong>859,924</strong></td>
-                            <td><strong>859,924</strong></td>
-                            <td><strong>0</strong></td>
-                            <td><strong>100%</strong></td>
-                            <td>+2.1%</td>
-                            <td><span class="badge badge-neutral">BALANCED</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Multi-Market COT Overview -->
-        <div class="card">
-            <h2 class="card-title">🌐 Multi-Market COT Signals</h2>
-            <div class="table-container">
-                <table class="cot-table">
-                    <thead>
-                        <tr>
-                            <th>Market</th>
-                            <th>Commercial Net</th>
-                            <th>Spec Net</th>
-                            <th>COT Index</th>
-                            <th>Sentiment</th>
-                            <th>Signal</th>
-                            <th>Strength</th>
-                        </tr>
-                    </thead>
-                    <tbody id="multi-market-cot">
-                        <tr onclick="selectMarket('ES')">
-                            <td><strong>S&P 500 (ES)</strong></td>
-                            <td style="color: var(--danger-color);">-125,432</td>
-                            <td style="color: var(--success-color);">+98,765</td>
-                            <td>78%</td>
-                            <td><span class="badge badge-extreme">EXTREME BULL</span></td>
-                            <td><span class="badge badge-bearish">SELL</span></td>
-                            <td style="color: var(--warning-color);">⭐⭐⭐</td>
-                        </tr>
-                        <tr onclick="selectMarket('NQ')">
-                            <td><strong>NASDAQ (NQ)</strong></td>
-                            <td style="color: var(--danger-color);">-56,234</td>
-                            <td style="color: var(--success-color);">+48,921</td>
-                            <td>82%</td>
-                            <td><span class="badge badge-extreme">EXTREME BULL</span></td>
-                            <td><span class="badge badge-bearish">SELL</span></td>
-                            <td style="color: var(--danger-color);">⭐⭐⭐⭐</td>
-                        </tr>
-                        <tr onclick="selectMarket('GC')">
-                            <td><strong>Gold (GC)</strong></td>
-                            <td style="color: var(--success-color);">+234,567</td>
-                            <td style="color: var(--danger-color);">-198,432</td>
-                            <td>32%</td>
-                            <td><span class="badge badge-bearish">BEARISH</span></td>
-                            <td><span class="badge badge-bullish">BUY</span></td>
-                            <td style="color: var(--success-color);">⭐⭐⭐⭐⭐</td>
-                        </tr>
-                        <tr onclick="selectMarket('CL')">
-                            <td><strong>Crude Oil (CL)</strong></td>
-                            <td style="color: var(--success-color);">+89,234</td>
-                            <td style="color: var(--danger-color);">-76,543</td>
-                            <td>45%</td>
-                            <td><span class="badge badge-neutral">NEUTRAL</span></td>
-                            <td><span class="badge badge-neutral">HOLD</span></td>
-                            <td style="color: var(--text-muted);">⭐⭐</td>
-                        </tr>
-                        <tr onclick="selectMarket('6E')">
-                            <td><strong>Euro (6E)</strong></td>
-                            <td style="color: var(--danger-color);">-45,678</td>
-                            <td style="color: var(--success-color);">+38,921</td>
-                            <td>68%</td>
-                            <td><span class="badge badge-bullish">BULLISH</span></td>
-                            <td><span class="badge badge-bearish">SELL</span></td>
-                            <td style="color: var(--warning-color);">⭐⭐⭐</td>
-                        </tr>
-                        <tr onclick="selectMarket('ZB')">
-                            <td><strong>30Y T-Bond (ZB)</strong></td>
-                            <td style="color: var(--success-color);">+156,789</td>
-                            <td style="color: var(--danger-color);">-134,567</td>
-                            <td>28%</td>
-                            <td><span class="badge badge-bearish">BEARISH</span></td>
-                            <td><span class="badge badge-bullish">BUY</span></td>
-                            <td style="color: var(--success-color);">⭐⭐⭐⭐</td>
-                        </tr>
-                        <tr onclick="selectMarket('ZN')">
-                            <td><strong>10Y T-Note (ZN)</strong></td>
-                            <td style="color: var(--success-color);">+98,765</td>
-                            <td style="color: var(--danger-color);">-87,654</td>
-                            <td>35%</td>
-                            <td><span class="badge badge-bearish">BEARISH</span></td>
-                            <td><span class="badge badge-bullish">BUY</span></td>
-                            <td style="color: var(--success-color);">⭐⭐⭐⭐</td>
-                        </tr>
-                        <tr onclick="selectMarket('SI')">
-                            <td><strong>Silver (SI)</strong></td>
-                            <td style="color: var(--success-color);">+67,890</td>
-                            <td style="color: var(--danger-color);">-54,321</td>
-                            <td>38%</td>
-                            <td><span class="badge badge-neutral">NEUTRAL</span></td>
-                            <td><span class="badge badge-bullish">BUY</span></td>
-                            <td style="color: var(--success-color);">⭐⭐⭐</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- COT Interpretation Guide -->
-        <div class="card">
-            <h2 class="card-title">📖 COT Signal Interpretation</h2>
-
-            <div class="info-box">
-                <h3>Commercial Hedgers (Smart Money)</h3>
-                <p>
-                    <strong>Contrarian Indicator:</strong> Commercial hedgers are producers, banks, and institutions hedging their business risk.
-                    When commercials are heavily SHORT, it's often a <span class="badge badge-bullish">BUY SIGNAL</span> (they're hedging upside).
-                    When heavily LONG, it's often a <span class="badge badge-bearish">SELL SIGNAL</span> (hedging downside).
-                    <br><br>
-                    <strong>Best Signals:</strong> Extreme positioning (COT Index &lt;20% or &gt;80%) combined with price action.
-                </p>
-            </div>
-
-            <div class="info-box">
-                <h3>Non-Commercial Traders (Large Speculators)</h3>
-                <p>
-                    <strong>Trend Following:</strong> Hedge funds and large speculators tend to chase trends.
-                    Extreme LONG positioning often occurs near market tops (euphoria).
-                    Extreme SHORT positioning often occurs near market bottoms (capitulation).
-                    <br><br>
-                    <strong>Warning:</strong> When spec positioning exceeds 75th percentile, expect increased volatility or reversal.
-                </p>
-            </div>
-
-            <div class="info-box">
-                <h3>Non-Reportable (Retail Traders)</h3>
-                <p>
-                    <strong>Sentiment Gauge:</strong> Small traders are typically wrong at extremes.
-                    Heavy retail LONG positioning can be a contrarian sell signal.
-                    Heavy retail SHORT positioning can be a contrarian buy signal.
-                    <br><br>
-                    <strong>Use With:</strong> Combine with commercial positioning for strongest signals.
-                </p>
-            </div>
-        </div>
-
-        <!-- Data Source Info -->
-        <div class="card" style="background: rgba(220, 20, 60, 0.05); border-color: var(--accent-color);">
-            <h2 class="card-title">📡 Data Sources & Updates</h2>
-            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8;">
-                <strong>Data Provider:</strong> Commodity Futures Trading Commission (CFTC)<br>
-                <strong>Update Frequency:</strong> Weekly (every Friday at 3:30 PM ET)<br>
-                <strong>Historical Data:</strong> 3+ years of positioning history available<br>
-                <strong>Coverage:</strong> All major futures markets (indices, commodities, currencies, bonds)<br>
-                <strong>Visualization:</strong> Real-time COT positioning with historical percentiles and trend analysis<br>
-                <strong>Note:</strong> This dashboard shows representative COT data structure. Production version connects to live CFTC API feeds.
-            </p>
-        </div>
-
     </div>
 
-    <!-- JavaScript -->
     <script>
-        // Market Selection Handler
-        let currentMarket = 'ES';
-
-        function selectMarket(symbol) {
-            currentMarket = symbol;
-
-            // Update button states
-            document.querySelectorAll('.market-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Update market name
-            const marketNames = {
-                'ES': 'S&P 500 E-Mini (ES)',
-                'NQ': 'NASDAQ 100 E-Mini (NQ)',
-                'GC': 'Gold Futures (GC)',
-                'CL': 'Crude Oil Futures (CL)',
-                '6E': 'Euro FX Futures (6E)',
-                'ZB': '30-Year T-Bond (ZB)',
-                'ZN': '10-Year T-Note (ZN)',
-                'SI': 'Silver Futures (SI)'
-            };
-
-            document.getElementById('current-market').textContent = marketNames[symbol];
-
-            // Update COT data for selected market
-            updateCOTData(symbol);
-
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // COT Data Update (Representative Data)
-        function updateCOTData(symbol) {
-            // Representative COT data structure
-            const cotData = {
-                'ES': {
-                    commercial: -125432,
-                    noncommercial: 98765,
-                    nonreportable: 26667,
-                    cotIndex: 78,
-                    sentiment: 'EXTREME BULLISH',
-                    signal: 'SELL'
-                },
-                'NQ': {
-                    commercial: -56234,
-                    noncommercial: 48921,
-                    nonreportable: 7313,
-                    cotIndex: 82,
-                    sentiment: 'EXTREME BULLISH',
-                    signal: 'SELL'
-                },
-                'GC': {
-                    commercial: 234567,
-                    noncommercial: -198432,
-                    nonreportable: -36135,
-                    cotIndex: 32,
-                    sentiment: 'BEARISH',
-                    signal: 'BUY'
-                },
-                'CL': {
-                    commercial: 89234,
-                    noncommercial: -76543,
-                    nonreportable: -12691,
-                    cotIndex: 45,
-                    sentiment: 'NEUTRAL',
-                    signal: 'HOLD'
-                },
-                '6E': {
-                    commercial: -45678,
-                    noncommercial: 38921,
-                    nonreportable: 6757,
-                    cotIndex: 68,
-                    sentiment: 'BULLISH',
-                    signal: 'SELL'
-                },
-                'ZB': {
-                    commercial: 156789,
-                    noncommercial: -134567,
-                    nonreportable: -22222,
-                    cotIndex: 28,
-                    sentiment: 'BEARISH',
-                    signal: 'BUY'
-                },
-                'ZN': {
-                    commercial: 98765,
-                    noncommercial: -87654,
-                    nonreportable: -11111,
-                    cotIndex: 35,
-                    sentiment: 'BEARISH',
-                    signal: 'BUY'
-                },
-                'SI': {
-                    commercial: 67890,
-                    noncommercial: -54321,
-                    nonreportable: -13569,
-                    cotIndex: 38,
-                    sentiment: 'NEUTRAL',
-                    signal: 'BUY'
-                }
-            };
-
-            const data = cotData[symbol];
-
-            // Update metric values
-            document.getElementById('commercial-net').textContent = data.commercial.toLocaleString();
-            document.getElementById('commercial-net').className = 'metric-value ' + (data.commercial < 0 ? 'bearish' : 'bullish');
-
-            document.getElementById('noncommercial-net').textContent = (data.noncommercial >= 0 ? '+' : '') + data.noncommercial.toLocaleString();
-            document.getElementById('noncommercial-net').className = 'metric-value ' + (data.noncommercial > 0 ? 'bullish' : 'bearish');
-
-            document.getElementById('nonreportable-net').textContent = (data.nonreportable >= 0 ? '+' : '') + data.nonreportable.toLocaleString();
-            document.getElementById('nonreportable-net').className = 'metric-value neutral';
-
-            document.getElementById('cot-index').textContent = data.cotIndex + '%';
-
-            const ratio = (data.commercial / data.noncommercial).toFixed(2);
-            document.getElementById('cs-ratio').textContent = ratio;
-
-            // Update sentiment badge
-            const sentimentBadge = document.getElementById('market-sentiment');
-            let badgeClass = 'badge ';
-            if (data.sentiment.includes('EXTREME')) {
-                badgeClass += 'badge-extreme';
-            } else if (data.sentiment === 'BULLISH') {
-                badgeClass += 'badge-bullish';
-            } else if (data.sentiment === 'BEARISH') {
-                badgeClass += 'badge-bearish';
-            } else {
-                badgeClass += 'badge-neutral';
+        // Load data using heartbeat wrapper
+        async function loadData() {
+            const apiEndpoint = '/api/market/quote/GC=F,CL=F';
+            if (!apiEndpoint || apiEndpoint === 'None') {
+                document.getElementById('status').innerHTML = 'Manual data entry required for this tool.';
+                return;
             }
 
-            sentimentBadge.innerHTML = '<span class="' + badgeClass + '">' + data.sentiment + '</span>';
+            try {
+                const response = await fetchWithHeartbeat(apiEndpoint);
+                const data = response.data;
 
-            // Update chart
-            updateCOTChart(symbol);
+                // Display data
+                const container = document.getElementById('dataContainer');
+                container.innerHTML = '<div class="data-card"><h3>✅ Data Loaded Successfully</h3><pre>' +
+                    JSON.stringify(data, null, 2) + '</pre><div class="status live">LIVE</div></div>';
+
+            } catch (error) {
+                document.getElementById('status').innerHTML =
+                    '<span style="color: #FF5252;">Error loading data: ' + error.message + '</span>';
+            }
         }
 
-        // Historical COT Chart
-        let cotChart = null;
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadData);
 
-        function updateCOTChart(symbol) {
-            const ctx = document.getElementById('cotHistoricalChart');
-
-            // Generate 52 weeks of representative data
-            const weeks = 52;
-            const labels = [];
-            const commercialData = [];
-            const noncommercialData = [];
-            const nonreportableData = [];
-
-            const today = new Date();
-            for (let i = weeks - 1; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - (i * 7));
-                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-
-                // Simulate cyclical COT data with trend
-                const cycle = Math.sin((i / weeks) * Math.PI * 4) * 50000;
-                const trend = (i - weeks / 2) * 1000;
-
-                commercialData.push(-(50000 + cycle + trend));
-                noncommercialData.push(40000 + cycle + trend * 0.8);
-                nonreportableData.push(10000 + cycle * 0.3);
-            }
-
-            if (cotChart) {
-                cotChart.destroy();
-            }
-
-            cotChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Commercial Net',
-                            data: commercialData,
-                            borderColor: '#FF5252',
-                            backgroundColor: 'rgba(255, 82, 82, 0.1)',
-                            borderWidth: 3,
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'Non-Commercial Net',
-                            data: noncommercialData,
-                            borderColor: '#00ff88',
-                            backgroundColor: 'rgba(0, 255, 136, 0.1)',
-                            borderWidth: 3,
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'Non-Reportable Net',
-                            data: nonreportableData,
-                            borderColor: '#0096FF',
-                            backgroundColor: 'rgba(0, 150, 255, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#b0b8c8',
-                                font: {
-                                    size: 12,
-                                    family: 'Inter'
-                                }
-                            }
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: 'rgba(18, 32, 58, 0.95)',
-                            titleColor: '#DC143C',
-                            bodyColor: '#b0b8c8',
-                            borderColor: '#1e3a5f',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: true,
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    label += context.parsed.y.toLocaleString() + ' contracts';
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(30, 58, 95, 0.3)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#7a8a9a',
-                                font: {
-                                    size: 10,
-                                    family: 'Inter'
-                                },
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
-                        },
-                        y: {
-                            grid: {
-                                color: 'rgba(30, 58, 95, 0.3)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#7a8a9a',
-                                font: {
-                                    size: 11,
-                                    family: 'Inter'
-                                },
-                                callback: function(value) {
-                                    return (value / 1000).toFixed(0) + 'K';
-                                }
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    }
-                }
-            });
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCOTChart('ES');
-        });
+        // Auto-refresh every 60 seconds
+        setInterval(loadData, 60000);
     </script>
 </body>
 </html>

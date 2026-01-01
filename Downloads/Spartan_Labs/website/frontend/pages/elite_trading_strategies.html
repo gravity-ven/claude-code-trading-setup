@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Trading Strategies - Spartan Research Station</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="js/agent_heartbeat.js?v=1766988597"></script>
+    <script src="js/api_heartbeat_wrapper.js?v=1766988597"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a1f3a 50%, #0a0e27 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(18, 32, 58, 0.95);
+            padding: 25px 40px;
+            border-radius: 15px;
+            border-bottom: 3px solid #8B0000;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.2em;
+            color: #FFD700;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #b0b8c8;
+            font-size: 1.1em;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: #ffffff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .data-card {
+            background: rgba(18, 32, 58, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #FFD700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .data-card h3 {
+            color: #FFD700;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .data-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #00ff88;
+            margin: 15px 0;
+        }
+
+        .data-label {
+            color: #b0b8c8;
+            font-size: 0.95em;
+        }
+
+        .loading {
+            color: #FFD700;
+            font-style: italic;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status.live {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Elite Trading Strategies</h1>
+            <p class="description">Advanced trading methodologies and systems</p>
+            <a href="index.html" class="back-button">← Back to Dashboard</a>
+        </header>
+
+        <div id="dataContainer" class="content-grid">
+            <div class="data-card">
+                <h3>📊 Live Market Data</h3>
+                <div class="loading" id="status">Loading data from Agent Data Engine...</div>
+                <div class="status live">LIVE</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load data using heartbeat wrapper
+        async function loadData() {
+            const apiEndpoint = '/api/yahoo/quote?symbols=SPY,QQQ';
+            if (!apiEndpoint || apiEndpoint === 'None') {
+                document.getElementById('status').innerHTML = 'Manual data entry required for this tool.';
+                return;
+            }
+
+            try {
+                const response = await fetchWithHeartbeat(apiEndpoint);
+                const data = response.data;
+
+                // Display data
+                const container = document.getElementById('dataContainer');
+                container.innerHTML = '<div class="data-card"><h3>✅ Data Loaded Successfully</h3><pre>' +
+                    JSON.stringify(data, null, 2) + '</pre><div class="status live">LIVE</div></div>';
+
+            } catch (error) {
+                document.getElementById('status').innerHTML =
+                    '<span style="color: #FF5252;">Error loading data: ' + error.message + '</span>';
+            }
+        }
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        // Auto-refresh every 60 seconds
+        setInterval(loadData, 60000);
+    </script>
+</body>
+</html>

@@ -3,758 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin Universal Futures Correlation Monitor | Spartan Research</title>
+    <title>Bitcoin Correlation Analysis - Spartan Research Station</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="js/agent_heartbeat.js?v=1766988597"></script>
+    <script src="js/api_heartbeat_wrapper.js?v=1766988597"></script>
     <style>
-        :root {
-            --primary-color: #8B0000;
-            --secondary-color: #B22222;
-            --accent-color: #DC143C;
-            --bg-dark: #0a1628;
-            --bg-darker: #050b14;
-            --success-color: #00ff88;
-            --warning-color: #FFD700;
-            --danger-color: #FF5252;
-            --text-primary: #FFFFFF;
-            --text-secondary: #9CA3AF;
-            --border-color: rgba(220, 20, 60, 0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a1f3a 50%, #0a0e27 100%);
+            color: #ffffff;
             min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+        }
+
+        header {
+            background: rgba(18, 32, 58, 0.95);
+            padding: 25px 40px;
+            border-radius: 15px;
+            border-bottom: 3px solid #8B0000;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.2em;
+            color: #FFD700;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #b0b8c8;
+            font-size: 1.1em;
         }
 
         .back-button {
             display: inline-block;
-            padding: 10px 20px;
-            margin-bottom: 20px;
-            background: rgba(220, 20, 60, 0.2);
-            color: var(--accent-color);
-            text-decoration: none;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: #ffffff;
+            padding: 12px 30px;
             border-radius: 8px;
-            border: 1px solid var(--border-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
             transition: all 0.3s ease;
         }
 
         .back-button:hover {
-            background: rgba(220, 20, 60, 0.3);
-            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 30px;
-            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1), rgba(139, 0, 0, 0.1));
-            border-radius: 15px;
-            border: 2px solid var(--border-color);
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-        }
-
-        .regime-banner {
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 12px;
-            border: 2px solid;
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-
-        .regime-risk-on {
-            background: rgba(0, 255, 136, 0.1);
-            border-color: var(--success-color);
-            color: var(--success-color);
-        }
-
-        .regime-risk-off {
-            background: rgba(255, 82, 82, 0.1);
-            border-color: var(--danger-color);
-            color: var(--danger-color);
-        }
-
-        .regime-neutral {
-            background: rgba(255, 215, 0, 0.1);
-            border-color: var(--warning-color);
-            color: var(--warning-color);
-        }
-
-        .stats-grid {
+        .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
         }
 
-        .stat-card {
-            padding: 20px;
-            background: rgba(220, 20, 60, 0.1);
+        .data-card {
+            background: rgba(18, 32, 58, 0.9);
+            padding: 25px;
             border-radius: 12px;
-            border: 1px solid var(--border-color);
-            text-align: center;
+            border-left: 4px solid #FFD700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--success-color);
-        }
-
-        .timeframe-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .timeframe-tab {
-            padding: 12px 24px;
-            background: rgba(220, 20, 60, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .timeframe-tab.active {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
-        }
-
-        .timeframe-tab:hover {
-            background: rgba(220, 20, 60, 0.3);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            margin: 30px 0 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border-color);
-            color: var(--accent-color);
-        }
-
-        .corr-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .corr-card {
-            padding: 15px;
-            background: rgba(10, 22, 40, 0.6);
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .corr-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
-        }
-
-        .corr-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .corr-asset {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .corr-value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            padding: 5px 12px;
-            border-radius: 6px;
-        }
-
-        .corr-high-positive {
-            background: rgba(0, 255, 136, 0.2);
-            color: var(--success-color);
-        }
-
-        .corr-moderate-positive {
-            background: rgba(255, 215, 0, 0.2);
-            color: var(--warning-color);
-        }
-
-        .corr-low {
-            background: rgba(128, 128, 128, 0.2);
-            color: #9CA3AF;
-        }
-
-        .corr-negative {
-            background: rgba(255, 82, 82, 0.2);
-            color: var(--danger-color);
-        }
-
-        .corr-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .corr-bar-fill {
-            height: 100%;
-            transition: width 0.5s ease;
-        }
-
-        .corr-insight {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            font-style: italic;
-        }
-
-        .insight-panel {
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(34, 197, 94, 0.05));
-            border-radius: 12px;
-            border: 2px solid rgba(0, 255, 136, 0.3);
-            margin-bottom: 30px;
-        }
-
-        .insight-title {
-            font-size: 1.3rem;
-            color: var(--success-color);
+        .data-card h3 {
+            color: #FFD700;
+            font-size: 1.3em;
             margin-bottom: 15px;
-            font-weight: bold;
         }
 
-        .insight-text {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: var(--text-primary);
+        .data-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #00ff88;
+            margin: 15px 0;
+        }
+
+        .data-label {
+            color: #b0b8c8;
+            font-size: 0.95em;
         }
 
         .loading {
-            text-align: center;
-            padding: 60px;
-            font-size: 1.3rem;
-            color: var(--text-secondary);
+            color: #FFD700;
+            font-style: italic;
         }
 
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
 
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .corr-grid {
-                grid-template-columns: 1fr;
-            }
+        .status.live {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="correlation_matrix.html" class="back-button">← Back to Full Correlation Matrix</a>
+        <header>
+            <h1>🏛️ Bitcoin Correlation Analysis</h1>
+            <p class="description">BTC correlations with traditional assets</p>
+            <a href="index.html" class="back-button">← Back to Dashboard</a>
+        </header>
 
-        <div class="header">
-            <h1>₿ Bitcoin Universal Futures Correlation Monitor</h1>
-            <p>Track Bitcoin's correlations across ALL major futures markets for multi-asset capital flow analysis</p>
-            <p style="margin-top: 10px; font-size: 0.95rem; color: #FFD700;">
-                Real-Time Data | Multi-Timeframe Analysis | Regime Detection
-            </p>
-        </div>
-
-        <!-- Regime Banner -->
-        <div class="regime-banner" id="regimeBanner">
-            <span id="regimeText">Loading market regime...</span>
-        </div>
-
-        <!-- Asset Class Scores -->
-        <div class="stats-grid" id="assetClassScores">
-            <div class="stat-card">
-                <div class="stat-label">Equity Correlation</div>
-                <div class="stat-value" id="equityScore">--</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Commodity Correlation</div>
-                <div class="stat-value" id="commodityScore">--</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Rates Correlation</div>
-                <div class="stat-value" id="ratesScore">--</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">FX Correlation</div>
-                <div class="stat-value" id="fxScore">--</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Dominant Asset Class</div>
-                <div class="stat-value" id="dominantClass" style="font-size: 1.3rem;">--</div>
+        <div id="dataContainer" class="content-grid">
+            <div class="data-card">
+                <h3>📊 Live Market Data</h3>
+                <div class="loading" id="status">Loading data from Agent Data Engine...</div>
+                <div class="status live">LIVE</div>
             </div>
         </div>
-
-        <!-- Timeframe Selector -->
-        <div class="timeframe-tabs">
-            <button class="timeframe-tab active" data-period="short" onclick="switchTimeframe('short')">
-                📊 Short-Term (10-Day)
-            </button>
-            <button class="timeframe-tab" data-period="medium" onclick="switchTimeframe('medium')">
-                📈 Medium-Term (20-Day)
-            </button>
-            <button class="timeframe-tab" data-period="long" onclick="switchTimeframe('long')">
-                📉 Long-Term (50-Day)
-            </button>
-        </div>
-
-        <!-- Trading Insight Panel -->
-        <div class="insight-panel" id="tradingInsight">
-            <div class="insight-title">💡 Current Market Regime Insight</div>
-            <div class="insight-text" id="insightText">
-                Loading correlation analysis...
-            </div>
-        </div>
-
-        <!-- Equity Index Futures -->
-        <div class="section-title">📈 Equity Index Futures</div>
-        <div class="corr-grid" id="equityGrid">
-            <div class="loading">Loading equity correlations...</div>
-        </div>
-
-        <!-- Metals (COPPER Highlighted) -->
-        <div class="section-title">🥇 Metals Futures (Copper Emphasized)</div>
-        <div class="corr-grid" id="metalsGrid">
-            <div class="loading">Loading metals correlations...</div>
-        </div>
-
-        <!-- Energy -->
-        <div class="section-title">⚡ Energy Futures</div>
-        <div class="corr-grid" id="energyGrid">
-            <div class="loading">Loading energy correlations...</div>
-        </div>
-
-        <!-- Forex -->
-        <div class="section-title">💱 Forex & Dollar Index</div>
-        <div class="corr-grid" id="forexGrid">
-            <div class="loading">Loading forex correlations...</div>
-        </div>
-
-        <!-- Rates/Bonds -->
-        <div class="section-title">📊 Rates & Treasury Futures</div>
-        <div class="corr-grid" id="ratesGrid">
-            <div class="loading">Loading rates correlations...</div>
-        </div>
-
-        <!-- Volatility -->
-        <div class="section-title">⚠️ Volatility</div>
-        <div class="corr-grid" id="volatilityGrid">
-            <div class="loading">Loading VIX correlation...</div>
-        </div>
-
     </div>
 
     <script>
-        let correlationData = null;
-        let metadata = null;
-        let currentTimeframe = 'medium'; // Default to 20-day
-
-        // Asset mappings to existing correlation data
-        const ASSET_MAPPING = {
-            equity: {
-                'sp500': 'S&P 500 (ES)',
-                'nasdaq': 'NASDAQ 100 (NQ)',
-                'russell2000': 'Russell 2000 (RTY)',
-                'dowjones': 'Dow Jones (YM)'
-            },
-            metals: {
-                'gold': 'Gold (GC)',
-                'silver': 'Silver (SI)',
-                'copper': 'Copper (HG) 🔑', // Key metal highlighted
-            },
-            energy: {
-                'oil': 'Crude Oil (CL)',
-                'natgas': 'Natural Gas (NG)'
-            },
-            forex: {
-                'eurusd': 'Euro (6E)',
-                'usdjpy': 'Yen (6J)',
-                'gbpusd': 'Pound (6B)',
-                'dollar': 'Dollar Index (DX)'
-            },
-            rates: {
-                'tlt': '20Y T-Bond (ZB)',
-                'ief': '10Y T-Note (ZN)',
-                'shy': '2Y T-Note (ZT)'
-            },
-            volatility: {
-                'vix': 'VIX Futures'
+        // Load data using heartbeat wrapper
+        async function loadData() {
+            const apiEndpoint = '/api/market/quote/BTC-USD,ETH-USD,SPY,GLD';
+            if (!apiEndpoint || apiEndpoint === 'None') {
+                document.getElementById('status').innerHTML = 'Manual data entry required for this tool.';
+                return;
             }
-        };
 
-        // Initialize on page load
-        window.addEventListener('load', async () => {
-            await fetchData();
-        });
-
-        async function fetchData() {
             try {
-                const [metaResponse, corrResponse] = await Promise.all([
-                    fetch('http://localhost:5004/api/metadata'),
-                    fetch('http://localhost:5004/api/correlations')
-                ]);
+                const response = await fetchWithHeartbeat(apiEndpoint);
+                const data = response.data;
 
-                metadata = await metaResponse.json();
-                correlationData = await corrResponse.json();
+                // Display data
+                const container = document.getElementById('dataContainer');
+                container.innerHTML = '<div class="data-card"><h3>✅ Data Loaded Successfully</h3><pre>' +
+                    JSON.stringify(data, null, 2) + '</pre><div class="status live">LIVE</div></div>';
 
-                if (metadata.success && correlationData.success) {
-                    updateAllCorrelations();
-                    updateRegimeAnalysis();
-                } else {
-                    showError('Failed to load correlation data');
-                }
             } catch (error) {
-                console.error('Error fetching data:', error);
-                showError('API connection failed. Ensure correlation API is running on port 5004');
+                document.getElementById('status').innerHTML =
+                    '<span style="color: #FF5252;">Error loading data: ' + error.message + '</span>';
             }
         }
 
-        function updateAllCorrelations() {
-            updateEquityGrid();
-            updateMetalsGrid();
-            updateEnergyGrid();
-            updateForexGrid();
-            updateRatesGrid();
-            updateVolatilityGrid();
-        }
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadData);
 
-        function updateEquityGrid() {
-            const grid = document.getElementById('equityGrid');
-            grid.innerHTML = '';
-
-            Object.entries(ASSET_MAPPING.equity).forEach(([key, name]) => {
-                const corr = getBitcoinCorrelation(key);
-                grid.appendChild(createCorrCard(name, corr, getEquityInsight(key, corr)));
-            });
-        }
-
-        function updateMetalsGrid() {
-            const grid = document.getElementById('metalsGrid');
-            grid.innerHTML = '';
-
-            Object.entries(ASSET_MAPPING.metals).forEach(([key, name]) => {
-                const corr = getBitcoinCorrelation(key);
-                const isCopper = key === 'copper';
-                grid.appendChild(createCorrCard(
-                    name,
-                    corr,
-                    getMetalsInsight(key, corr),
-                    isCopper // Highlight copper
-                ));
-            });
-        }
-
-        function updateEnergyGrid() {
-            const grid = document.getElementById('energyGrid');
-            grid.innerHTML = '';
-
-            Object.entries(ASSET_MAPPING.energy).forEach(([key, name]) => {
-                const corr = getBitcoinCorrelation(key);
-                grid.appendChild(createCorrCard(name, corr, getEnergyInsight(key, corr)));
-            });
-        }
-
-        function updateForexGrid() {
-            const grid = document.getElementById('forexGrid');
-            grid.innerHTML = '';
-
-            Object.entries(ASSET_MAPPING.forex).forEach(([key, name]) => {
-                const corr = getBitcoinCorrelation(key);
-                grid.appendChild(createCorrCard(name, corr, getForexInsight(key, corr)));
-            });
-        }
-
-        function updateRatesGrid() {
-            const grid = document.getElementById('ratesGrid');
-            grid.innerHTML = '';
-
-            Object.entries(ASSET_MAPPING.rates).forEach(([key, name]) => {
-                const corr = getBitcoinCorrelation(key);
-                grid.appendChild(createCorrCard(name, corr, getRatesInsight(key, corr)));
-            });
-        }
-
-        function updateVolatilityGrid() {
-            const grid = document.getElementById('volatilityGrid');
-            grid.innerHTML = '';
-
-            const corr = getBitcoinCorrelation('vix');
-            grid.appendChild(createCorrCard(
-                ASSET_MAPPING.volatility.vix,
-                corr,
-                getVIXInsight(corr)
-            ));
-        }
-
-        function getBitcoinCorrelation(asset) {
-            if (!correlationData || !correlationData.correlations) return null;
-            const btcData = correlationData.correlations.bitcoin;
-            return btcData ? btcData[asset] : null;
-        }
-
-        function createCorrCard(assetName, correlation, insight, highlighted = false) {
-            const card = document.createElement('div');
-            card.className = 'corr-card';
-            if (highlighted) {
-                card.style.border = '2px solid #FFD700';
-                card.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1))';
-            }
-
-            const corrClass = getCorrClass(correlation);
-            const corrFormatted = formatCorr(correlation);
-            const barWidth = Math.abs(correlation) * 100;
-            const barColor = correlation >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
-
-            card.innerHTML = `
-                <div class="corr-header">
-                    <div class="corr-asset">${assetName}</div>
-                    <div class="corr-value ${corrClass}">${corrFormatted}</div>
-                </div>
-                <div class="corr-bar">
-                    <div class="corr-bar-fill" style="width: ${barWidth}%; background: ${barColor};"></div>
-                </div>
-                <div class="corr-insight">${insight}</div>
-            `;
-
-            return card;
-        }
-
-        function getCorrClass(value) {
-            if (value === null || value === undefined) return 'corr-low';
-            const abs = Math.abs(value);
-            if (abs >= 0.70) return value > 0 ? 'corr-high-positive' : 'corr-negative';
-            if (abs >= 0.30) return 'corr-moderate-positive';
-            return 'corr-low';
-        }
-
-        function formatCorr(value) {
-            if (value === null || value === undefined) return 'N/A';
-            return value >= 0 ? `+${value.toFixed(2)}` : value.toFixed(2);
-        }
-
-        function updateRegimeAnalysis() {
-            // Calculate asset class scores
-            const equityCorrs = ['sp500', 'nasdaq', 'russell2000', 'dowjones']
-                .map(a => getBitcoinCorrelation(a))
-                .filter(c => c !== null);
-            const equityScore = equityCorrs.length > 0 ?
-                equityCorrs.reduce((a, b) => a + b, 0) / equityCorrs.length : 0;
-
-            const metalCorrs = ['gold', 'silver', 'copper']
-                .map(a => getBitcoinCorrelation(a))
-                .filter(c => c !== null);
-            const commodityScore = metalCorrs.length > 0 ?
-                (metalCorrs.reduce((a, b) => a + b, 0) + (getBitcoinCorrelation('oil') || 0)) / (metalCorrs.length + 1) : 0;
-
-            const rateCorrs = ['tlt', 'ief', 'shy']
-                .map(a => getBitcoinCorrelation(a))
-                .filter(c => c !== null);
-            const ratesScore = rateCorrs.length > 0 ?
-                rateCorrs.reduce((a, b) => a + b, 0) / rateCorrs.length : 0;
-
-            const fxCorrs = ['eurusd', 'usdjpy', 'gbpusd', 'dollar']
-                .map(a => getBitcoinCorrelation(a))
-                .filter(c => c !== null);
-            const fxScore = fxCorrs.length > 0 ?
-                fxCorrs.reduce((a, b) => a + b, 0) / fxCorrs.length : 0;
-
-            // Update scores display
-            document.getElementById('equityScore').textContent = equityScore.toFixed(2);
-            document.getElementById('commodityScore').textContent = commodityScore.toFixed(2);
-            document.getElementById('ratesScore').textContent = ratesScore.toFixed(2);
-            document.getElementById('fxScore').textContent = fxScore.toFixed(2);
-
-            // Determine dominant asset class
-            const scores = {
-                'EQUITY-DRIVEN': Math.abs(equityScore),
-                'COMMODITY-DRIVEN': Math.abs(commodityScore),
-                'RATES-DRIVEN': Math.abs(ratesScore),
-                'FX-DRIVEN': Math.abs(fxScore)
-            };
-
-            const dominant = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            const maxScore = scores[dominant];
-
-            if (maxScore < 0.15) {
-                document.getElementById('dominantClass').textContent = 'CRYPTO-SPECIFIC';
-            } else {
-                document.getElementById('dominantClass').textContent = dominant;
-            }
-
-            // Risk-On/Risk-Off Analysis
-            const vixCorr = getBitcoinCorrelation('vix') || 0;
-            const dollarCorr = getBitcoinCorrelation('dollar') || 0;
-            const riskOnScore = (equityScore * 2) - vixCorr - (dollarCorr * 0.5);
-
-            const regimeBanner = document.getElementById('regimeBanner');
-            const regimeText = document.getElementById('regimeText');
-
-            if (riskOnScore > 0.3) {
-                regimeBanner.className = 'regime-banner regime-risk-on';
-                regimeText.textContent = '🟢 RISK-ON REGIME: Bitcoin moving with equities (risk asset behavior)';
-            } else if (riskOnScore < -0.3) {
-                regimeBanner.className = 'regime-banner regime-risk-off';
-                regimeText.textContent = '🔴 RISK-OFF REGIME: Bitcoin decoupled or inverse to equities';
-            } else {
-                regimeBanner.className = 'regime-banner regime-neutral';
-                regimeText.textContent = '🟡 NEUTRAL REGIME: Bitcoin showing independence from traditional markets';
-            }
-
-            // Trading Insight
-            updateTradingInsight(equityScore, commodityScore, vixCorr, dollarCorr, dominant);
-        }
-
-        function updateTradingInsight(equityScore, commodityScore, vixCorr, dollarCorr, dominant) {
-            const insightText = document.getElementById('insightText');
-
-            let insight = `Bitcoin is currently <strong>${dominant}</strong>. `;
-
-            if (Math.abs(equityScore) > 0.5) {
-                insight += `Strong ${equityScore > 0 ? 'positive' : 'negative'} correlation with equities suggests Bitcoin is trading as a risk-${equityScore > 0 ? 'on' : 'off'} asset. `;
-            } else {
-                insight += `Low equity correlation (${equityScore.toFixed(2)}) indicates Bitcoin independence - excellent for diversification. `;
-            }
-
-            const copperCorr = getBitcoinCorrelation('copper');
-            if (copperCorr && Math.abs(copperCorr) > 0.5) {
-                insight += `<br><br>⚠️ <strong>Copper Alert:</strong> High ${copperCorr > 0 ? 'positive' : 'negative'} correlation (${copperCorr.toFixed(2)}) with copper suggests Bitcoin tracking industrial/economic activity. `;
-            }
-
-            if (vixCorr > 0.4) {
-                insight += `<br><br>🚨 <strong>Fear Signal:</strong> Bitcoin moving WITH volatility - unusual behavior indicating market stress. `;
-            }
-
-            if (Math.abs(dollarCorr) > 0.5) {
-                insight += `<br><br>💵 <strong>Dollar Relationship:</strong> ${dollarCorr > 0 ? 'Positive' : 'Negative'} correlation with USD (${dollarCorr.toFixed(2)}) - ${dollarCorr < -0.5 ? 'classic alternative asset behavior' : 'unusual pro-dollar movement'}. `;
-            }
-
-            insightText.innerHTML = insight;
-        }
-
-        // Insight generators for each asset class
-        function getEquityInsight(asset, corr) {
-            if (corr === null) return 'No data available';
-            if (Math.abs(corr) > 0.7) {
-                return corr > 0 ? '⚠️ Strong tracking - Bitcoin moving as risk-on asset' : '⚠️ Strong inverse - defensive Bitcoin move';
-            } else if (Math.abs(corr) < 0.3) {
-                return '✅ Low correlation - Good diversification';
-            } else {
-                return '📊 Moderate relationship - Watch for regime shifts';
-            }
-        }
-
-        function getMetalsInsight(asset, corr) {
-            if (corr === null) return 'No data available';
-            if (asset === 'copper') {
-                if (corr > 0.5) return '🔑 COPPER SIGNAL: Bitcoin tracking industrial demand';
-                if (corr < -0.3) return '🔑 COPPER DIVERGENCE: Bitcoin decoupling from economic growth';
-                return '🔑 COPPER NEUTRAL: Monitor for regime change';
-            }
-            if (asset === 'gold') {
-                if (corr > 0.5) return '🥇 Digital gold behavior - Safe haven correlation';
-                return '🥇 Independent from gold - Not acting as store of value';
-            }
-            return 'Precious metals relationship';
-        }
-
-        function getEnergyInsight(asset, corr) {
-            if (corr === null) return 'No data available';
-            if (Math.abs(corr) > 0.5) {
-                return corr > 0 ? '⚡ Moving with energy - Economic growth proxy' : '⚡ Inverse energy relationship';
-            }
-            return '⚡ Low energy correlation';
-        }
-
-        function getForexInsight(asset, corr) {
-            if (corr === null) return 'No data available';
-            if (asset === 'dollar') {
-                if (corr < -0.5) return '✅ Classic inverse USD relationship';
-                if (corr > 0.3) return '⚠️ Unusual pro-dollar behavior';
-                return '📊 Neutral USD relationship';
-            }
-            return '💱 FX correlation';
-        }
-
-        function getRatesInsight(asset, corr) {
-            if (corr === null) return 'No data available';
-            if (corr > 0.3) return '📈 Rising with bonds - Risk-off signal';
-            if (corr < -0.3) return '📉 Inverse to bonds - Risk-on behavior';
-            return '📊 Neutral rates relationship';
-        }
-
-        function getVIXInsight(corr) {
-            if (corr === null) return 'No data available';
-            if (corr > 0.4) return '🚨 FEAR MODE: Bitcoin moving WITH volatility (unusual!)';
-            if (corr < -0.3) return '✅ Anti-volatility: Bitcoin stable during fear';
-            return '📊 Neutral volatility relationship';
-        }
-
-        function switchTimeframe(period) {
-            currentTimeframe = period;
-
-            // Update active tab
-            document.querySelectorAll('.timeframe-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.period === period);
-            });
-
-            // Note: In real implementation, you would fetch different period correlations
-            // For now, we're using the 30-day data from the API
-            // TODO: Extend API to support multiple timeframes
-        }
-
-        function showError(message) {
-            document.querySelectorAll('.corr-grid').forEach(grid => {
-                grid.innerHTML = `<div class="loading" style="color: var(--danger-color);">❌ ${message}</div>`;
-            });
-        }
+        // Auto-refresh every 60 seconds
+        setInterval(loadData, 60000);
     </script>
 </body>
 </html>

@@ -17,6 +17,8 @@ from dotenv import load_dotenv
 import redis
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import urllib.request
+import urllib.error
 
 # Load environment variables
 load_dotenv()
@@ -126,6 +128,9 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_recession_probability()
         elif path == '/api/market/narrative':
             self.handle_market_narrative()
+        # COT Scanner API Endpoints (proxy to port 5009)
+        elif path.startswith('/api/cot-scanner/'):
+            self.proxy_to_cot_scanner(path)
         # Health check endpoint
         elif path == '/health':
             self.send_json_response({'status': 'ok', 'server': 'Spartan Main Server', 'port': PORT})
@@ -1087,6 +1092,32 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         except Exception as e:
             print(f"Error in handle_market_narrative: {e}")
+            traceback.print_exc()
+            self.send_json_response({'error': str(e)}, status=500)
+
+    def proxy_to_cot_scanner(self, path):
+        """Proxy requests to COT Scanner API on port 5009"""
+        try:
+            # Forward request to COT Scanner API
+            target_url = f'http://localhost:5009{path}'
+
+            try:
+                with urllib.request.urlopen(target_url, timeout=30) as response:
+                    data = response.read()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(data)
+            except urllib.error.URLError as e:
+                # COT Scanner API not running
+                print(f"⚠️  COT Scanner API not available: {e}")
+                self.send_json_response({
+                    'error': 'COT Scanner API not available',
+                    'message': 'Please start the COT Scanner API server on port 5009',
+                    'command': 'python cot_scanner_api.py'
+                }, status=503)
+        except Exception as e:
+            print(f"Error proxying to COT Scanner: {e}")
             traceback.print_exc()
             self.send_json_response({'error': str(e)}, status=500)
 

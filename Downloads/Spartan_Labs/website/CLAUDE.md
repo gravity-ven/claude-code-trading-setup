@@ -4,131 +4,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## 💎 DIAMOND RULE: AUTONOMOUS AGENT CHAINING (MANDATORY)
-
-**CRITICAL: Apply multi-agent thinking to ALL complex tasks in this codebase**
-
-### Auto-Activation for Web Development
-
-Agent chaining MUST activate automatically for:
-
-1. ✅ **New features** - Dashboard components, API endpoints, data visualizations
-2. ✅ **Data preloader changes** - Design → Implement → Validate → Test
-3. ✅ **API modifications** - Plan → Design → Implement → Document → Test
-4. ✅ **Frontend components** - Design → Implement → Test → Accessibility check
-5. ✅ **Database schema changes** - Design → Migrate → Validate → Backup
-6. ✅ **Bug fixes** - Analyze → Fix → Test → Validate data integrity
-7. ✅ **Performance optimization** - Profile → Optimize → Benchmark → Validate
-8. ✅ **Security features** - Design → Implement → Audit → Test
-
-### Agent Chain Phases for This Project
-
-**Phase 1: Planning** 🎯
-- Understand requirements in context of Spartan Research Station
-- Consider data flow: Preloader → Cache → API → Frontend
-- Check PostgreSQL schema impact
-- Review existing patterns
-
-**Phase 2: Architecture** 🏗️
-- Design within three-tier cache architecture
-- Plan Redis caching strategy
-- Design API contracts
-- Consider microservices interactions
-
-**Phase 3: Implementation** 💻
-- Write production-quality Python/JavaScript
-- Follow existing code patterns
-- Implement with NO FAKE DATA (real APIs only)
-- Apply rate limiting where needed
-
-**Phase 4: Testing** 🧪
-- Unit tests for Python code
-- Integration tests for API endpoints
-- Frontend testing considerations
-- Data validation tests
-
-**Phase 5: Review** 👀
-- Code quality check
-- PostgreSQL query optimization
-- Redis caching validation
-- JavaScript performance review
-
-**Phase 6: Security** 🔒
-- API authentication check
-- Input validation
-- SQL injection prevention (PostgreSQL parameterized queries)
-- Rate limiting verification
-
-**Phase 7: Documentation** 📚
-- Update API documentation
-- Add code comments
-- Update CLAUDE.md if patterns change
-- Note deployment considerations
-
-**Phase 8: Integration** 📦
-- Test with Docker compose
-- Verify health endpoints
-- Check data preloader compatibility
-- Validate cache behavior
-
-### Special Cases for This Project
-
-**Data Preloader Changes**: Always chain Plan → Implement → Validate → Test data freshness
-**API Endpoint Changes**: Always chain Design → Implement → Document → Test
-**Frontend Components**: Always chain Design → Implement → Accessibility → Performance
-**Database Changes**: Always chain Design → Backup → Migrate → Validate → Restore plan
-
-### Output Format
-
-Structure responses as:
-
-```markdown
-## 🔗 Agent Chain: [Feature/Task Name]
-
-### [Phase 1] 🎯 Planning
-<requirements analysis, data flow considerations>
-
-### [Phase 2] 🏗️ Architecture
-<system design, cache strategy, API contracts>
-
-### [Phase 3] 💻 Implementation
-<production code with real data sources>
-
-### [Phase 4] 🧪 Testing
-<test strategy and implementation>
-
-### [Phase 5] 👀 Code Review
-<quality checks, optimizations>
-
-### [Phase 6] 🔒 Security Audit
-<security validation>
-
-### [Phase 7] 📚 Documentation
-<docs updates>
-
-### [Phase 8] 📦 Integration & Delivery
-<Docker validation, deployment notes, final artifacts>
-```
-
-### Critical Rules for This Project
-
-1. **NO FAKE DATA** - Always use real APIs (yfinance, FRED, etc.), never Math.random()
-2. **PostgreSQL ONLY** - No SQLite, no exceptions
-3. **Preserve index.html** - Don't modify flashcard navigation without explicit request
-4. **Rate Limiting** - Always apply to new data sources
-5. **Three-tier Cache** - IndexedDB → Redis → PostgreSQL, no shortcuts
-
-### When NOT to Use Agent Chaining
-
-❌ Quick Docker status checks
-❌ Simple file reads
-❌ Trivial git operations
-❌ User says "quick" or "just show"
-
-**Default: IF IN DOUBT, USE AGENT CHAINING**
-
----
-
 ## System Overview
 
 **Spartan Research Station** - An autonomous, self-healing financial intelligence platform for swing traders and investors with real-time multi-asset market data.
@@ -185,6 +60,10 @@ python correlation_api.py       # Port 5004
 python daily_planet_api.py      # Port 5000
 python swing_dashboard_api.py   # Port 5002
 python garp_api.py              # Port 5003
+
+# 8. (NEW) Start Trading LLM AI Agent System
+python trading_llm_api.py       # Port 9005 - AI-powered trading signals
+# Dashboard: http://localhost:8888/trading_llm.html
 ```
 
 ### Docker Workflow (Alternative)
@@ -401,6 +280,334 @@ spartan-web:
 - Checks every 30 seconds
 - Actions: restart, cache clear, DB reset, rebuild
 - Incident tracking: PostgreSQL `monitor_incidents`, `monitor_healing_actions` tables
+
+---
+
+## Trading LLM AI Agent System (NEW)
+
+### Overview
+
+**Trading LLM** is an AI-powered multi-asset trading intelligence system that provides real-time trading signals and analysis across:
+- **Futures**: Indices (ES, NQ, YM), commodities (GC, CL, NG), currencies, bonds
+- **Stocks**: Global equities, ETFs, indices (SPY, QQQ, DIA)
+- **Forex**: Major, minor, and exotic currency pairs
+- **Bonds**: Government and corporate bonds (TLT, IEF, SHY)
+- **Crypto**: Bitcoin, Ethereum, altcoins (BTC-USD, ETH-USD)
+- **CFDs**: Contracts for difference across all assets
+
+**Port**: 9005
+**Frontend**: `trading_llm.html`
+**Database Tables**: `trading_llm_signals`, `trading_llm_trades`, `trading_llm_performance_daily`
+
+### Architecture
+
+**Data Integration Layer**:
+```
+Barometers API (8001) ──┐
+CFTC COT Data ──────────┤
+Breakthrough Insights ───┼──→ Trading LLM Engine ──→ Signal Generation
+Macro Regime ────────────┤        (Port 9005)              ↓
+VIX & Volatility ────────┤                          Frontend Dashboard
+Correlation Matrix ──────┘                          + Trade Logging
+```
+
+**Self-Improvement Loop**:
+```
+Trade Execution → Outcome Tracking → Learning System → Strategy Adaptation
+      ↑                                                        ↓
+      └────────────────── Improved Signals ←──────────────────┘
+```
+
+### Core Capabilities
+
+1. **Multi-Source Analysis**
+   - Integrates with all Spartan Labs data infrastructure
+   - Real-time FRED economic indicators
+   - CFTC positioning and institutional flows
+   - VIX and volatility regime detection
+   - Intermarket correlation analysis
+
+2. **Signal Generation**
+   - Signal types: Strong Buy, Buy, Hold, Sell, Strong Sell
+   - Confidence scores: 0-100% (multi-factor weighted)
+   - Entry levels with price ranges
+   - ATR-based stop losses
+   - Multiple take-profit targets (R:R optimized)
+   - Kelly Criterion position sizing
+
+3. **Time Horizons**
+   - **Scalp**: Minutes to hours
+   - **Intraday**: Same-day trades
+   - **Swing**: 1-2 weeks (primary focus)
+   - **Position**: 1-3 months
+   - **Trend**: 6-18 months
+
+4. **Self-Improvement**
+   - Recursive learning from trade outcomes
+   - Skill accumulation and evolution
+   - Bidirectional agent integration
+   - Meta-cognition and strategy adaptation
+
+### API Endpoints
+
+**Health Check**:
+```bash
+GET http://localhost:9005/api/health
+```
+
+**Analyze Symbol**:
+```bash
+POST http://localhost:9005/api/analyze
+{
+  "symbol": "SPY",
+  "asset_class": "stocks",
+  "time_horizon": "swing"
+}
+```
+
+**Full Market Scan**:
+```bash
+GET http://localhost:9005/api/scan
+```
+
+**Market Context**:
+```bash
+GET http://localhost:9005/api/context/summary
+```
+
+**Top Signals**:
+```bash
+GET http://localhost:9005/api/top-signals?limit=10&min_confidence=60
+```
+
+**Log Trade**:
+```bash
+POST http://localhost:9005/api/trades
+{
+  "signal_id": 123,
+  "entry_price": 450.00,
+  "quantity": 100,
+  "entry_time": "2026-01-01T12:00:00"
+}
+```
+
+**Performance Metrics**:
+```bash
+GET http://localhost:9005/api/performance/daily?days=30
+```
+
+### Claude Code Integration
+
+**Slash Commands**:
+
+- `/analyze [SYMBOL]` - Analyze specific symbol (e.g., `/analyze SPY`)
+- `/scan` - Full market scan across all asset classes
+- `/context` - Get current market context
+- `/futures` - Futures-specific analysis
+
+**Auto-Activation Keywords** (Genius DNA):
+- "analyze trading"
+- "market scan"
+- "trading signals"
+- "futures analysis"
+- "stock signals"
+- "forex opportunities"
+- "crypto trading"
+- "multi-asset scan"
+
+### Startup Commands
+
+**Manual Startup**:
+```bash
+# Start Trading LLM API
+python trading_llm_api.py
+
+# Verify running
+curl http://localhost:9005/api/health
+
+# Open dashboard
+# http://localhost:8888/trading_llm.html
+```
+
+**BULLETPROOF_STARTUP Integration**:
+```python
+from BULLETPROOF_STARTUP import BulletproofStartup
+
+startup = BulletproofStartup()
+startup.start_all()  # Includes Trading LLM on Port 9005
+```
+
+### Database Schema
+
+**trading_llm_signals**:
+- Stores all generated signals with full analysis
+- Fields: symbol, asset_class, signal_type, confidence, entry_price, stop_loss, take_profit, etc.
+
+**trading_llm_trades**:
+- Logs all trades with entry/exit and P&L calculation
+- Fields: signal_id, entry_price, exit_price, quantity, profit_loss, etc.
+
+**trading_llm_performance_daily**:
+- Daily aggregated performance metrics
+- Fields: date, total_trades, win_rate, profit_factor, sharpe_ratio, max_drawdown
+
+**trading_llm_self_improvement_log**:
+- Tracks learning events and strategy adaptations
+- Fields: timestamp, event_type, signal_id, outcome, adaptation_action
+
+### Risk Management
+
+**Default Parameters**:
+- Maximum position size: 2% of account
+- Maximum daily loss: 5% of account
+- Maximum drawdown before shutdown: 15%
+- Stop loss: 2.0 × ATR
+- Take profit: 2.0 × Risk (R:R ratio)
+
+**Signal Filtering**:
+- Minimum confidence threshold: 60% (configurable)
+- Asset class diversification enforced
+- Time horizon balance maintained
+
+### Performance Tracking
+
+**Metrics**:
+- Win Rate: Percentage of profitable trades
+- Profit Factor: Gross profit / gross loss
+- Sharpe Ratio: Risk-adjusted returns
+- Max Drawdown: Largest peak-to-trough decline
+- Average R:R: Average risk-reward ratio
+- Signal Accuracy: Confidence vs. actual outcomes
+
+**Self-Learning**:
+- Daily adaptation based on outcomes
+- Weekly strategy review and optimization
+- Monthly meta-analysis and evolution
+
+### Integration with Other Systems
+
+**Consumes From**:
+- COT Agents: CFTC positioning data
+- Data Guardian: Validated market data
+- Barometers API: Real-time sentiment
+
+**Produces To**:
+- Trading Dashboards: Signal visualization
+- Alert Systems: High-confidence opportunities
+- Downstream Agents: Inter-agent signals
+
+### Files
+
+**Core Engine**:
+- `trading_llm_engine.py` (868 lines) - Main analysis engine
+- `trading_llm_api.py` (817 lines) - Flask API server
+- `trading_llm_self_improvement.py` (834 lines) - Learning system
+
+**Frontend**:
+- `trading_llm.html` (907 lines) - Dashboard with real-time signals
+
+**Database**:
+- `trading_llm_schema.sql` (382 lines) - PostgreSQL schema
+
+**Orchestration**:
+- `BULLETPROOF_STARTUP.py` (114 lines) - Startup coordination
+
+**Claude Commands**:
+- `.claude/commands/trading/analyze.md` - Symbol analysis
+- `.claude/commands/trading/scan.md` - Market scan
+- `.claude/commands/trading/context.md` - Market context
+- `.claude/commands/trading/futures.md` - Futures analysis
+
+### Usage Examples
+
+**Daily Market Scan**:
+```python
+import requests
+
+# Morning routine - scan all markets
+response = requests.get("http://localhost:9005/api/scan")
+signals = response.json()
+
+# Filter high-confidence signals
+high_conf = [s for s in signals if s['confidence'] >= 70]
+
+# Review top 10 opportunities
+for signal in high_conf[:10]:
+    print(f"{signal['symbol']}: {signal['signal_type']} ({signal['confidence']}%)")
+```
+
+**Individual Symbol Analysis**:
+```python
+# Deep dive on Nasdaq futures
+response = requests.post("http://localhost:9005/api/analyze", json={
+    "symbol": "NQ",
+    "asset_class": "futures",
+    "time_horizon": "swing"
+})
+
+analysis = response.json()
+print(f"Signal: {analysis['signal_type']}")
+print(f"Entry: {analysis['entry_price']}")
+print(f"Stop: {analysis['stop_loss']}")
+print(f"Target: {analysis['take_profit']}")
+```
+
+**Trade Logging & Performance**:
+```python
+# Log trade entry
+trade = requests.post("http://localhost:9005/api/trades", json={
+    "signal_id": 123,
+    "entry_price": 450.00,
+    "quantity": 100,
+    "entry_time": "2026-01-01T12:00:00"
+})
+
+# Log trade exit
+requests.put(f"http://localhost:9005/api/trades/{trade['id']}", json={
+    "exit_price": 465.00,
+    "exit_time": "2026-01-01T14:30:00"
+})
+
+# View performance
+perf = requests.get("http://localhost:9005/api/performance/daily?days=30")
+print(f"Win Rate: {perf['win_rate']}%")
+print(f"Profit Factor: {perf['profit_factor']}")
+print(f"Sharpe Ratio: {perf['sharpe_ratio']}")
+```
+
+### Best Practices
+
+1. **Always Check Market Context First**: Review macro regime and risk sentiment before taking signals
+2. **Filter by Confidence**: Use 60-70% minimum confidence thresholds
+3. **Diversify Asset Classes**: Don't concentrate in a single asset or time horizon
+4. **Log All Trades**: Enable self-improvement through rigorous tracking
+5. **Monitor Self-Learning**: Review adaptation events and strategy evolution weekly
+
+### Security
+
+**Data Integrity** (PLATINUM RULE):
+- All data from verified sources only
+- No fake data generation, ever
+- Real-time validation of all inputs
+
+**API Security**:
+- Localhost-only binding by default
+- API key authentication for remote access
+- Rate limiting on all endpoints
+
+**Risk Limits**:
+- Hard stops on position sizing
+- Circuit breakers on daily losses
+- Automatic shutdown on max drawdown
+
+### Status
+
+✅ **Active and Integrated**
+📊 **Database**: PostgreSQL (spartan_research_db)
+🌐 **Frontend**: http://localhost:8888/trading_llm.html
+🔗 **Dependencies**: All Spartan Labs data infrastructure
+🤖 **Self-Improvement**: Enabled with daily adaptation
+🔄 **Bidirectional**: Consumes and produces agent signals
 
 ---
 

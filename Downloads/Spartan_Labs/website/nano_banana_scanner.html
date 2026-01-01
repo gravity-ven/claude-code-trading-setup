@@ -401,6 +401,56 @@
             font-size: 1.1em;
             line-height: 1.6;
         }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #0a1628;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95em;
+            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        /* Reset Layout Button */
+        .reset-layout-btn {
+            padding: 10px 20px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+
+        .reset-layout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -415,7 +465,7 @@
         <!-- Tab Navigation -->
         <div class="tab-nav">
             <button class="tab-button active" data-tab="wm-scanner">W/M Pattern Scanner</button>
-            <button class="tab-button" data-tab="placeholder1">Coming Soon</button>
+            <button class="tab-button" data-tab="cot-scanner">COT Scanner</button>
             <button class="tab-button" data-tab="placeholder2">Coming Soon</button>
         </div>
 
@@ -437,6 +487,7 @@
             <div class="control-row">
                 <input type="text" class="search-box" id="searchBox" placeholder="Search by symbol or name...">
                 <button class="scan-btn" id="scanBtn">🔍 Scan All Markets</button>
+                <button class="reset-layout-btn" id="resetLayoutBtn">🔄 Reset Layout</button>
             </div>
 
             <div class="stats-bar">
@@ -501,16 +552,79 @@
         </div>
         <!-- End Tab Content: W/M Scanner -->
 
-        <!-- Tab Content: Placeholder 1 -->
-        <div id="placeholder1" class="tab-content">
-            <div class="scanner-placeholder">
-                <h2>📊 Scanner Coming Soon</h2>
-                <p>This scanner slot is ready for your next pattern detection strategy.</p>
-                <p style="margin-top: 15px; font-size: 0.95em;">
-                    Ideas: Momentum scanner, Breakout scanner, Volume scanner, etc.
-                </p>
+        <!-- Tab Content: COT Scanner -->
+        <div id="cot-scanner" class="tab-content">
+            <div class="controls">
+                <div class="control-row">
+                    <h2 style="color: #FFD700; margin-bottom: 15px;">📊 CFTC Commitment of Traders - Open Interest Extremes</h2>
+                </div>
+                <div class="control-row">
+                    <p style="color: #b0b8c8; margin-bottom: 20px;">
+                        Scans all CFTC commodities and displays markets at extreme Open Interest levels (≤5% or ≥95% percentile over 52 weeks).
+                        Identifies potential reversals and extreme positioning in futures markets.
+                    </p>
+                </div>
+                <div class="control-row">
+                    <button class="scan-btn" id="cotScanBtn">🔍 Scan CFTC Markets</button>
+                    <button class="reset-layout-btn" id="resetCOTLayoutBtn">🔄 Reset Layout</button>
+                </div>
+
+                <div class="stats-bar">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Markets</div>
+                        <div class="stat-value" id="cotTotalMarkets">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">At Extremes (≤5% or ≥95%)</div>
+                        <div class="stat-value" id="cotExtremesFound" style="color: #ef4444;">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Last Update</div>
+                        <div class="stat-value" id="cotLastUpdate" style="font-size: 1.2em;">--:--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="progress-overlay" id="cotProgressOverlay">
+                <div class="progress-content">
+                    <h2 style="color: #FFD700; margin-bottom: 20px;">🔍 Scanning CFTC Markets...</h2>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="cotProgressFill"></div>
+                    </div>
+                    <div class="progress-text" id="cotProgressText">Fetching COT data...</div>
+                    <div class="progress-details" id="cotProgressDetails">Loading from CFTC.gov...</div>
+                </div>
+            </div>
+
+            <div class="results-table">
+                <table>
+                    <thead>
+                        <tr id="cotTableHeader">
+                            <th draggable="true" data-sort="market" data-column="market">Market</th>
+                            <th draggable="true" data-sort="oi_percentile" data-column="oi_percentile">OI Percentile</th>
+                            <th draggable="true" data-sort="current_oi" data-column="current_oi">Open Interest</th>
+                            <th draggable="true" data-sort="net_spec_percentile" data-column="net_spec_percentile">Spec Net %ile</th>
+                            <th draggable="true" data-sort="net_comm_percentile" data-column="net_comm_percentile">Comm Net %ile</th>
+                            <th draggable="true" data-sort="signal" data-column="signal">Signal</th>
+                            <th draggable="true" data-sort="report_date" data-column="report_date">Report Date</th>
+                            <th draggable="true" data-sort="spec_long" data-column="spec_long">Spec Long</th>
+                            <th draggable="true" data-sort="spec_short" data-column="spec_short">Spec Short</th>
+                            <th draggable="true" data-sort="comm_long" data-column="comm_long">Comm Long</th>
+                            <th draggable="true" data-sort="comm_short" data-column="comm_short">Comm Short</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cotResultsBody">
+                        <tr>
+                            <td colspan="11" class="no-results">
+                                Click "Scan CFTC Markets" to find Open Interest extremes
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+        <!-- End Tab Content: COT Scanner -->
 
         <!-- Tab Content: Placeholder 2 -->
         <div id="placeholder2" class="tab-content">
@@ -1145,6 +1259,7 @@
         function saveColumnOrder() {
             try {
                 localStorage.setItem('wm_scanner_column_order', JSON.stringify(columnOrder));
+                showToast('✓ W/M layout saved');
             } catch (e) {
                 console.error('Failed to save column order:', e);
             }
@@ -1164,6 +1279,342 @@
 
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // ===== COT Scanner Functions =====
+
+        let cotResults = [];
+        let cotSortColumn = 'oi_percentile';
+        let cotSortDirection = 'asc';
+        let cotColumnOrder = ['market', 'oi_percentile', 'current_oi', 'net_spec_percentile', 'net_comm_percentile', 'signal', 'report_date', 'spec_long', 'spec_short', 'comm_long', 'comm_short'];
+        let cotDraggedColumn = null;
+
+        async function startCOTScan() {
+            const btn = document.getElementById('cotScanBtn');
+            const progressOverlay = document.getElementById('cotProgressOverlay');
+            const progressFill = document.getElementById('cotProgressFill');
+            const progressText = document.getElementById('cotProgressText');
+            const progressDetails = document.getElementById('cotProgressDetails');
+
+            btn.disabled = true;
+            progressOverlay.classList.add('active');
+            cotResults = [];
+
+            try {
+                // Step 1: Fetch all markets with OI percentiles
+                progressFill.style.width = '30%';
+                progressText.textContent = 'Fetching CFTC data...';
+                progressDetails.textContent = 'Downloading from CFTC.gov...';
+
+                const response = await fetch('/api/cot-scanner/extremes');
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                progressFill.style.width = '60%';
+                progressText.textContent = 'Processing data...';
+                progressDetails.textContent = 'Calculating percentiles...';
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to fetch COT data');
+                }
+
+                cotResults = data.markets || [];
+
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Scan complete!';
+                progressDetails.textContent = `Found ${cotResults.length} markets at extreme OI levels`;
+
+                await sleep(1000);
+
+            } catch (error) {
+                console.error('COT scan error:', error);
+                alert(`COT scan failed: ${error.message}`);
+            } finally {
+                progressOverlay.classList.remove('active');
+                btn.disabled = false;
+                renderCOTResults();
+                updateCOTStats();
+            }
+        }
+
+        function renderCOTResults() {
+            const tbody = document.getElementById('cotResultsBody');
+
+            if (cotResults.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="no-results">No markets found at extreme OI levels</td></tr>';
+                return;
+            }
+
+            // Sort results
+            const sorted = [...cotResults].sort((a, b) => {
+                let aVal = a[cotSortColumn];
+                let bVal = b[cotSortColumn];
+
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+
+                if (cotSortDirection === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            tbody.innerHTML = sorted.map(market => {
+                // Determine color for OI percentile
+                let oiColor = '#FFD700'; // neutral
+                if (market.oi_percentile <= 5) {
+                    oiColor = '#00ff88'; // extreme low
+                } else if (market.oi_percentile >= 95) {
+                    oiColor = '#ef4444'; // extreme high
+                }
+
+                // Determine signal color
+                let signalColor = '#b0b8c8';
+                let signalBg = 'rgba(30, 41, 59, 0.6)';
+
+                if (market.signal.includes('BUY')) {
+                    signalColor = '#00ff88';
+                    signalBg = 'rgba(0, 255, 136, 0.15)';
+                } else if (market.signal.includes('SELL')) {
+                    signalColor = '#ef4444';
+                    signalBg = 'rgba(239, 68, 68, 0.15)';
+                }
+
+                // Create cell data map
+                const cellData = {
+                    'market': `<td data-column="market" style="font-weight: 600; color: #FFD700;">${market.market}</td>`,
+                    'oi_percentile': `<td data-column="oi_percentile" style="color: ${oiColor}; font-weight: 700;">${market.oi_percentile.toFixed(1)}%</td>`,
+                    'current_oi': `<td data-column="current_oi">${market.current_oi.toLocaleString()}</td>`,
+                    'net_spec_percentile': `<td data-column="net_spec_percentile">${market.net_spec_percentile.toFixed(1)}%</td>`,
+                    'net_comm_percentile': `<td data-column="net_comm_percentile">${market.net_comm_percentile.toFixed(1)}%</td>`,
+                    'signal': `<td data-column="signal" style="color: ${signalColor}; background: ${signalBg}; font-weight: 600; padding: 8px; border-radius: 4px;">${market.signal}</td>`,
+                    'report_date': `<td data-column="report_date">${market.report_date}</td>`,
+                    'spec_long': `<td data-column="spec_long">${market.spec_long.toLocaleString()}</td>`,
+                    'spec_short': `<td data-column="spec_short">${market.spec_short.toLocaleString()}</td>`,
+                    'comm_long': `<td data-column="comm_long">${market.comm_long.toLocaleString()}</td>`,
+                    'comm_short': `<td data-column="comm_short">${market.comm_short.toLocaleString()}</td>`
+                };
+
+                // Build row with cells in current column order
+                const cells = cotColumnOrder.map(col => cellData[col]).join('');
+                return `<tr>${cells}</tr>`;
+            }).join('');
+        }
+
+        function updateCOTStats() {
+            // Count total markets scanned (from API)
+            fetch('/api/cot-scanner/all')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('cotTotalMarkets').textContent = data.total_markets || 0;
+                })
+                .catch(err => {
+                    console.error('Failed to fetch total markets:', err);
+                });
+
+            // Update extremes count
+            document.getElementById('cotExtremesFound').textContent = cotResults.length;
+
+            // Update last update time
+            document.getElementById('cotLastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+
+        // ===== COT Scanner Column Drag and Drop =====
+
+        function setupCOTColumnDragDrop() {
+            const headers = document.querySelectorAll('#cotTableHeader th[draggable="true"]');
+
+            headers.forEach(header => {
+                header.addEventListener('dragstart', handleCOTDragStart);
+                header.addEventListener('dragover', handleCOTDragOver);
+                header.addEventListener('dragenter', handleCOTDragEnter);
+                header.addEventListener('dragleave', handleCOTDragLeave);
+                header.addEventListener('drop', handleCOTDrop);
+                header.addEventListener('dragend', handleCOTDragEnd);
+            });
+        }
+
+        function handleCOTDragStart(e) {
+            cotDraggedColumn = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleCOTDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleCOTDragEnter(e) {
+            if (this !== cotDraggedColumn) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleCOTDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleCOTDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (cotDraggedColumn !== this) {
+                // Get column indices
+                const headers = Array.from(document.querySelectorAll('#cotTableHeader th'));
+                const draggedIndex = headers.indexOf(cotDraggedColumn);
+                const targetIndex = headers.indexOf(this);
+
+                // Reorder cotColumnOrder array
+                const [movedColumn] = cotColumnOrder.splice(draggedIndex, 1);
+                cotColumnOrder.splice(targetIndex, 0, movedColumn);
+
+                // Apply new column order
+                applyCOTColumnOrder();
+                saveCOTColumnOrder();
+            }
+
+            return false;
+        }
+
+        function handleCOTDragEnd(e) {
+            const headers = document.querySelectorAll('#cotTableHeader th');
+            headers.forEach(header => {
+                header.classList.remove('dragging', 'drag-over');
+            });
+        }
+
+        function applyCOTColumnOrder() {
+            const headerRow = document.querySelector('#cotTableHeader');
+            const headers = Array.from(headerRow.querySelectorAll('th'));
+
+            // Create a map of column names to header elements
+            const headerMap = {};
+            headers.forEach(header => {
+                const column = header.dataset.column;
+                headerMap[column] = header;
+            });
+
+            // Reorder headers
+            headerRow.innerHTML = '';
+            cotColumnOrder.forEach(columnName => {
+                if (headerMap[columnName]) {
+                    headerRow.appendChild(headerMap[columnName]);
+                }
+            });
+
+            // Re-render data rows with new column order
+            renderCOTResults();
+        }
+
+        function saveCOTColumnOrder() {
+            try {
+                localStorage.setItem('cot_scanner_column_order', JSON.stringify(cotColumnOrder));
+                showToast('✓ COT layout saved');
+            } catch (e) {
+                console.error('Failed to save COT column order:', e);
+            }
+        }
+
+        function loadCOTColumnOrder() {
+            try {
+                const saved = localStorage.getItem('cot_scanner_column_order');
+                if (saved) {
+                    cotColumnOrder = JSON.parse(saved);
+                    applyCOTColumnOrder();
+                }
+            } catch (e) {
+                console.error('Failed to load COT column order:', e);
+            }
+        }
+
+        // Add COT scan button listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const cotScanBtn = document.getElementById('cotScanBtn');
+            if (cotScanBtn) {
+                cotScanBtn.addEventListener('click', startCOTScan);
+            }
+
+            // Add sorting for COT table
+            document.querySelectorAll('#cot-scanner th[data-sort]').forEach(th => {
+                th.addEventListener('click', (e) => {
+                    // Don't sort while dragging
+                    if (e.target.classList.contains('dragging')) return;
+
+                    const column = th.dataset.sort;
+                    if (cotSortColumn === column) {
+                        cotSortDirection = cotSortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        cotSortColumn = column;
+                        cotSortDirection = 'asc';
+                    }
+                    renderCOTResults();
+                });
+            });
+
+            // Setup drag and drop for COT table
+            setupCOTColumnDragDrop();
+            loadCOTColumnOrder();
+
+            // Setup reset layout buttons
+            const resetLayoutBtn = document.getElementById('resetLayoutBtn');
+            if (resetLayoutBtn) {
+                resetLayoutBtn.addEventListener('click', resetWMLayout);
+            }
+
+            const resetCOTLayoutBtn = document.getElementById('resetCOTLayoutBtn');
+            if (resetCOTLayoutBtn) {
+                resetCOTLayoutBtn.addEventListener('click', resetCOTLayout);
+            }
+        });
+
+        // Toast notification function
+        function showToast(message) {
+            let toast = document.querySelector('.toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'toast';
+                document.body.appendChild(toast);
+            }
+
+            toast.innerHTML = `<span class="toast-icon">✓</span>${message}`;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Reset W/M Scanner layout
+        function resetWMLayout() {
+            if (confirm('Reset column layout to default?')) {
+                localStorage.removeItem('wm_scanner_column_order');
+                columnOrder = ['symbol', 'name', 'country', 'type', 'pattern', 'signal', 'price', 'change', 'volume', 'depth', 'confidence'];
+                applyColumnOrder();
+                showToast('W/M Scanner layout reset to default');
+            }
+        }
+
+        // Reset COT Scanner layout
+        function resetCOTLayout() {
+            if (confirm('Reset COT Scanner column layout to default?')) {
+                localStorage.removeItem('cot_scanner_column_order');
+                cotColumnOrder = ['market', 'oi_percentile', 'current_oi', 'net_spec_percentile', 'net_comm_percentile', 'signal', 'report_date', 'spec_long', 'spec_short', 'comm_long', 'comm_short'];
+                applyCOTColumnOrder();
+                showToast('COT Scanner layout reset to default');
+            }
         }
     </script>
 </body>
