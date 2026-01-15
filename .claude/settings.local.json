@@ -22,51 +22,43 @@
   },
   "enableAllProjectMcpServers": true,
   "hooks": {
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /mnt/c/Users/Quantum/.claude/central-config/auto_sync_settings.sh 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'export CLAUDE_SKILLS_PATH=~/.claude/skills && [ -d \"$CLAUDE_SKILLS_PATH\" ] && echo \"\u2705 Skills available: $(ls -1 $CLAUDE_SKILLS_PATH | wc -l) directories\" || echo \"\u26a0\ufe0f  Skills directory not found\"'"
-          },
-          {
-            "type": "command",
-            "command": "bash -c '[ -f ~/.claude/skills/meta-orchestrator/SKILL.md ] && echo \"\u26a1 Meta-Orchestrator: ACTIVE\" || echo \"\u26a0\ufe0f  Meta-Orchestrator skill not found\"'"
-          },
-          {
-            "type": "command",
-            "command": "bash /mnt/c/Users/Quantum/.claude/unified_intelligence_startup.sh 2>/dev/null || echo \"\u2705 Intelligence Systems: ONLINE\""
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /mnt/c/Users/Quantum/.claude/directory_catalog_hook.sh 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
     "UserPromptSubmit": [
       {
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "bash /mnt/c/Users/Quantum/.claude/orchestrator_hook.sh 2>/dev/null || echo \"\u2705 AIA Status: HEALTHY\""
+            "command": "/mnt/c/Users/Quantum/.claude/hooks/stitch-auto-detect.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/spartan/.claude/hooks/memory-save.sh"
+          },
+          {
+            "type": "command",
+            "command": "HOOK_EVENT=SessionEnd python3 /home/spartan/.claude/development/hooks/autonomous_learning_hook.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/spartan/.claude/hooks/memory-save.sh"
+          },
+          {
+            "type": "command",
+            "command": "HOOK_EVENT=SessionEnd python3 /home/spartan/.claude/development/hooks/autonomous_learning_hook.py"
           }
         ]
       }
@@ -74,7 +66,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash -c 'printf \"\\033[32m\u26a1 SPARTAN | \ud83e\udd16 360+ AGENTS | \ud83d\udcda SKILLS ACTIVE | \ud83d\ude80 MOJO-FIRST\\033[0m\"'"
+    "command": "bash -c 'printf \"\\033[32m\u26a1 SPARTAN | \ud83e\udd16 360+ AGENTS | \ud83d\udcda SKILLS ACTIVE | \ud83d\ude80 C++ FIRST\\033[0m\"'"
   },
   "skipWebFetchPreflight": true,
   "alwaysThinkingEnabled": true,

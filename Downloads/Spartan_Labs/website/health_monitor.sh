@@ -9,7 +9,7 @@ log() {
 
 check_and_fix() {
     # Test API endpoint
-    response=$(curl -s http://localhost:8888/api/market/indices 2>&1)
+    response=$(curl -s http://localhost:8888/api/market/symbol/SPY 2>&1)
 
     # Check for errors
     if echo "$response" | grep -qi "error\|transaction.*aborted\|connection"; then

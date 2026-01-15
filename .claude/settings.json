@@ -22,36 +22,12 @@
   },
   "enableAllProjectMcpServers": true,
   "hooks": {
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /mnt/d/claude/central-config/auto_sync_settings.sh"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bash /mnt/d/claude/central-config/unified_intelligence_startup.sh && python3 /mnt/d/claude/central-config/real_time_intelligence_processor.py monitor &"
-          },
-          {
-            "type": "command",
             "command": "bash /mnt/c/Users/Quantum/.claude/hooks/startup/genius-dna-init.sh"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /mnt/d/claude/central-config/directory_catalog_hook.sh"
           }
         ]
       }
@@ -61,15 +37,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/cleanup-large-sessions.sh"
+            "command": "bash /mnt/c/Users/Quantum/.claude/hooks/ultra-proactive-agents.sh"
           },
           {
             "type": "command",
             "command": "bash /mnt/c/Users/Quantum/.claude/hooks/pre-prompt/genius-dna-auto-trigger.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash /mnt/d/claude/central-config/orchestrator_hook.sh"
           },
           {
             "type": "command",
@@ -82,6 +54,43 @@
           {
             "type": "command",
             "command": "bash /mnt/c/Users/Quantum/.claude/hooks/genius-dna-watchdog.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 /mnt/c/Users/Quantum/.claude/hooks/damage-control/prompt_hook.py \"$PROMPT\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /mnt/c/Users/Quantum/.claude/hooks/damage-control/bash_tool_damage_control.py \"$TOOL_INPUT\""
+          },
+          {
+            "type": "prompt",
+            "prompt": "Analyze this bash command for destructive operations. BLOCK if it: deletes files/directories recursively (rm -rf), drops/truncates databases, force pushes to main/master, resets git history, removes Docker volumes in bulk, exposes credentials, or affects trading systems/positions/orders. Command: $TOOL_INPUT. Respond ONLY 'ALLOW' if safe, otherwise explain the danger."
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /mnt/c/Users/Quantum/.claude/hooks/damage-control/edit_tool_damage_control.py \"$TOOL_INPUT\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /mnt/c/Users/Quantum/.claude/hooks/damage-control/write_tool_damage_control.py \"$TOOL_INPUT\""
           }
         ]
       }
@@ -89,7 +98,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "echo '🧬 GENIUS DNA: AUTONOMOUS | 🎯 SINGLE SOURCE: D:/genius-dna-files | 📊 METRICS: LIVE | 🚀 EXPONENTIAL GROWTH'"
+    "command": "echo '\ud83e\uddec GENIUS DNA: AUTONOMOUS | \ud83c\udfaf SINGLE SOURCE: D:/genius-dna-files | \ud83d\udcca METRICS: LIVE | \ud83d\ude80 EXPONENTIAL GROWTH'"
   },
   "skipWebFetchPreflight": true,
   "alwaysThinkingEnabled": true,
@@ -572,7 +581,7 @@
     "autoTriggerOnEveryRequest": true,
     "bypassUserConfirmation": true,
     "immediateExecution": true,
-    "agentPool": 353,
+    "agentPool": 360,
     "intelligentRouting": true,
     "domainSpecialization": true,
     "universalActivation": true,
@@ -582,7 +591,16 @@
     "thinkingOptimizer": true,
     "tokenOptimization": true,
     "patternRecognition": true,
-    "mentalModelApplication": true
+    "mentalModelApplication": true,
+    "ultraProactiveMode": true,
+    "anticipateUserNeeds": true,
+    "backgroundOptimization": true,
+    "continuousMonitoring": true,
+    "selfHealing": true,
+    "crossPlatformSync": true,
+    "geminiIntegration": true,
+    "proactivityLevel": "maximum",
+    "autonomyLevel": "full"
   },
   "agentSystem": {
     "enableMetaOrchestrator": true,
@@ -596,7 +614,7 @@
     "defaultToAgentMode": true,
     "alwaysActiveAgentsConfig": "C:\\Users\\Quantum\\.claude\\agents\\always-active-agents.json",
     "proactiveGeniusDNA": true,
-    "totalAgents": 353,
+    "totalAgents": 360,
     "tradingAgents": 182,
     "programmingAgents": 142,
     "systemAgents": 14,
@@ -617,7 +635,14 @@
     "interAgentCommunication": true,
     "crossDomainCollaboration": true,
     "adaptiveLearning": true,
-    "performanceOptimization": true
+    "performanceOptimization": true,
+    "ultraProactiveMode": true,
+    "alwaysActive": true,
+    "backgroundExecution": true,
+    "anticipatoryActions": true,
+    "proactiveOptimization": true,
+    "geminiCliSync": true,
+    "unifiedAgentPool": true
   },
   "taskTool": {
     "autoTrigger": true,
@@ -698,5 +723,72 @@
       "lastUpdated": "2025-09-23T11:06:56Z",
       "backupCreated": true
     }
-  }
+  },
+  "plugins": [
+    {
+      "name": "agent-sdk-dev",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/agent-sdk-dev",
+      "enabled": true
+    },
+    {
+      "name": "claude-opus-4-5-migration",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/claude-opus-4-5-migration",
+      "enabled": true
+    },
+    {
+      "name": "code-review",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/code-review",
+      "enabled": true
+    },
+    {
+      "name": "commit-commands",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/commit-commands",
+      "enabled": true
+    },
+    {
+      "name": "explanatory-output-style",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/explanatory-output-style",
+      "enabled": true
+    },
+    {
+      "name": "feature-dev",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/feature-dev",
+      "enabled": true
+    },
+    {
+      "name": "frontend-design",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/frontend-design",
+      "enabled": true
+    },
+    {
+      "name": "hookify",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/hookify",
+      "enabled": true
+    },
+    {
+      "name": "learning-output-style",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/learning-output-style",
+      "enabled": true
+    },
+    {
+      "name": "plugin-dev",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/plugin-dev",
+      "enabled": true
+    },
+    {
+      "name": "pr-review-toolkit",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/pr-review-toolkit",
+      "enabled": true
+    },
+    {
+      "name": "ralph-wiggum",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/ralph-wiggum",
+      "enabled": true
+    },
+    {
+      "name": "security-guidance",
+      "path": "/mnt/c/Users/Quantum/.claude/plugins/security-guidance",
+      "enabled": true
+    }
+  ]
 }

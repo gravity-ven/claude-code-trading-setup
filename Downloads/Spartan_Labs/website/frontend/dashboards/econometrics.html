@@ -474,7 +474,7 @@
             <p style="font-size: 0.95rem; margin-top: 10px;">
                 Real-time data from yfinance API • FRED Economic Data • Advanced Statistical Methods
             </p>
-            <a href="index.html" class="back-btn">← Back to Research Station</a>
+            <a href="/dashboards/index.html" class="back-btn">← Back to Research Station</a>
         </div>
 
         <!-- Linear Regression Analysis -->
@@ -893,7 +893,7 @@
                 const end = Math.floor(endDate.getTime() / 1000);
 
                 // Yahoo Finance CSV API
-                const url = `http://localhost:5002/api/yahoo/v7/finance/download/${symbol}?period1=${start}&period2=${end}&interval=1d&events=history`;
+                const url = `http://localhost:8888/api/yahoo/v7/finance/download/${symbol}?period1=${start}&period2=${end}&interval=1d&events=history`;
 
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Data fetch failed');

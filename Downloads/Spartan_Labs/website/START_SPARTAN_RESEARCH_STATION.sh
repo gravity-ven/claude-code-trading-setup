@@ -191,19 +191,56 @@ docker-compose -f docker-compose.spartan.yml up -d prometheus grafana 2>/dev/nul
 # Phase 6: Browser Launch
 # ==============================================================================
 
-echo -e "\n${BLUE}[Phase 6/6]${NC} ${YELLOW}Opening Spartan Research Station...${NC}"
+echo -e "\n${BLUE}[Phase 6/6]${NC} ${YELLOW}Verifying all services before browser launch...${NC}"
 
-sleep 3
+# Wait for all services to be healthy before opening browser
+ALL_HEALTHY=true
+RETRY_COUNT=0
+MAX_RETRIES=60
 
-# Detect OS and open browser
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    xdg-open http://localhost:8888 2>/dev/null &
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    open http://localhost:8888
-elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
-    start http://localhost:8888
+echo ""
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    ALL_HEALTHY=true
+
+    # Check main server
+    if ! curl -s --max-time 2 "http://localhost:8888/health" > /dev/null 2>&1; then
+        ALL_HEALTHY=false
+    fi
+
+    if [ "$ALL_HEALTHY" = true ]; then
+        break
+    fi
+
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    echo -n "."
+    sleep 1
+done
+
+echo ""
+
+if [ "$ALL_HEALTHY" = true ]; then
+    echo -e "${GREEN}✅ All services are healthy!${NC}"
+    echo ""
+    echo "Opening browser..."
+
+    # Detect OS and open browser
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            # WSL - use Windows browser
+            cmd.exe /c start http://localhost:8888/nano_banana_scanner.html 2>/dev/null || xdg-open http://localhost:8888/nano_banana_scanner.html 2>/dev/null &
+        else
+            xdg-open http://localhost:8888/nano_banana_scanner.html 2>/dev/null &
+        fi
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        open http://localhost:8888/nano_banana_scanner.html
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
+        start http://localhost:8888/nano_banana_scanner.html
+    else
+        echo "Please open: http://localhost:8888/nano_banana_scanner.html"
+    fi
 else
-    echo "Please open: http://localhost:8888"
+    echo -e "${YELLOW}⚠ Services still starting. Browser not auto-opened.${NC}"
+    echo "Open manually: http://localhost:8888/nano_banana_scanner.html"
 fi
 
 # ==============================================================================

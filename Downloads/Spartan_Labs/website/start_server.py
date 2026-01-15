@@ -13,6 +13,9 @@ from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 import sys
 import traceback
+import subprocess
+import time
+import signal
 from dotenv import load_dotenv
 import redis
 import psycopg2
@@ -20,8 +23,223 @@ from psycopg2.extras import RealDictCursor
 import urllib.request
 import urllib.error
 
+# Global subprocess handles for API servers
+cot_scanner_process = None
+scanner_api_process = None
+
 # Load environment variables
 load_dotenv()
+
+
+def is_cot_scanner_running():
+    """Check if COT Scanner API is already running on port 5009"""
+    try:
+        req = urllib.request.Request('http://localhost:5009/health', method='GET')
+        with urllib.request.urlopen(req, timeout=2) as response:
+            return response.status == 200
+    except:
+        return False
+
+
+def start_cot_scanner_api():
+    """Start the COT Scanner API server if not already running"""
+    global cot_scanner_process
+
+    if is_cot_scanner_running():
+        print("✅ COT Scanner API already running on port 5009")
+        return True
+
+    cot_scanner_script = Path(__file__).parent / "api" / "cot_scanner_api.py"
+
+    if not cot_scanner_script.exists():
+        print(f"⚠️  COT Scanner API script not found: {cot_scanner_script}")
+        return False
+
+    print("🚀 Starting COT Scanner API on port 5009...")
+
+    try:
+        # Start COT Scanner API as subprocess
+        log_file = open('/tmp/cot_scanner_api.log', 'a')
+        cot_scanner_process = subprocess.Popen(
+            [sys.executable, str(cot_scanner_script)],
+            stdout=log_file,
+            stderr=log_file,
+            cwd=str(Path(__file__).parent)
+        )
+
+        # Wait for it to be ready (up to 30 seconds)
+        for i in range(30):
+            time.sleep(1)
+            if is_cot_scanner_running():
+                print("✅ COT Scanner API started successfully on port 5009")
+                return True
+            if i % 5 == 4:
+                print(f"   Waiting for COT Scanner API... ({i+1}s)")
+
+        print("⚠️  COT Scanner API started but not responding yet")
+        return True  # Process started, may still be loading data
+
+    except Exception as e:
+        print(f"❌ Failed to start COT Scanner API: {e}")
+        return False
+
+
+import threading
+
+# Scanner API health monitor thread
+scanner_monitor_thread = None
+scanner_monitor_running = False
+
+
+def is_scanner_api_running():
+    """Check if Scanner API is already running on port 5012"""
+    try:
+        req = urllib.request.Request('http://localhost:5012/api/status', method='GET')
+        with urllib.request.urlopen(req, timeout=2) as response:
+            return response.status == 200
+    except:
+        return False
+
+
+def _start_scanner_process():
+    """Internal: Start the Scanner API subprocess"""
+    global scanner_api_process
+
+    scanner_script = Path(__file__).parent / "scanner_api_server.py"
+
+    if not scanner_script.exists():
+        return False
+
+    try:
+        # Start Scanner API as subprocess (suppress output)
+        log_file = open('/tmp/scanner_api.log', 'a')
+        scanner_api_process = subprocess.Popen(
+            [sys.executable, str(scanner_script)],
+            stdout=log_file,
+            stderr=log_file,
+            cwd=str(Path(__file__).parent)
+        )
+        return True
+    except Exception as e:
+        return False
+
+
+def _scanner_health_monitor():
+    """Background thread: Monitor and auto-restart Scanner API if it dies"""
+    global scanner_monitor_running, scanner_api_process
+
+    retry_count = 0
+    max_retries = 5
+    check_interval = 30  # Check every 30 seconds
+
+    while scanner_monitor_running:
+        try:
+            time.sleep(check_interval)
+
+            if not scanner_monitor_running:
+                break
+
+            # Check if Scanner API is healthy
+            if not is_scanner_api_running():
+                # Check if process died
+                if scanner_api_process and scanner_api_process.poll() is not None:
+                    retry_count += 1
+                    if retry_count <= max_retries:
+                        # Auto-restart
+                        if _start_scanner_process():
+                            # Wait for it to come up
+                            for _ in range(10):
+                                time.sleep(1)
+                                if is_scanner_api_running():
+                                    retry_count = 0  # Reset on success
+                                    break
+                elif not scanner_api_process:
+                    # Process was never started, try to start
+                    _start_scanner_process()
+            else:
+                retry_count = 0  # Reset retry count on healthy check
+
+        except Exception:
+            pass  # Silently handle any errors in monitor thread
+
+
+def start_scanner_api():
+    """Start the Scanner API server autonomously with self-healing"""
+    global scanner_api_process, scanner_monitor_thread, scanner_monitor_running
+
+    if is_scanner_api_running():
+        print("✅ Scanner API already running on port 5012")
+        # Still start monitor for self-healing
+        if not scanner_monitor_running:
+            scanner_monitor_running = True
+            scanner_monitor_thread = threading.Thread(target=_scanner_health_monitor, daemon=True)
+            scanner_monitor_thread.start()
+        return True
+
+    scanner_script = Path(__file__).parent / "scanner_api_server.py"
+
+    if not scanner_script.exists():
+        print(f"⚠️  Scanner API script not found: {scanner_script}")
+        return False
+
+    print("🚀 Starting Scanner API on port 5012 (autonomous mode)...")
+
+    # Try to start with retries
+    max_startup_retries = 3
+    for attempt in range(max_startup_retries):
+        try:
+            if _start_scanner_process():
+                # Wait for it to be ready (up to 10 seconds)
+                for i in range(10):
+                    time.sleep(1)
+                    if is_scanner_api_running():
+                        print("✅ Scanner API started successfully on port 5012")
+                        # Start background health monitor
+                        scanner_monitor_running = True
+                        scanner_monitor_thread = threading.Thread(target=_scanner_health_monitor, daemon=True)
+                        scanner_monitor_thread.start()
+                        return True
+
+                # Process started but not responding - could be initializing
+                if scanner_api_process and scanner_api_process.poll() is None:
+                    print("✅ Scanner API starting (will auto-heal if issues)")
+                    scanner_monitor_running = True
+                    scanner_monitor_thread = threading.Thread(target=_scanner_health_monitor, daemon=True)
+                    scanner_monitor_thread.start()
+                    return True
+
+        except Exception:
+            pass
+
+        # Wait before retry
+        if attempt < max_startup_retries - 1:
+            time.sleep(2)
+
+    # Start monitor anyway - it will keep trying in background
+    print("⚠️  Scanner API startup delayed - will auto-heal in background")
+    scanner_monitor_running = True
+    scanner_monitor_thread = threading.Thread(target=_scanner_health_monitor, daemon=True)
+    scanner_monitor_thread.start()
+    return True
+
+
+def cleanup_subprocesses():
+    """Clean up subprocesses on exit"""
+    global cot_scanner_process, scanner_api_process
+    if cot_scanner_process:
+        print("\n🛑 Stopping COT Scanner API...")
+        cot_scanner_process.terminate()
+        try:
+            cot_scanner_process.wait(timeout=5)
+        except:
+            cot_scanner_process.kill()
+    if scanner_api_process:
+        print("🛑 Stopping Scanner API...")
+        scanner_api_process.terminate()
+        try:
+            scanner_api_process.wait(timeout=5)
+        except:
+            scanner_api_process.kill()
 
 # Initialize Redis connection
 try:
@@ -40,12 +258,12 @@ sys.path.append(str(Path(__file__).parent))
 # Import NO N/A scraper
 from no_na_scraper import get_complete_market_data
 # Import complete data provider
-from complete_data_provider import getAllCompleteData
+from scripts.data.complete_data_provider import getAllCompleteData
 
-from data_fetcher_fallback import fetch_stock_price, fetch_crypto_price, fetch_forex_rate
+from scripts.data.data_fetcher_fallback import fetch_stock_price, fetch_crypto_price, fetch_forex_rate
 
 PORT = 8888
-DIRECTORY = Path(__file__).parent
+DIRECTORY = Path(__file__).parent / 'frontend'
 
 class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     """Custom HTTP request handler with full API proxies"""
@@ -72,6 +290,13 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         """Handle GET requests with API routing"""
         parsed_path = urlparse(self.path)
         path = parsed_path.path
+
+        # Root Redirect
+        if path == '/' or path == '/index.html':
+            self.send_response(301)
+            self.send_header('Location', '/dashboards/index.html')
+            self.end_headers()
+            return
 
         # Database API endpoints
         if path == '/api/db/stats':
@@ -128,9 +353,19 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_recession_probability()
         elif path == '/api/market/narrative':
             self.handle_market_narrative()
+        # Yahoo Finance Chart API (for composite indicators)
+        elif path.startswith('/api/yahoo/chart/'):
+            symbol = path.split('/')[-1].split('?')[0]
+            self.handle_yahoo_chart(symbol, parsed_path.query)
         # COT Scanner API Endpoints (proxy to port 5009)
         elif path.startswith('/api/cot-scanner/'):
             self.proxy_to_cot_scanner(path)
+        # Scanner API Endpoints (proxy to port 5012)
+        elif path.startswith('/api/scanner/'):
+            self.proxy_to_scanner_api(self.path)
+        # Whale Hunter Pro Summary Endpoint
+        elif path == '/api/whale-hunter/summary':
+            self.handle_whale_hunter_summary()
         # Health check endpoint
         elif path == '/health':
             self.send_json_response({'status': 'ok', 'server': 'Spartan Main Server', 'port': PORT})
@@ -139,96 +374,158 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             super().do_GET()
 
     def handle_db_stats(self):
-        """Return database statistics"""
+        """Return database statistics from PostgreSQL"""
+        db_conn = None
         try:
-            db_path = DIRECTORY / 'symbols_database.json'
-            if db_path.exists():
-                with open(db_path, 'r') as f:
-                    data = json.load(f)
-                    stats = {
-                        'total_symbols': data.get('metadata', {}).get('total_symbols', 0),
-                        'version': data.get('metadata', {}).get('version', 'Unknown'),
-                        'exchanges': len(data.get('metadata', {}).get('exchanges_covered', [])),
-                        'countries': len(data.get('metadata', {}).get('countries_covered', [])),
-                        'asset_types': {
-                            'stocks': len(data.get('stocks', [])),
-                            'futures': len(data.get('futures', [])),
-                            'forex': len(data.get('forex', [])),
-                            'crypto': len(data.get('crypto', [])),
-                            'etfs': len(data.get('etfs', [])),
-                            'indices': len(data.get('indices', []))
-                        }
-                    }
-                    self.send_json_response(stats)
-            else:
-                self.send_json_response({'error': 'Database not found'}, status=404)
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'spartan'),
+                password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                host='localhost',
+                port=5432
+            )
+
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get total symbols from polygon_symbols
+                cur.execute("SELECT COUNT(*) as total FROM polygon_symbols")
+                total_poly = cur.fetchone()['total']
+
+                # Get counts by type
+                cur.execute("SELECT type, COUNT(*) as count FROM polygon_symbols GROUP BY type")
+                types_rows = cur.fetchall()
+                asset_types = {row['type'] if row['type'] else 'Unknown': row['count'] for row in types_rows}
+
+                # Get exchange count
+                cur.execute("SELECT COUNT(DISTINCT primary_exchange) as count FROM polygon_symbols")
+                exchanges = cur.fetchone()['count']
+
+                # Get country count
+                cur.execute("SELECT COUNT(DISTINCT locale) as count FROM polygon_symbols")
+                countries = cur.fetchone()['count']
+
+                stats = {
+                    'total_symbols': total_poly,
+                    'version': '2.0 - Live PostgreSQL Data',
+                    'exchanges': exchanges,
+                    'countries': countries,
+                    'asset_types': asset_types,
+                    'source': 'postgresql'
+                }
+                self.send_json_response(stats)
+
         except Exception as e:
-            self.send_json_response({'error': str(e)}, status=500)
+            print(f"❌ Error in handle_db_stats (PostgreSQL): {e}")
+            traceback.print_exc()
+            
+            # Fallback to JSON if DB fails
+            try:
+                db_path = DIRECTORY / 'symbols_database.json'
+                if db_path.exists():
+                    with open(db_path, 'r') as f:
+                        data = json.load(f)
+                        stats = {
+                            'total_symbols': data.get('metadata', {}).get('total_symbols', 0),
+                            'source': 'json_fallback_due_to_error'
+                        }
+                        self.send_json_response(stats)
+                else:
+                    self.send_json_response({'error': str(e)}, status=500)
+            except Exception as json_err:
+                self.send_json_response({'error': f"DB and JSON failed: {str(e)}"}, status=500)
+        finally:
+            if db_conn:
+                db_conn.close()
 
     def handle_db_search(self, query_string):
-        """Search symbols database"""
+        """Search symbols database using PostgreSQL"""
         try:
             params = parse_qs(query_string)
             query = params.get('query', [''])[0].upper()
             limit = int(params.get('limit', ['100'])[0])
 
-            db_path = DIRECTORY / 'symbols_database.json'
-            if not db_path.exists():
-                self.send_json_response({'error': 'Database not found'}, status=404)
-                return
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'postgres'),
+                password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
+                host='localhost',
+                port=5432
+            )
 
-            with open(db_path, 'r') as f:
-                data = json.load(f)
-
-            # Search across all asset types
             results = []
-            for asset_type in ['stocks', 'futures', 'forex', 'crypto', 'etfs', 'indices']:
-                if asset_type in data:
-                    for item in data[asset_type]:
-                        symbol = item.get('symbol', '')
-                        name = item.get('name', '')
-                        if query in symbol.upper() or query in name.upper():
-                            results.append(item)
-                            if len(results) >= limit:
-                                break
-                if len(results) >= limit:
-                    break
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Search polygon_symbols
+                sql = """
+                    SELECT ticker as symbol, name, type, primary_exchange as exchange, 
+                           locale as country, market_cap as marketCap
+                    FROM polygon_symbols
+                    WHERE (ticker ILIKE %s OR name ILIKE %s)
+                    AND type != 'OS'
+                    ORDER BY 
+                        CASE WHEN ticker = %s THEN 0
+                             WHEN ticker ILIKE %s THEN 1
+                             ELSE 2 END,
+                        ticker
+                    LIMIT %s
+                """
+                search_term = f"%{query}%"
+                cur.execute(sql, (search_term, search_term, query, f"{query}%", limit))
+                rows = cur.fetchall()
+                results = [dict(row) for row in rows]
 
-            self.send_json_response({'results': results, 'count': len(results)})
+            db_conn.close()
+            self.send_json_response({'results': results, 'count': len(results), 'source': 'postgresql'})
+
         except Exception as e:
-            self.send_json_response({'error': str(e)}, status=500)
+            print(f"Error in handle_db_search: {e}")
+            # Fallback to JSON if DB fails
+            self.send_json_response({'error': str(e), 'source': 'error'}, status=500)
 
     def handle_db_symbols(self, query_string):
-        """Get all symbols with pagination"""
+        """Get all symbols with pagination from PostgreSQL"""
         try:
             params = parse_qs(query_string)
             limit = int(params.get('limit', ['1000'])[0])
             offset = int(params.get('offset', ['0'])[0])
 
-            db_path = DIRECTORY / 'symbols_database.json'
-            if not db_path.exists():
-                self.send_json_response({'error': 'Database not found'}, status=404)
-                return
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'postgres'),
+                password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
+                host='localhost',
+                port=5432
+            )
 
-            with open(db_path, 'r') as f:
-                data = json.load(f)
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get total count
+                cur.execute("SELECT COUNT(*) as total FROM polygon_symbols WHERE type != 'OS'")
+                total = cur.fetchone()['total']
 
-            # Combine all symbols
-            all_symbols = []
-            for asset_type in ['stocks', 'futures', 'forex', 'crypto', 'etfs', 'indices']:
-                if asset_type in data:
-                    all_symbols.extend(data[asset_type])
+                # Get paginated symbols
+                cur.execute("""
+                    SELECT ticker as symbol, name, type, primary_exchange as exchange, 
+                           locale as country, market_cap as marketCap
+                    FROM polygon_symbols
+                    WHERE type != 'OS'
+                    ORDER BY ticker
+                    LIMIT %s OFFSET %s
+                """, (limit, offset))
+                
+                rows = cur.fetchall()
+                symbols = [dict(row) for row in rows]
 
-            # Apply pagination
-            paginated = all_symbols[offset:offset+limit]
-
+            db_conn.close()
             self.send_json_response({
-                'symbols': paginated,
-                'total': len(all_symbols),
+                'symbols': symbols,
+                'total': total,
                 'offset': offset,
-                'limit': limit
+                'limit': limit,
+                'source': 'postgresql'
             })
         except Exception as e:
+            print(f"Error in handle_db_symbols: {e}")
             self.send_json_response({'error': str(e)}, status=500)
 
     def handle_polygon_symbols(self, query_string):
@@ -243,8 +540,8 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             # Connect to PostgreSQL
             db_conn = psycopg2.connect(
                 dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
-                user=os.getenv('POSTGRES_USER', 'spartan'),
-                password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                user=os.getenv('POSTGRES_USER', 'postgres'),
+                password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
                 host='localhost',
                 port=5432
             )
@@ -312,6 +609,9 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def handle_market_symbol(self, symbol):
         """Get data for a specific symbol - REDIS FIRST, then PostgreSQL, then fetch"""
         try:
+            # URL-decode the symbol (browsers encode ^ as %5E)
+            from urllib.parse import unquote
+            symbol = unquote(symbol)
             symbol_upper = symbol.upper()
 
             # PRIORITY 1: Check Redis cache (Data Guardian Agent's cache)
@@ -333,8 +633,8 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             try:
                 db_conn = psycopg2.connect(
                     dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
-                    user=os.getenv('POSTGRES_USER', 'spartan'),
-                    password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                    user=os.getenv('POSTGRES_USER', 'postgres'),
+                    password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
                     host='localhost',
                     port=5432
                 )
@@ -429,10 +729,14 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_json_response({'error': str(e)}, status=500)
 
     def handle_market_quote(self, symbol):
-        """Get quote data for a specific symbol (for indicators)"""
+        """Get quote data for a specific symbol (for indicators) - Uses Redis cache → yfinance"""
         try:
+            # URL-decode the symbol (browsers encode ^ as %5E)
+            from urllib.parse import unquote
+            symbol = unquote(symbol)
             symbol_upper = symbol.upper()
 
+            # DIRECT DATA FETCH (No proxy - port 5002 not needed)
             # SPECIAL MAPPINGS: Map common symbols to FRED/alternative sources
             SYMBOL_MAPPINGS = {
                 '^TNX': 'DGS10',      # 10-Year Treasury → FRED
@@ -569,6 +873,632 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             print(f"Error in handle_market_quote for {symbol}: {e}")
             traceback.print_exc()
             self.send_json_response({'error': str(e)}, status=500)
+
+    def proxy_to_scanner_api(self, path):
+        """Proxy requests to Scanner API on port 5012"""
+        try:
+            # Forward request to Scanner API
+            target_url = f'http://127.0.0.1:5012{path}'
+
+            try:
+                with urllib.request.urlopen(target_url, timeout=120) as response:
+                    data = response.read()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(data)
+            except urllib.error.URLError as e:
+                # Scanner API not running
+                print(f"⚠️  Scanner API not available: {e}")
+                self.send_json_response({
+                    'error': 'Scanner API not available',
+                    'message': 'Please start the Scanner API server on port 5012',
+                    'command': 'python scanner_api_server.py'
+                }, status=503)
+        except Exception as e:
+            print(f"Error proxying to Scanner: {e}")
+            traceback.print_exc()
+            self.send_json_response({'error': str(e)}, status=500)
+
+    def handle_yahoo_chart(self, symbol, query_string):
+        """Return database statistics from PostgreSQL"""
+        db_conn = None
+        try:
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'spartan'),
+                password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                host='localhost',
+                port=5432
+            )
+
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get total symbols from polygon_symbols
+                cur.execute("SELECT COUNT(*) as total FROM polygon_symbols")
+                total_poly = cur.fetchone()['total']
+
+                # Get counts by type
+                cur.execute("SELECT type, COUNT(*) as count FROM polygon_symbols GROUP BY type")
+                types_rows = cur.fetchall()
+                asset_types = {row['type'] if row['type'] else 'Unknown': row['count'] for row in types_rows}
+
+                # Get exchange count
+                cur.execute("SELECT COUNT(DISTINCT primary_exchange) as count FROM polygon_symbols")
+                exchanges = cur.fetchone()['count']
+
+                # Get country count
+                cur.execute("SELECT COUNT(DISTINCT locale) as count FROM polygon_symbols")
+                countries = cur.fetchone()['count']
+
+                stats = {
+                    'total_symbols': total_poly,
+                    'version': '2.0 - Live PostgreSQL Data',
+                    'exchanges': exchanges,
+                    'countries': countries,
+                    'asset_types': asset_types,
+                    'source': 'postgresql'
+                }
+                self.send_json_response(stats)
+
+        except Exception as e:
+            print(f"❌ Error in handle_db_stats (PostgreSQL): {e}")
+            traceback.print_exc()
+            
+            # Fallback to JSON if DB fails
+            try:
+                db_path = DIRECTORY / 'symbols_database.json'
+                if db_path.exists():
+                    with open(db_path, 'r') as f:
+                        data = json.load(f)
+                        stats = {
+                            'total_symbols': data.get('metadata', {}).get('total_symbols', 0),
+                            'source': 'json_fallback_due_to_error'
+                        }
+                        self.send_json_response(stats)
+                else:
+                    self.send_json_response({'error': str(e)}, status=500)
+            except Exception as json_err:
+                self.send_json_response({'error': f"DB and JSON failed: {str(e)}"}, status=500)
+        finally:
+            if db_conn:
+                db_conn.close()
+
+    def handle_db_search(self, query_string):
+        """Search symbols database using PostgreSQL"""
+        try:
+            params = parse_qs(query_string)
+            query = params.get('query', [''])[0].upper()
+            limit = int(params.get('limit', ['100'])[0])
+
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'postgres'),
+                password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
+                host='localhost',
+                port=5432
+            )
+
+            results = []
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Search polygon_symbols
+                sql = """
+                    SELECT ticker as symbol, name, type, primary_exchange as exchange, 
+                           locale as country, market_cap as marketCap
+                    FROM polygon_symbols
+                    WHERE (ticker ILIKE %s OR name ILIKE %s)
+                    AND type != 'OS'
+                    ORDER BY 
+                        CASE WHEN ticker = %s THEN 0
+                             WHEN ticker ILIKE %s THEN 1
+                             ELSE 2 END,
+                        ticker
+                    LIMIT %s
+                """
+                search_term = f"%{query}%"
+                cur.execute(sql, (search_term, search_term, query, f"{query}%", limit))
+                rows = cur.fetchall()
+                results = [dict(row) for row in rows]
+
+            db_conn.close()
+            self.send_json_response({'results': results, 'count': len(results), 'source': 'postgresql'})
+
+        except Exception as e:
+            print(f"Error in handle_db_search: {e}")
+            # Fallback to JSON if DB fails
+            self.send_json_response({'error': str(e), 'source': 'error'}, status=500)
+
+    def handle_db_symbols(self, query_string):
+        """Get all symbols with pagination from PostgreSQL"""
+        try:
+            params = parse_qs(query_string)
+            limit = int(params.get('limit', ['1000'])[0])
+            offset = int(params.get('offset', ['0'])[0])
+
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'postgres'),
+                password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
+                host='localhost',
+                port=5432
+            )
+
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Get total count
+                cur.execute("SELECT COUNT(*) as total FROM polygon_symbols WHERE type != 'OS'")
+                total = cur.fetchone()['total']
+
+                # Get paginated symbols
+                cur.execute("""
+                    SELECT ticker as symbol, name, type, primary_exchange as exchange, 
+                           locale as country, market_cap as marketCap
+                    FROM polygon_symbols
+                    WHERE type != 'OS'
+                    ORDER BY ticker
+                    LIMIT %s OFFSET %s
+                """, (limit, offset))
+                
+                rows = cur.fetchall()
+                symbols = [dict(row) for row in rows]
+
+            db_conn.close()
+            self.send_json_response({
+                'symbols': symbols,
+                'total': total,
+                'offset': offset,
+                'limit': limit,
+                'source': 'postgresql'
+            })
+        except Exception as e:
+            print(f"Error in handle_db_symbols: {e}")
+            self.send_json_response({'error': str(e)}, status=500)
+
+    def handle_polygon_symbols(self, query_string):
+        """Get symbols from PostgreSQL polygon_symbols table"""
+        try:
+            params = parse_qs(query_string)
+            limit = int(params.get('limit', ['10000'])[0])
+            offset = int(params.get('offset', ['0'])[0])
+            asset_type = params.get('type', [''])[0]  # Optional filter by type
+            active_only = params.get('active', ['true'])[0].lower() == 'true'
+
+            # Connect to PostgreSQL
+            db_conn = psycopg2.connect(
+                dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                user=os.getenv('POSTGRES_USER', 'postgres'),
+                password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
+                host='localhost',
+                port=5432
+            )
+
+            with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                # Build query with filters
+                where_clauses = []
+                params_list = []
+
+                if active_only:
+                    where_clauses.append("active = TRUE")
+
+                # EXCLUDE OTC stocks (type 'OS')
+                where_clauses.append("type != %s")
+                params_list.append('OS')
+
+                if asset_type:
+                    where_clauses.append("type = %s")
+                    params_list.append(asset_type)
+
+                where_sql = " AND ".join(where_clauses) if where_clauses else "1=1"
+
+                # Get total count
+                count_query = f"SELECT COUNT(*) as total FROM polygon_symbols WHERE {where_sql}"
+                cur.execute(count_query, params_list)
+                total = cur.fetchone()['total']
+
+                # Get paginated symbols
+                query = f"""
+                    SELECT
+                        ticker,
+                        name,
+                        market,
+                        locale,
+                        type,
+                        active,
+                        currency_symbol,
+                        primary_exchange
+                    FROM polygon_symbols
+                    WHERE {where_sql}
+                    ORDER BY ticker
+                    LIMIT %s OFFSET %s
+                """
+                cur.execute(query, params_list + [limit, offset])
+                symbols = cur.fetchall()
+
+                # Convert to list of dicts
+                symbols_list = [dict(row) for row in symbols]
+
+            db_conn.close()
+
+            self.send_json_response({
+                'symbols': symbols_list,
+                'total': total,
+                'offset': offset,
+                'limit': limit,
+                'source': 'postgresql'
+            })
+
+        except Exception as e:
+            print(f"Error in handle_polygon_symbols: {e}")
+            traceback.print_exc()
+            self.send_json_response({'error': str(e)}, status=500)
+
+    def handle_market_symbol(self, symbol):
+        """Get data for a specific symbol - REDIS FIRST, then PostgreSQL, then fetch"""
+        try:
+            # URL-decode the symbol (browsers encode ^ as %5E)
+            from urllib.parse import unquote
+            symbol = unquote(symbol)
+            symbol_upper = symbol.upper()
+
+            # PRIORITY 1: Check Redis cache (Data Guardian Agent's cache)
+            if redis_client:
+                try:
+                    redis_key = f'market:symbol:{symbol_upper}'
+                    cached_data = redis_client.get(redis_key)
+
+                    if cached_data:
+                        data = json.loads(cached_data)
+                        data['cache_hit'] = 'redis'
+                        print(f"✅ Redis cache hit for {symbol_upper}: ${data.get('price')}")
+                        self.send_json_response({'data': data})
+                        return
+                except Exception as e:
+                    print(f"Redis error for {symbol_upper}: {e}")
+
+            # PRIORITY 2: Check PostgreSQL backup
+            try:
+                db_conn = psycopg2.connect(
+                    dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
+                    user=os.getenv('POSTGRES_USER', 'postgres'),
+                    password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
+                    host='localhost',
+                    port=5432
+                )
+
+                with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute("""
+                        SELECT symbol, price, change_percent, volume,
+                               metadata, timestamp, source
+                        FROM preloaded_market_data
+                        WHERE symbol = %s
+                        ORDER BY timestamp DESC
+                        LIMIT 1
+                    """, (symbol_upper,))
+
+                    row = cur.fetchone()
+                    if row:
+                        data = dict(row)
+                        # Convert timestamp to string
+                        if isinstance(data['timestamp'], datetime):
+                            data['timestamp'] = data['timestamp'].isoformat()
+                        data['cache_hit'] = 'postgresql'
+                        print(f"✅ PostgreSQL hit for {symbol_upper}: ${data.get('price')}")
+                        self.send_json_response({'data': data})
+                        db_conn.close()
+                        return
+
+                db_conn.close()
+            except Exception as e:
+                print(f"PostgreSQL error for {symbol_upper}: {e}")
+
+            # PRIORITY 3: Try to fetch fresh data (fallback only)
+            db_path = DIRECTORY / 'symbols_database.json'
+            if db_path.exists():
+                with open(db_path, 'r') as f:
+                    db_data = json.load(f)
+
+                # Search in 'symbols' array (correct structure)
+                found_item = None
+                if 'symbols' in db_data:
+                    for item in db_data['symbols']:
+                        if item.get('symbol', '').upper() == symbol_upper:
+                            found_item = item
+                            break
+
+                if found_item:
+                    asset_type = found_item.get('type', 'Stock')
+                    real_data = None
+
+                    try:
+                        if asset_type in ['Stock', 'ETF']:
+                            result = fetch_stock_price(symbol_upper, period_days=5)
+                            if result['success'] and result['data'] is not None and not result['data'].empty:
+                                real_data = result['data']
+                        elif asset_type == 'Crypto':
+                            search_sym = symbol_upper if symbol_upper.endswith('-USD') else f"{symbol_upper}-USD"
+                            result = fetch_crypto_price(search_sym, period_days=5)
+                            if result['success'] and result['data'] is not None and not result['data'].empty:
+                                real_data = result['data']
+                        elif asset_type == 'Forex':
+                            search_sym = symbol_upper if '=' in symbol_upper else f"{symbol_upper}=X"
+                            result = fetch_forex_rate(search_sym, period_days=5)
+                            if result['success'] and result['data'] is not None and not result['data'].empty:
+                                real_data = result['data']
+                    except Exception as e:
+                        print(f"Error fetching fresh data for {symbol_upper}: {e}")
+
+                    if real_data is not None:
+                        latest_price = real_data.iloc[-1]
+                        prev_price = real_data.iloc[-2] if len(real_data) > 1 else latest_price
+
+                        found_item['price'] = round(float(latest_price), 2)
+                        found_item['change'] = round(float(latest_price - prev_price), 2)
+                        found_item['change_percent'] = round(float((latest_price - prev_price) / prev_price * 100), 2)
+                        found_item['timestamp'] = datetime.now().isoformat()
+                        found_item['source'] = 'Fresh Fetch'
+                        found_item['cache_hit'] = 'fresh'
+                        print(f"✅ Fresh fetch for {symbol_upper}: ${found_item['price']}")
+                        self.send_json_response({'data': found_item})
+                        return
+
+            # NO DATA AVAILABLE from any source
+            print(f"❌ No data available for {symbol_upper} from any source")
+            self.send_json_response({
+                'error': f'No data available for {symbol_upper}',
+                'tried': ['redis', 'postgresql', 'fresh_fetch'],
+                'tip': 'Data Guardian Agent may need time to populate cache'
+            }, status=404)
+
+        except Exception as e:
+            print(f"Error in handle_market_symbol: {e}")
+            traceback.print_exc()
+            self.send_json_response({'error': str(e)}, status=500)
+
+    def handle_market_quote(self, symbol):
+        """Get quote data for a specific symbol (for indicators) - Uses Redis cache → yfinance"""
+        try:
+            # URL-decode the symbol (browsers encode ^ as %5E)
+            from urllib.parse import unquote
+            symbol = unquote(symbol)
+            symbol_upper = symbol.upper()
+
+            # DIRECT DATA FETCH (No proxy - port 5002 not needed)
+            # SPECIAL MAPPINGS: Map common symbols to FRED/alternative sources
+            SYMBOL_MAPPINGS = {
+                '^TNX': 'DGS10',      # 10-Year Treasury → FRED
+                '^VIX': 'VIXCLS',     # VIX → FRED
+                '^GSPC': 'SPY',       # S&P 500 Index → SPY ETF
+                '^DJI': 'DIA',        # Dow Jones → DIA ETF
+                '^IXIC': 'QQQ',       # NASDAQ → QQQ ETF
+                '^RUT': 'IWM',        # Russell 2000 → IWM ETF
+            }
+
+            # Check if we need to remap the symbol
+            lookup_symbol = SYMBOL_MAPPINGS.get(symbol_upper, symbol_upper)
+            is_fred_symbol = lookup_symbol in ['DGS10', 'VIXCLS', 'DGS2', 'DGS5', 'DGS30', 'T10Y2Y']
+
+            # PRIORITY 1: Check Redis cache (from our scanners)
+            if redis_client:
+                try:
+                    # Try fundamental cache (for FRED economic indicators)
+                    if is_fred_symbol:
+                        redis_key = f'fundamental:economic:{lookup_symbol}'
+                        cached_data = redis_client.get(redis_key)
+                        if cached_data:
+                            data = json.loads(cached_data)
+                            # Convert FRED data to quote format
+                            quote_data = {
+                                'symbol': symbol_upper,
+                                'price': float(data.get('value', 0)),
+                                'change': 0,  # FRED doesn't provide daily change
+                                'changePercent': 0,
+                                'changePercent5d': 0,
+                                'timestamp': data.get('timestamp'),
+                                'source': 'fred',
+                                'cache_hit': 'redis'
+                            }
+                            print(f"✅ Redis FRED cache hit for {symbol_upper} → {lookup_symbol}: {data.get('value')}")
+                            self.send_json_response(quote_data)
+                            return
+
+                    # Try market symbol cache (from price scanner)
+                    redis_key = f'market:symbol:{lookup_symbol}'
+                    cached_data = redis_client.get(redis_key)
+                    if cached_data:
+                        data = json.loads(cached_data)
+                        # Convert to quote format
+                        quote_data = {
+                            'symbol': symbol_upper,
+                            'price': data.get('price'),
+                            'change': data.get('change', 0),
+                            'changePercent': data.get('change_percent', 0),
+                            'changePercent5d': 0,  # Not in cache yet
+                            'timestamp': data.get('timestamp'),
+                            'source': data.get('source', 'cache'),
+                            'cache_hit': 'redis'
+                        }
+                        print(f"✅ Redis price cache hit for {symbol_upper}: ${data.get('price')}")
+                        self.send_json_response(quote_data)
+                        return
+                except Exception as e:
+                    print(f"Redis lookup error for {symbol_upper}: {e}")
+
+            # PRIORITY 2: Fetch from yfinance
+            # Determine symbol type and fetch appropriate data
+            period_days = 5  # Always fetch 5 days for change calculation
+
+            real_data = None
+            try:
+                # Try as stock/ETF first (most common for indicators)
+                if symbol_upper.startswith('^'):
+                    # Index symbols (^VIX, ^TNX, etc.)
+                    result = fetch_stock_price(symbol_upper, period_days=period_days)
+                    if result['success'] and result['data'] is not None and not result['data'].empty:
+                        real_data = result['data']
+                elif '-USD' in symbol_upper or symbol_upper in ['BTC', 'ETH', 'SOL']:
+                    # Crypto symbols
+                    search_sym = symbol_upper if '-USD' in symbol_upper else f"{symbol_upper}-USD"
+                    result = fetch_crypto_price(search_sym, period_days=period_days)
+                    if result['success'] and result['data'] is not None and not result['data'].empty:
+                        real_data = result['data']
+                elif '=' in symbol_upper or symbol_upper in ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD']:
+                    # Forex symbols
+                    search_sym = symbol_upper if '=' in symbol_upper else f"{symbol_upper}=X"
+                    result = fetch_forex_rate(search_sym, period_days=period_days)
+                    if result['success'] and result['data'] is not None and not result['data'].empty:
+                        real_data = result['data']
+                else:
+                    # Regular stocks/ETFs
+                    result = fetch_stock_price(symbol_upper, period_days=period_days)
+                    if result['success'] and result['data'] is not None and not result['data'].empty:
+                        real_data = result['data']
+
+            except Exception as e:
+                print(f"Error fetching quote for {symbol}: {e}")
+                traceback.print_exc()
+
+            if real_data is not None and len(real_data) > 0:
+                # Calculate prices and changes
+                latest_price = float(real_data.iloc[-1])
+                prev_price = float(real_data.iloc[-2]) if len(real_data) > 1 else latest_price
+                first_price = float(real_data.iloc[0]) if len(real_data) > 0 else latest_price
+
+                # 1-day change
+                change = latest_price - prev_price
+                change_percent = (change / prev_price * 100) if prev_price != 0 else 0
+
+                # 5-day change
+                change_5d = latest_price - first_price
+                change_percent_5d = (change_5d / first_price * 100) if first_price != 0 else 0
+
+                # Return data directly (not wrapped in 'data' key)
+                quote_data = {
+                    'symbol': symbol_upper,
+                    'price': round(latest_price, 4),
+                    'change': round(change, 4),
+                    'changePercent': round(change_percent, 2),
+                    'changePercent5d': round(change_percent_5d, 2),
+                    'timestamp': datetime.now().isoformat(),
+                    'source': 'yfinance'
+                }
+
+                self.send_json_response(quote_data)
+            else:
+                # NO FAKE DATA - Return null on failure
+                self.send_json_response({
+                    'symbol': symbol_upper,
+                    'price': None,
+                    'change': None,
+                    'changePercent': None,
+                    'changePercent5d': None,
+                    'timestamp': datetime.now().isoformat(),
+                    'error': 'No data available'
+                }, status=404)
+
+        except Exception as e:
+            print(f"Error in handle_market_quote for {symbol}: {e}")
+            traceback.print_exc()
+            self.send_json_response({'error': str(e)}, status=500)
+
+    def handle_yahoo_chart(self, symbol, query_string):
+        """
+        Yahoo Finance Chart API endpoint for composite indicators
+        Returns data in Yahoo Finance chart format
+        """
+        try:
+            import yfinance as yf
+            from urllib.parse import parse_qs
+
+            # Parse query parameters
+            params = parse_qs(query_string) if query_string else {}
+            interval = params.get('interval', ['1d'])[0]
+            range_param = params.get('range', ['5d'])[0]
+
+            # Map range to period for yfinance
+            range_to_period = {
+                '1d': '1d',
+                '5d': '5d',
+                '1mo': '1mo',
+                '3mo': '3mo',
+                '6mo': '6mo',
+                '1y': '1y',
+                '2y': '2y',
+                '5y': '5y',
+                'max': 'max'
+            }
+            period = range_to_period.get(range_param, '5d')
+
+            print(f"📊 Fetching {symbol} (interval={interval}, period={period})")
+
+            # Fetch data from yfinance
+            ticker = yf.Ticker(symbol)
+            hist = ticker.history(period=period, interval=interval)
+
+            if hist.empty:
+                print(f"❌ No data returned for {symbol}")
+                self.send_json_response({
+                    'data': {
+                        'chart': {
+                            'result': None,
+                            'error': {'description': f'No data found for symbol {symbol}'}
+                        }
+                    }
+                }, status=404)
+                return
+
+            # Convert to Yahoo Finance chart format
+            timestamps = [int(ts.timestamp()) for ts in hist.index]
+            closes = hist['Close'].tolist()
+            opens = hist['Open'].tolist()
+            highs = hist['High'].tolist()
+            lows = hist['Low'].tolist()
+            volumes = hist['Volume'].tolist()
+
+            response_data = {
+                'data': {
+                    'chart': {
+                        'result': [{
+                            'meta': {
+                                'symbol': symbol,
+                                'currency': 'USD',
+                                'exchangeName': 'YahooFinance',
+                                'instrumentType': 'EQUITY',
+                                'regularMarketPrice': closes[-1] if closes else None,
+                                'chartPreviousClose': closes[-2] if len(closes) >= 2 else None,
+                                'dataGranularity': interval,
+                                'range': range_param
+                            },
+                            'timestamp': timestamps,
+                            'indicators': {
+                                'quote': [{
+                                    'open': opens,
+                                    'high': highs,
+                                    'low': lows,
+                                    'close': closes,
+                                    'volume': volumes
+                                }]
+                            }
+                        }],
+                        'error': None
+                    }
+                }
+            }
+
+            print(f"✅ Successfully fetched {symbol}: ${closes[-1]:.2f}")
+            self.send_json_response(response_data)
+
+        except Exception as e:
+            print(f"❌ Error fetching chart for {symbol}: {e}")
+            traceback.print_exc()
+            self.send_json_response({
+                'data': {
+                    'chart': {
+                        'result': None,
+                        'error': {'description': str(e)}
+                    }
+                }
+            }, status=500)
 
     def handle_market_breadth(self):
         """Market Breadth with NO N/A guarantee"""
@@ -752,8 +1682,8 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             try:
                 db_conn = psycopg2.connect(
                     dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
-                    user=os.getenv('POSTGRES_USER', 'spartan'),
-                    password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                    user=os.getenv('POSTGRES_USER', 'postgres'),
+                    password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
                     host='localhost',
                     port=5432
                 )
@@ -822,8 +1752,8 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             try:
                 db_conn = psycopg2.connect(
                     dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
-                    user=os.getenv('POSTGRES_USER', 'spartan'),
-                    password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                    user=os.getenv('POSTGRES_USER', 'postgres'),
+                    password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
                     host='localhost',
                     port=5432
                 )
@@ -891,8 +1821,8 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             try:
                 db_conn = psycopg2.connect(
                     dbname=os.getenv('POSTGRES_DB', 'spartan_research_db'),
-                    user=os.getenv('POSTGRES_USER', 'spartan'),
-                    password=os.getenv('POSTGRES_PASSWORD', 'spartan'),
+                    user=os.getenv('POSTGRES_USER', 'postgres'),
+                    password=os.getenv('POSTGRES_PASSWORD', 'postgres'),
                     host='localhost',
                     port=5432
                 )
@@ -946,21 +1876,46 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
             if redis_client:
                 try:
-                    # Get 10-Year Treasury yield (DGS10)
-                    dgs10_data = redis_client.get('fundamental:economic:DGS10')
+                    # Try FRED keys first (correct key pattern from data preloader)
+                    dgs10_data = redis_client.get('fred:DGS10')
                     if dgs10_data:
                         yield_10y = json.loads(dgs10_data).get('value')
 
-                    # Get 3-Month Treasury yield (DTB3)
-                    dtb3_data = redis_client.get('fundamental:economic:DTB3')
-                    if dtb3_data:
-                        yield_3m = json.loads(dtb3_data).get('value')
+                    # Try 3-Month Treasury (DGS3MO is the FRED series ID)
+                    dgs3mo_data = redis_client.get('fred:DGS3MO')
+                    if dgs3mo_data:
+                        yield_3m = json.loads(dgs3mo_data).get('value')
 
                     # Calculate spread
                     if yield_10y is not None and yield_3m is not None:
                         spread = yield_10y - yield_3m
                 except Exception as e:
-                    print(f"Error fetching yield data: {e}")
+                    print(f"Error fetching yield data from Redis: {e}")
+
+            # Fallback: Fetch from yfinance directly if Redis doesn't have data
+            if spread is None:
+                try:
+                    import yfinance as yf
+
+                    # Fetch 10-Year Treasury (^TNX)
+                    if yield_10y is None:
+                        tnx = yf.Ticker('^TNX')
+                        tnx_data = tnx.history(period='1d')
+                        if not tnx_data.empty:
+                            yield_10y = float(tnx_data['Close'].iloc[-1])
+
+                    # Fetch 3-Month Treasury (^IRX)
+                    if yield_3m is None:
+                        irx = yf.Ticker('^IRX')
+                        irx_data = irx.history(period='1d')
+                        if not irx_data.empty:
+                            yield_3m = float(irx_data['Close'].iloc[-1])
+
+                    # Calculate spread
+                    if yield_10y is not None and yield_3m is not None:
+                        spread = yield_10y - yield_3m
+                except Exception as e:
+                    print(f"Error fetching yield data from yfinance: {e}")
 
             # Calculate recession probability using logistic regression
             # Based on historical data: inverted curve (negative spread) predicts recession
@@ -1121,6 +2076,27 @@ class SpartanHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             traceback.print_exc()
             self.send_json_response({'error': str(e)}, status=500)
 
+    def handle_whale_hunter_summary(self):
+        """Serve summary stats from Whale Hunter Pro"""
+        try:
+            summary_path = DIRECTORY / 'whale_hunter_summary.json'
+            if summary_path.exists():
+                with open(summary_path, 'r') as f:
+                    data = json.load(f)
+                self.send_json_response(data)
+            else:
+                # Return placeholder if no data yet
+                self.send_json_response({
+                    'status': 'waiting',
+                    'message': 'No summary data. Run ./run_whale_hunter.sh to generate.',
+                    'total_markets': 0,
+                    'bullish_count': 0,
+                    'bearish_count': 0,
+                    'top_signals': []
+                })
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, status=500)
+
     def send_json_response(self, data, status=200):
         """Send JSON response"""
         self.send_response(status)
@@ -1140,6 +2116,13 @@ def main():
     print(" SPARTAN RESEARCH STATION - MAIN SERVER")
     print("=" * 70)
     print()
+
+    # Auto-start dependent API servers
+    print("Checking dependent services...")
+    start_cot_scanner_api()
+    start_scanner_api()  # Required for Market Pulse Scanner
+    print()
+
     print(f"Starting main server on port {PORT}...")
     print(f"Serving from: {DIRECTORY}")
     print()
@@ -1175,12 +2158,17 @@ def main():
     print("=" * 70)
     print()
 
+    # Register cleanup handler
+    import atexit
+    atexit.register(cleanup_subprocesses)
+
     # Start server
     with socketserver.TCPServer(("", PORT), SpartanHTTPRequestHandler) as httpd:
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
             print("\n\nServer stopped by user")
+            cleanup_subprocesses()
             print("=" * 70)
 
 

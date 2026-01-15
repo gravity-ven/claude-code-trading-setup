@@ -58,12 +58,14 @@ stop_service "Correlation API" ".pids/correlation.pid"
 stop_service "Daily Planet API" ".pids/daily_planet.pid"
 stop_service "Swing Dashboard API" ".pids/swing.pid"
 stop_service "GARP API" ".pids/garp.pid"
+stop_service "COT Scanner API" ".pids/cot_scanner.pid"
+stop_service "OI Scanner API" ".pids/oi_scanner.pid"
 stop_service "Data Refresh Scheduler" ".pids/refresh.pid"
 
 # Also kill any processes on our ports (safety net)
 echo ""
 echo "Checking for stray processes on service ports..."
-for port in 8888 5000 5002 5003 5004; do
+for port in 8888 5000 5002 5003 5004 5009 5010; do
     pid=$(lsof -ti:$port 2>/dev/null || true)
     if [ ! -z "$pid" ]; then
         echo -n "Killing process on port $port (PID: $pid)... "

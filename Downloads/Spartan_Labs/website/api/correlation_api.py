@@ -14,9 +14,24 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import logging
+import sys
+import os
+
+# Add scripts/data to path for fallback data fetcher
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'scripts', 'data'))
 
 # Import fallback data fetcher
-from data_fetcher_fallback import data_fetcher
+try:
+    from data_fetcher_fallback import data_fetcher
+except ImportError:
+    # Fallback: create a simple data fetcher using yfinance directly
+    class SimpleDataFetcher:
+        def fetch(self, symbol, period='1mo'):
+            try:
+                return yf.download(symbol, period=period, progress=False)
+            except Exception:
+                return pd.DataFrame()
+    data_fetcher = SimpleDataFetcher()
 
 # Configure logging
 logging.basicConfig(

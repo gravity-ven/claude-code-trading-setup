@@ -47,6 +47,8 @@ stop_service "correlation"
 stop_service "daily_planet"
 stop_service "swing"
 stop_service "garp"
+stop_service "cot_scanner"
+stop_service "oi_scanner"
 stop_service "refresh"
 stop_service "monitor"
 stop_service "claude_watcher"
@@ -54,7 +56,7 @@ stop_service "claude_watcher"
 # Kill any remaining processes on our ports
 echo ""
 echo "Clearing ports..."
-for port in 8888 5000 5002 5003 5004; do
+for port in 8888 5000 5002 5003 5004 5009 5010; do
     pid=$(lsof -ti:$port 2>/dev/null || true)
     if [ ! -z "$pid" ]; then
         echo "   Port $port (PID $pid)... "

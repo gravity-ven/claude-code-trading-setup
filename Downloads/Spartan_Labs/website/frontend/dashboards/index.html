@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Intermarket Barometer Ticker -->
-    <link rel="stylesheet" href="intermarket_ticker.css"?v=1766988597">
+    <link rel="stylesheet" href="/css/intermarket_ticker.css"?v=1768031129">
     <title>Spartan Research Station - Global Market Intelligence Network</title>
 
     <!-- 🚀 RAPID LOADING: Resource Hints -->
@@ -25,49 +25,50 @@
 
     <!-- 🚀 RAPID LOADING: Optimized Font Loading -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="spartan_theme.css"?v=1766988597">
+    <link rel="stylesheet" href="/css/spartan_theme.css"?v=1768031129">
 
     <!-- Chart.js for Advanced Visualizations -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js?v=1766988597"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js?v=1768031129"></script>
 
     <!-- 🚀 RAPID LOADING: Critical Scripts -->
-    <script src="spartan_validator.js?v=1766988597" defer></script>
+    <script src="/js/spartan_validator.js" defer></script>
 
     <!-- 🚀 BACKGROUND DATA PRELOADER: Loads ALL market data in background -->
-    <script src="js/spartan-preloader.js?v=1766988597"></script>
-    <script src="js/no-na-integration.js?v=1766988597"></script>
+    <script src="/js/spartan-preloader.js"></script>
+    <script src="/js/no-na-integration.js"></script>
 
     <!-- 🤖 AGENT HEARTBEAT SYSTEM: Autonomous ON/OFF switch reporting -->
-    <script src="js/agent_heartbeat.js?v=1766988597"></script>
-    <script src="js/api_heartbeat_wrapper.js?v=1766988597"></script>
+    <script src="/js/agent_heartbeat.js"></script>
+    <script src="/js/api_heartbeat_wrapper.js"></script>
 
     <!-- Market Regime Component Scripts - DISABLED TO PREVENT DATA ERROR -->
-    <!-- <script src="data_validator.js?v=1766988597"></script> -->
-    <!-- <script src="real_data_fetcher.js?v=1766988597"></script> -->
-    <!-- <script src="market_regime_component.js?v=1766988597"></script> -->
+    <!-- <script src="/js/data_validator.js"></script> -->
+    <!-- <script src="/js/real_data_fetcher.js"></script> -->
+    <!-- <script src="/js/market_regime_component.js"></script> -->
 
     <!-- PostgreSQL Database API (replaces symbols_database.json) - DISABLED -->
-    <!-- <script src="database_api.js?v=1766988597"></script> -->
+    <!-- <script src="/js/database_api.js"></script> -->
 
     <!-- Claude AI Chat Widget - Intelligent symbol search and analysis - DISABLED -->
-    <!-- <script src="claude_chat.js?v=1766988597"></script> -->
+    <!-- <script src="/js/claude_chat.js"></script> -->
 
     <style>
         :root {
-            /* Spartan Color Palette */
-            --primary-color: #8B0000;        /* Spartan Red (Dark Red) */
-            --secondary-color: #B22222;      /* Spartan Firebrick */
-            --accent-color: #DC143C;         /* Spartan Crimson */
-            --bg-dark: #0a1628;
-            --bg-darker: #050b14;
-            --bg-card: #12203a;
+            /* COT Hunter Pro Color Palette */
+            --primary-color: #FFD700;        /* Gold */
+            --secondary-color: #DAA520;      /* Goldenrod */
+            --accent-color: #FFA500;         /* Orange-Gold */
+            --bg-dark: #0E1117;
+            --bg-darker: #080A0E;
+            --bg-card: #1E2329;
             --text-primary: #ffffff;
-            --text-secondary: #b0b8c8;
-            --border-color: #1e3a5f;
-            --hover-glow: rgba(139, 0, 0, 0.3);  /* Spartan Red glow */
-            --gold: #DC143C;
-            --green: #228B22;                /* Forest Green */
-            --blue: #000080;                 /* Navy Blue */
+            --text-secondary: #8B949E;
+            --border-color: #30363D;
+            --hover-glow: rgba(255, 215, 0, 0.3);  /* Gold glow */
+            --gold: #FFD700;
+            --green: #00FF00;                /* Bright Green (Bullish) */
+            --red: #FF4B4B;                  /* Red (Bearish) */
+            --blue: #58A6FF;                 /* Light Blue */
         }
 
         * {
@@ -78,7 +79,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 50%, #0a0e27 100%);
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #161B22 50%, #0E1117 100%);
             color: var(--text-primary);
             min-height: 100vh;
             position: relative;
@@ -87,10 +88,10 @@
 
         /* Header */
         .header {
-            background: rgba(18, 32, 58, 0.98);
+            background: rgba(30, 35, 41, 0.98);
             backdrop-filter: blur(20px);
             padding: 20px 40px;
-            border-bottom: 2px solid rgba(139, 0, 0, 0.3);  /* Spartan Red */
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);  /* Gold */
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -235,16 +236,16 @@
 
         .nav-tab:hover {
             color: var(--primary-color);
-            background: rgba(139, 0, 0, 0.1);
+            background: rgba(255, 215, 0, 0.1);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
         }
 
         .nav-tab.active {
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
-            background: linear-gradient(180deg, rgba(139, 0, 0, 0.15), rgba(139, 0, 0, 0.08));
-            box-shadow: 0 2px 10px rgba(139, 0, 0, 0.2);
+            background: linear-gradient(180deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.08));
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
         }
 
         .nav-tab.active::after {
@@ -302,7 +303,7 @@
         }
 
         .indicator-card {
-            background: rgba(139, 0, 0, 0.05);
+            background: rgba(255, 215, 0, 0.05);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 20px;
@@ -311,7 +312,7 @@
 
         .indicator-card:hover {
             border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
             transform: translateY(-2px);
         }
 
@@ -329,7 +330,7 @@
         }
 
         .pathway-card {
-            background: linear-gradient(135deg, rgba(139, 0, 0, 0.08), rgba(178, 34, 34, 0.05));
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(218, 165, 32, 0.05));
             border: 2px solid var(--border-color);
             border-radius: 12px;
             padding: 25px;
@@ -340,7 +341,7 @@
 
         .pathway-card:hover {
             border-color: var(--primary-color);
-            box-shadow: 0 8px 24px rgba(139, 0, 0, 0.3);
+            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
             transform: translateY(-4px);
         }
 
@@ -368,7 +369,7 @@
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: rgba(139, 0, 0, 0.1);  /* Spartan Red */
+            background: rgba(255, 215, 0, 0.1);  /* Gold */
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
@@ -441,10 +442,12 @@
         /* Flashcard Grid */
         .flashcard-network {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            grid-auto-rows: 1fr; /* FORCE equal height rows */
+            gap: 24px;
             position: relative;
             z-index: 2;
+            align-items: stretch; /* Ensure all items stretch to row height */
         }
 
         /* Flashcard */
@@ -452,11 +455,16 @@
             background: var(--bg-card);
             border-radius: 12px;
             border: 1px solid var(--border-color);
-            padding: 24px;
+            padding: 28px;
+            min-height: 220px;
+            height: 100%; /* Fill grid cell completely */
+            display: flex;
+            flex-direction: column;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            box-sizing: border-box; /* Ensure padding is included in height */
         }
 
         .flashcard.draggable {
@@ -530,9 +538,9 @@
 
         /* Pinned Flashcard (Daily Planet) */
         .flashcard.pinned {
-            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(139, 0, 0, 0.15) 100%);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 215, 0, 0.15) 100%);
             border: 2px solid var(--primary-color);
-            box-shadow: 0 8px 32px rgba(139, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
             position: relative;
         }
 
@@ -554,7 +562,7 @@
 
         .flashcard.pinned:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 40px rgba(139, 0, 0, 0.5);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.5);
         }
 
         .flashcard.pinned .flashcard-title {
@@ -575,18 +583,18 @@
         }
 
         .flashcard-icon {
-            font-size: 2em;
+            font-size: 2.2em;
             line-height: 1;
         }
 
         .flashcard-title {
-            font-size: 1.2em;
+            font-size: 1.35em;
             font-weight: 600;
             color: var(--text-primary);
         }
 
         .flashcard-count {
-            background: rgba(139, 0, 0, 0.2);  /* Spartan Red */
+            background: rgba(255, 215, 0, 0.2);  /* Gold */
             color: var(--gold);
             padding: 4px 12px;
             border-radius: 20px;
@@ -597,24 +605,53 @@
 
         .flashcard-description {
             color: var(--text-secondary);
-            font-size: 0.9em;
+            font-size: 0.95em;
             line-height: 1.6;
             margin-bottom: 16px;
+            flex-grow: 1;
         }
 
         .flashcard-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            margin-top: auto;
         }
 
         .tag {
-            background: rgba(139, 0, 0, 0.1);  /* Spartan Red */
+            background: rgba(255, 215, 0, 0.1);  /* Gold */
             padding: 4px 12px;
             border-radius: 4px;
             font-size: 0.75em;
             color: var(--text-secondary);
-            border: 1px solid rgba(139, 0, 0, 0.2);  /* Spartan Red */
+            border: 1px solid rgba(255, 215, 0, 0.2);  /* Gold */
+        }
+
+        /* Metric Card Grid - Equal Height Cards (COT Hunter Pro, etc.) */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 1fr;
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        .metric-card {
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            height: 100%;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Category Headers */
@@ -726,8 +763,8 @@
     </style>
 
     <!-- Spartan Ticker Tape CSS - DISABLED -->
-    <!-- <link rel="stylesheet" href="js/spartan_ticker.css"?v=1766988597"> -->
-    <script src="/phantom/phantom_guardian.js?v=1766988597"></script>
+    <!-- <link rel="stylesheet" href="/css/js/spartan_ticker.css"?v=1768031129"> -->
+    <script src="/phantom/phantom_guardian.js?v=1768031129"></script>
 </head>
 <body>
     <!-- Market Regime Indicator (Pinned at Top) - DISABLED TO PREVENT DATA ERROR -->
@@ -740,7 +777,7 @@
     <div class="header">
         <div class="header-content">
             <div class="header-title">
-                <img src="spartan_logo.png" alt="Spartan">
+                <img src="/images/spartan_logo.png" alt="Spartan">
                 <div>
                     <h1>Spartan Research Station</h1>
                     <div class="header-subtitle">Global Market Intelligence Network</div>
@@ -748,11 +785,11 @@
             </div>
             <div class="header-stats">
                 <div class="stat-item">
-                    <span class="stat-number" id="totalSymbols">22,195</span>
+                    <span class="stat-number" id="totalSymbols">25,410</span>
                     <span class="stat-label">Symbols</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">15</span>
+                    <span class="stat-number">20+</span>
                     <span class="stat-label">Countries</span>
                 </div>
                 <div class="stat-item">
@@ -779,14 +816,699 @@
             <button class="nav-tab" data-tab="intelligence">🧠 Intelligence</button>
             <button class="nav-tab" data-tab="news">📰 News</button>
             <button class="nav-tab" data-tab="research">🔬 Research</button>
+            <button class="nav-tab" onclick="window.open('/pages/strategies.html', '_blank')">🎯 Strategies</button>
         </div>
     </div>
 
     <!-- Edit Layout Button -->
-    <div style="position: fixed; bottom: 30px; left: 30px; z-index: 1000;">
-        <button class="edit-mode-btn" id="editModeBtn" onclick="toggleEditMode()" style="padding: 12px 24px; font-size: 1.1em; background: rgba(139, 0, 0, 0.9); border: 2px solid #FFD700; border-radius: 8px; color: #FFD700; cursor: pointer; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease;">
+    <div style="position: fixed; bottom: 30px; left: 30px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
+        <button class="edit-mode-btn" id="editModeBtn" onclick="toggleEditMode()" style="padding: 12px 24px; font-size: 1.1em; background: rgba(255, 215, 0, 0.9); border: 2px solid #FFD700; border-radius: 8px; color: #0E1117; cursor: pointer; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease;">
             ✏️ Edit Layout
         </button>
+        <button onclick="exportSpartanLayoutCSV()" style="padding: 10px 20px; font-size: 0.95em; background: rgba(16, 185, 129, 0.9); border: 2px solid rgba(16, 185, 129, 0.5); border-radius: 8px; color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); transition: all 0.3s ease;">
+            📥 Export Layout CSV
+        </button>
+        <button onclick="importSpartanLayoutCSV()" style="padding: 10px 20px; font-size: 0.95em; background: rgba(59, 130, 246, 0.9); border: 2px solid rgba(59, 130, 246, 0.5); border-radius: 8px; color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); transition: all 0.3s ease;">
+            📤 Import Layout CSV
+        </button>
+    </div>
+
+    <!-- 🐳 WHALE HUNTER PRO SUMMARY (VISUALLY UPGRADED) -->
+    <div id="whale-hunter-section" style="background: linear-gradient(135deg, rgba(18, 32, 58, 0.95), rgba(13, 27, 42, 0.95));
+                border-top: 3px solid #FFD700;
+                border-bottom: 3px solid #FFD700;
+                padding: 40px 40px;
+                margin: 0;
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.25);">
+        <div style="max-width: 1600px; margin: 0 auto;">
+            <!-- Title -->
+            <div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 2.4em; color: #FFD700; margin-bottom: 0; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);">
+                    📊 COT Hunter Pro <span style="font-size: 0.4em; background: #FFD700; color: #000; padding: 4px 12px; border-radius: 4px; margin-left: 15px; vertical-align: middle;">INSTITUTIONAL</span>
+                </h2>
+                <div class="header-controls" style="display: flex; gap: 15px; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="pulse-dot" style="height: 8px; width: 8px; background-color: #00FF00; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #00FF00;"></span>
+                        <span id="whale-status" style="color: #00FF00; font-family: monospace; font-size: 0.9em;">SYSTEM ACTIVE</span>
+                    </div>
+                    <a href="http://localhost:8501" target="_blank" class="btn-tool" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; font-weight: bold; border: none; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 1em;">
+                        LAUNCH DASHBOARD ↗
+                    </a>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <p style="font-size: 1.2em; color: #ffffff; line-height: 1.6; max-width: 1000px; margin: 0 auto 30px; text-align: center;">
+                <strong>Institutional Flow Detector</strong> — Tracks whale accumulation and distribution patterns across global markets to identify smart money movements <em>before</em> retail catches on.
+            </p>
+
+            <!-- Metrics Grid -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 25px; margin-bottom: 30px; align-items: stretch;">
+                <!-- Metric 1: Markets Scanned -->
+                <div style="background: rgba(255, 215, 0, 0.08); border: 2px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 25px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; min-height: 160px;">
+                    <div style="color: #FFD700; font-size: 0.9em; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Markets Scanned</div>
+                    <div id="whale-total" style="color: #FFF; font-size: 3em; font-weight: 800; text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);">0</div>
+                    <div style="color: #FFD700; font-size: 0.85em; margin-top: 8px;">Global Institutional Flow</div>
+                </div>
+
+                <!-- Metric 2: Bullish Signals -->
+                <div style="background: rgba(0, 255, 0, 0.08); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 12px; padding: 25px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; min-height: 160px;">
+                    <div style="color: #00FF00; font-size: 0.9em; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Bullish Signals</div>
+                    <div id="whale-bullish" style="color: #00FF00; font-size: 3em; font-weight: 800; text-shadow: 0 0 15px rgba(0, 255, 0, 0.3);">0</div>
+                    <div style="color: rgba(0, 255, 0, 0.8); font-size: 0.85em; margin-top: 8px;">Accumulation Detected</div>
+                </div>
+
+                <!-- Metric 3: Bearish Signals -->
+                <div style="background: rgba(255, 75, 75, 0.08); border: 2px solid rgba(255, 75, 75, 0.3); border-radius: 12px; padding: 25px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; min-height: 160px;">
+                    <div style="color: #FF4B4B; font-size: 0.9em; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Bearish Signals</div>
+                    <div id="whale-bearish" style="color: #FF4B4B; font-size: 3em; font-weight: 800; text-shadow: 0 0 15px rgba(255, 75, 75, 0.3);">0</div>
+                    <div style="color: rgba(255, 75, 75, 0.8); font-size: 0.85em; margin-top: 8px;">Distribution Detected</div>
+                </div>
+            </div>
+
+        <!-- Terminal Output -->
+        <div style="margin-top: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="color: #FFD700; font-family: monospace; font-size: 0.9em;">> TOP_SIGNAL_FEED_V1.0</span>
+                <span style="color: #666; font-size: 0.8em;">Last Scan: <span id="whale-timestamp">Just now</span></span>
+            </div>
+            
+            <div class="analysis-box" id="whale-top-signals" style="
+                background: #000; 
+                border: 1px solid #333; 
+                border-radius: 6px; 
+                padding: 0; 
+                max-height: 200px; 
+                overflow-y: auto; 
+                font-family: 'Courier New', monospace;">
+                
+                <!-- Loading State -->
+                <div style="padding: 20px; text-align: center; color: #444;">
+                    <span class="loading-spinner" style="border-top-color: #FFD700;"></span>
+                    <div style="margin-top: 10px;">INITIALIZING FEED...</div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- ⚖️ GLOBAL BAROMETER: AUD/JPY STRATEGIC ANALYSIS -->
+    <div id="global-barometer-section" style="background: linear-gradient(135deg, rgba(10, 22, 40, 0.95), rgba(26, 31, 58, 0.95));
+                border-top: 3px solid #FFD700;
+                border-bottom: 3px solid #FFD700;
+                padding: 40px 40px;
+                margin: 0;
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.25);">
+        <div style="max-width: 1600px; margin: 0 auto;">
+            <!-- Title -->
+            <div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 2.4em; color: #FFD700; margin-bottom: 0; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);">
+                    ⚖️ Global Barometer <span style="font-size: 0.4em; background: #FFD700; color: #000; padding: 4px 12px; border-radius: 4px; margin-left: 15px; vertical-align: middle;">STRATEGIC ALPHA</span>
+                </h2>
+                <div class="header-controls" style="display: flex; gap: 15px; align-items: center;">
+                    <a href="/pages/global_barometer_report.html" class="btn-tool" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; font-weight: bold; border: none; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 1em;">
+                        FULL REPORT ↗
+                    </a>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: stretch;">
+                <!-- Importance Card -->
+                <div class="flashcard" style="background: rgba(255, 215, 0, 0.05); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 30px; height: 100%; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <span style="font-size: 2.5em;">🌟</span>
+                        <h3 style="color: #FFD700; font-size: 1.8em; margin: 0;">Strategic Importance</h3>
+                    </div>
+                    <ul style="color: #ffffff; font-size: 1.1em; line-height: 1.8; padding-left: 20px;">
+                        <li><strong>Premier Risk Proxy:</strong> Acts as the fulcrum of global risk appetite, reacting instantaneously to systemic shifts.</li>
+                        <li><strong>Liquidity Derivative:</strong> Primary vehicle for the multi-trillion-dollar carry trade lubricating international markets.</li>
+                        <li><strong>Growth Barometer:</strong> A leveraged bet on Asian economic growth and the "electrification" commodity supercycle.</li>
+                        <li><strong>Macro Fulcrum:</strong> Represents the ratio of "Global Growth Optimism" to "Systemic Fear."</li>
+                    </ul>
+                </div>
+
+                <!-- Current State Card -->
+                <div class="flashcard" style="background: rgba(255, 75, 75, 0.05); border: 1px solid rgba(255, 75, 75, 0.3); border-radius: 12px; padding: 30px; height: 100%; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <span style="font-size: 2.5em;">📉</span>
+                        <h3 style="color: #FF4B4B; font-size: 1.8em; margin: 0;">Current State (2026)</h3>
+                    </div>
+                    <p style="color: #ffffff; font-size: 1.1em; line-height: 1.6; margin-bottom: 20px;">
+                        <strong>Regime Change:</strong> Transitioning from synchronized tightening to a fragmented policy landscape (Fed Pivot vs. RBA Hawkish Hold vs. BOJ Exit).
+                    </p>
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border-left: 4px solid #FF4B4B;">
+                        <ul style="color: #b0b8c8; font-size: 1em; line-height: 1.6; list-style: none;">
+                            <li><span style="color: #FF4B4B;">⚠️</span> <strong>Correction Risk:</strong> Acute medium-term downside from dismantling of Yen carry trade.</li>
+                            <li><span style="color: #FFD700;">⚡</span> <strong>Yield Compression:</strong> AU-JP spread narrowing as BOJ normalizes.</li>
+                            <li><span style="color: #00ff88;">🔗</span> <strong>Correlation:</strong> 0.89 correlation with Nasdaq; Bitcoin acting as the "canary."</li>
+                        </ul>
+                    </div>
+                    <!-- Strategic Action Matrix -->
+                    <div style="margin-top: 20px; border-top: 1px solid rgba(255, 75, 75, 0.3); padding-top: 15px;">
+                        <div style="color: #b0b8c8; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 10px;">Strategic Sell Matrix</div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.95em;">
+                            <!-- AUD/JPY -->
+                            <div style="background: rgba(255, 75, 75, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(255, 75, 75, 0.2);">
+                                <div style="color: #FF4B4B; font-weight: 700;">AUD/JPY</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">Sell Rallies @ 105-106</div>
+                            </div>
+                            
+                            <!-- Iron Ore -->
+                            <div style="background: rgba(255, 75, 75, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(255, 75, 75, 0.2);">
+                                <div style="color: #FF4B4B; font-weight: 700;">Iron Ore Futures</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">Short Structure ($85 Tgt)</div>
+                            </div>
+
+                            <!-- Nasdaq 100 -->
+                            <div style="background: rgba(255, 75, 75, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(255, 75, 75, 0.2);">
+                                <div style="color: #FF4B4B; font-weight: 700;">Nasdaq 100</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">Hedge/Short on Divergence</div>
+                            </div>
+
+                            <!-- Correlated FX -->
+                            <div style="background: rgba(255, 75, 75, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(255, 75, 75, 0.2);">
+                                <div style="color: #FF4B4B; font-weight: 700;">AUD/USD</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">Sell if China Weakens</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 5-Day Trend Chart -->
+                    <div style="margin-top: 20px; border-top: 1px solid rgba(255, 75, 75, 0.3); padding-top: 15px;">
+                        <div style="color: #b0b8c8; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">5-Day Price Trend</div>
+                        <div style="height: 120px; width: 100%;">
+                            <canvas id="audjpyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swing Trader's Playbook (1-2 Week Horizon) -->
+            <div style="margin-top: 30px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-size: 1.4em; color: #FFD700; margin: 0;">🛠️ Swing Trader's Playbook <span style="font-size: 0.6em; color: #b0b8c8; font-weight: 400;">(1-2 Week Window)</span></h3>
+                    <div style="font-size: 0.8em; color: #00ff88; display: flex; align-items: center; gap: 6px;">
+                        <span class="pulse-dot" style="background-color: #00ff88; width: 6px; height: 6px; border-radius: 50%; display: inline-block;"></span>
+                        LIVE AI ADVICE
+                    </div>
+                </div>
+
+                <div id="ai-advice-container" style="font-family: 'Courier New', monospace; font-size: 0.95em; color: #b0b8c8; line-height: 1.6;">
+                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(255, 75, 75, 0.08); border-left: 3px solid #FF4B4B; border-radius: 4px;">
+                        <strong style="color: #FF4B4B;">CORE THESIS:</strong> "Fade the Exhaustion." Do not chase. Short overextended rallies into resistance.
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <!-- AUD/JPY Strategy -->
+                        <div>
+                            <div style="color: #FFD700; font-weight: 700; margin-bottom: 5px;">1. AUD/JPY: Crown Jewel Short</div>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+                                <li><strong>Action:</strong> Sell Limit Orders @ 105.00 – 105.80</li>
+                                <li><strong>Trigger:</strong> Intra-day spike + H1 candle rejection.</li>
+                                <li><strong>Target:</strong> 102.40 (50-Day MA)</li>
+                                <li><strong>Stop Loss:</strong> Daily Close > 106.10</li>
+                            </ul>
+                        </div>
+
+                        <!-- Iron Ore Strategy -->
+                        <div>
+                            <div style="color: #FFD700; font-weight: 700; margin-bottom: 5px;">2. Iron Ore: "Fade the Rip"</div>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+                                <li><strong>Action:</strong> Short bounces toward $105/t</li>
+                                <li><strong>Why:</strong> "Anti-Involution" caps upside.</li>
+                                <li><strong>Target:</strong> $95/t (Range Support)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Nasdaq Strategy -->
+                        <div>
+                            <div style="color: #FFD700; font-weight: 700; margin-bottom: 5px;">3. Nasdaq 100: Divergence Hedge</div>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+                                <li><strong>Action:</strong> Short if AUD/JPY lags new NQ Highs.</li>
+                                <li><strong>Signal:</strong> Bearish Non-Confirmation.</li>
+                                <li><strong>Target:</strong> 300-500 pt pullback.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #333; font-style: italic; color: #888;">
+                        <span id="ai-dynamic-message">Analyzing market state...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Quote -->
+            <div style="margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.4); border: 1px solid #333; border-radius: 8px; font-family: monospace; color: #FFD700; text-align: center;">
+                > ANALYSIS: "The 'Easy Carry' era is over. AUD/JPY will likely cease to be a passive beneficiary of equity rallies and become a volatility battleground."
+            </div>
+        </div>
+    </div>
+
+    <!-- 🇰🇷 FX STRATEGIC ALPHA: SOUTH KOREAN WON (USD/KRW) -->
+    <div id="usd-krw-section" style="background: linear-gradient(135deg, rgba(10, 22, 40, 0.95), rgba(13, 27, 42, 0.95));
+                border-top: 3px solid #58A6FF;
+                border-bottom: 3px solid #58A6FF;
+                padding: 40px 40px;
+                margin: 0;
+                box-shadow: 0 8px 32px rgba(88, 166, 255, 0.25);">
+        <div style="max-width: 1600px; margin: 0 auto;">
+            <!-- Title -->
+            <div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 2.4em; color: #58A6FF; margin-bottom: 0; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px rgba(88, 166, 255, 0.5);">
+                    🇰🇷 Industrial Barometer <span style="font-size: 0.4em; background: #58A6FF; color: #000; padding: 4px 12px; border-radius: 4px; margin-left: 15px; vertical-align: middle;">FX STRATEGIC ALPHA</span>
+                </h2>
+                <div class="header-controls" style="display: flex; gap: 15px; align-items: center;">
+                    <a href="/pages/usd_krw_report.html" class="btn-tool" style="background: linear-gradient(135deg, #58A6FF, #1f6feb); color: #fff; font-weight: bold; border: none; box-shadow: 0 4px 15px rgba(88, 166, 255, 0.4); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 1em;">
+                        FULL REPORT ↗
+                    </a>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: stretch;">
+                <!-- Importance Card -->
+                <div class="flashcard" style="background: rgba(88, 166, 255, 0.05); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 30px; height: 100%; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <span style="font-size: 2.5em;">🏗️</span>
+                        <h3 style="color: #58A6FF; font-size: 1.8em; margin: 0;">Industrial Canary</h3>
+                    </div>
+                    <ul style="color: #ffffff; font-size: 1.1em; line-height: 1.8; padding-left: 20px;">
+                        <li><strong>The Global Canary:</strong> Premier barometer for the global industrial cycle and manufacturing health.</li>
+                        <li><strong>High-Beta Tech Proxy:</strong> Exaggerated correlation with Nasdaq 100 and semiconductor (SOX) cycles.</li>
+                        <li><strong>"Korea Inc" Proxy:</strong> Reflects the health of global inputs (Semis, Steel, Petrochemicals, Ships).</li>
+                        <li><strong>WGBI Liquidity Event:</strong> Imminent $60B structural inflow commencing April 2026.</li>
+                    </ul>
+                </div>
+
+                <!-- Strategic State Card -->
+                <div class="flashcard" style="background: rgba(0, 255, 136, 0.05); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 30px; height: 100%; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <span style="font-size: 2.5em;">🚀</span>
+                        <h3 style="color: #00ff88; font-size: 1.8em; margin: 0;">Tactical Window (2026)</h3>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border-left: 4px solid #00ff88;">
+                        <div style="color: #b0b8c8; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 10px;">Tactical BUY Matrix (KRW)</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.95em;">
+                            <!-- USD/KRW -->
+                            <div style="background: rgba(0, 255, 136, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                                <div style="color: #00ff88; font-weight: 700;">USD/KRW</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">Short USD @ 1,450+</div>
+                            </div>
+                            <!-- KTBs -->
+                            <div style="background: rgba(0, 255, 136, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                                <div style="color: #00ff88; font-weight: 700;">KTB Bonds</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">Front-run WGBI Apr-Nov</div>
+                            </div>
+                            <!-- Samsung -->
+                            <div style="background: rgba(0, 255, 136, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                                <div style="color: #00ff88; font-weight: 700;">Samsung Electronics</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">AI Export Boom Play</div>
+                            </div>
+                            <!-- SK Hynix -->
+                            <div style="background: rgba(0, 255, 136, 0.1); padding: 8px; border-radius: 4px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                                <div style="color: #00ff88; font-weight: 700;">SK Hynix</div>
+                                <div style="color: #ffffff; font-size: 0.85em;">HBM Monopoly Beta</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="color: #ffffff; font-size: 1.1em; line-height: 1.6; margin-top: 20px;">
+                        <strong>Short-Term Thesis:</strong> Tactical KRW appreciation toward 1,350 as capital inflows overpower structural decay.
+                    </p>
+                    
+                    <!-- 5-Day Trend Chart -->
+                    <div style="margin-top: 20px; border-top: 1px solid rgba(0, 255, 136, 0.3); padding-top: 15px;">
+                        <div style="color: #b0b8c8; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">5-Day Price Trend</div>
+                        <div style="height: 120px; width: 100%;">
+                            <canvas id="usdkrwChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swing Trader's Playbook (1-2 Week Horizon) -->
+            <div style="margin-top: 30px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="font-size: 1.4em; color: #58A6FF; margin: 0;">🛠️ KRW Swing Playbook <span style="font-size: 0.6em; color: #b0b8c8; font-weight: 400;">(1-2 Week Window)</span></h3>
+                    <div style="font-size: 0.8em; color: #00ff88; display: flex; align-items: center; gap: 6px;">
+                        <span class="pulse-dot" style="background-color: #00ff88; width: 6px; height: 6px; border-radius: 50%; display: inline-block;"></span>
+                        LIVE AI ADVICE
+                    </div>
+                </div>
+
+                <div id="krw-ai-advice-container" style="font-family: 'Courier New', monospace; font-size: 0.95em; color: #b0b8c8; line-height: 1.6;">
+                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(0, 255, 136, 0.08); border-left: 3px solid #00ff88; border-radius: 4px;">
+                        <strong style="color: #00ff88;">CORE THESIS:</strong> "The Liquidity Squeeze." WGBI anticipation creates a structural bid. Sell USD/KRW on strength.
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <!-- USD/KRW Strategy -->
+                        <div>
+                            <div style="color: #58A6FF; font-weight: 700; margin-bottom: 5px;">1. USD/KRW: Short Tactical</div>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+                                <li><strong>Action:</strong> Sell USD/KRW @ 1,450 - 1,460</li>
+                                <li><strong>Why:</strong> Overextended USD vs front-running WGBI flows.</li>
+                                <li><strong>Target:</strong> 1,410 (Short-term support)</li>
+                                <li><strong>Stop Loss:</strong> 1,475 (Blowout zone)</li>
+                            </ul>
+                        </div>
+
+                        <!-- KOSPI Strategy -->
+                        <div>
+                            <div style="color: #58A6FF; font-weight: 700; margin-bottom: 5px;">2. KOSPI 200: Value Bounce</div>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+                                <li><strong>Action:</strong> Long on dips to 320 area.</li>
+                                <li><strong>Why:</strong> Catching the "Indian Summer" AI rally.</li>
+                                <li><strong>Target:</strong> 345 (Cycle High)</li>
+                            </ul>
+                        </div>
+
+                        <!-- SOX Correlation -->
+                        <div>
+                            <div style="color: #58A6FF; font-weight: 700; margin-bottom: 5px;">3. SOX Hedge: Chip Symmetry</div>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+                                <li><strong>Action:</strong> Long KRW if SOX > 5,500.</li>
+                                <li><strong>Signal:</strong> Semiconductor breakout leads Won.</li>
+                                <li><strong>Target:</strong> 3% currency appreciation.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #333; font-style: italic; color: #888;">
+                        <span id="krw-ai-dynamic-message">Monitoring trade data releases...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Quote -->
+            <div style="margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.4); border: 1px solid #333; border-radius: 8px; font-family: monospace; color: #58A6FF; text-align: center;">
+                > ANALYSIS: "Trade the 2026-27 tactical window for KRW strength, but aggressively hedge the structural 2028-30 demographic cliff."
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧠 LIVE AI ADVICE: GLOBAL INFLATION DYNAMICS -->
+    <div id="live-ai-advice-section" style="background: linear-gradient(135deg, rgba(15, 25, 35, 0.98), rgba(10, 18, 28, 0.98));
+                border-top: 3px solid #FFD700;
+                border-bottom: 3px solid #FFD700;
+                padding: 40px 40px;
+                margin: 0;
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.25);">
+        <div style="max-width: 1600px; margin: 0 auto;">
+            <!-- Title -->
+            <div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="font-size: 2.4em; color: #FFD700; margin-bottom: 0; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);">
+                    🧠 Live AI Advice <span style="font-size: 0.4em; background: #FFD700; color: #000; padding: 4px 12px; border-radius: 4px; margin-left: 15px; vertical-align: middle;">2026 STRATEGIC OUTLOOK</span>
+                </h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="pulse-dot" style="background-color: #FFD700; width: 8px; height: 8px; border-radius: 50%; display: inline-block; animation: pulse 2s infinite;"></span>
+                    <span style="color: #FFD700; font-size: 0.9em; font-weight: 600;">INTELLIGENCE ACTIVE</span>
+                </div>
+            </div>
+
+            <!-- Executive Summary Card -->
+            <div style="background: rgba(255, 215, 0, 0.08); border: 2px solid rgba(255, 215, 0, 0.4); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <span style="font-size: 2em;">🌐</span>
+                    <h3 style="color: #FFD700; font-size: 1.6em; margin: 0;">The Era of Asynchronous Adjustment</h3>
+                </div>
+                <p style="color: #ffffff; font-size: 1.1em; line-height: 1.8; margin: 0;">
+                    As the global economy crosses the threshold into January 2026, the synchronized inflationary shock that defined the post-pandemic years has dissolved into a fragmented, asynchronous landscape. We have entered the <strong style="color: #FFD700;">"Great Divergence"</strong> — a period characterized by sharply contrasting monetary policy cycles, idiosyncratic inflation drivers, and a widening chasm between macroeconomic aggregate data and the lived financial experience of the common citizen.
+                </p>
+            </div>
+
+            <!-- AI Advice Charts Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px; margin-bottom: 30px;">
+                <!-- Global CPI Comparison Chart -->
+                <div style="background: rgba(255, 215, 0, 0.05); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #FFD700; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center; gap: 10px;">
+                        📊 Global CPI Comparison (Jan 2026)
+                    </h4>
+                    <div style="height: 280px; position: relative;">
+                        <canvas id="aiAdviceCpiChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Central Bank Rates Chart -->
+                <div style="background: rgba(255, 215, 0, 0.05); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #FFD700; margin: 0 0 15px 0; font-size: 1.1em; display: flex; align-items: center; gap: 10px;">
+                        🏦 Central Bank Policy Rates
+                    </h4>
+                    <div style="height: 280px; position: relative;">
+                        <canvas id="aiAdviceRatesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Regional Status Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <!-- US Card -->
+                <div class="flashcard" style="background: rgba(255, 75, 75, 0.08); border: 1px solid rgba(255, 75, 75, 0.4); border-radius: 12px; padding: 20px; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="font-size: 1.8em;">🇺🇸</span>
+                        <h4 style="color: #FF6B6B; font-size: 1.3em; margin: 0;">United States</h4>
+                        <span style="background: rgba(255, 75, 75, 0.3); color: #FF6B6B; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin-left: auto;">STICKY</span>
+                    </div>
+                    <div style="color: #b0b8c8; font-size: 0.95em; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>CPI (Nov 2025):</span><strong style="color: #FF6B6B;">2.7%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Core CPI:</span><strong style="color: #FF6B6B;">2.6%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Fed Rate:</span><strong style="color: #ffffff;">3.50-3.75%</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span>GDP Forecast:</span><strong style="color: #00ff88;">2.6%</strong></div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 75, 75, 0.3); font-size: 0.85em; color: #888;"><strong>Key Risk:</strong> "No Landing" / Inflation Reignites</div>
+                </div>
+
+                <!-- Eurozone Card -->
+                <div class="flashcard" style="background: rgba(88, 166, 255, 0.08); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 12px; padding: 20px; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="font-size: 1.8em;">🇪🇺</span>
+                        <h4 style="color: #58A6FF; font-size: 1.3em; margin: 0;">Eurozone</h4>
+                        <span style="background: rgba(88, 166, 255, 0.3); color: #58A6FF; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin-left: auto;">AT TARGET</span>
+                    </div>
+                    <div style="color: #b0b8c8; font-size: 0.95em; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>HICP (Dec 2025):</span><strong style="color: #00ff88;">2.0%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Core HICP:</span><strong style="color: #FFD700;">2.3%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>ECB Status:</span><strong style="color: #ffffff;">ON HOLD</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span>GDP Forecast:</span><strong style="color: #FF6B6B;">1.3%</strong></div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(88, 166, 255, 0.3); font-size: 0.85em; color: #888;"><strong>Key Risk:</strong> German Recession / Fragmentation</div>
+                </div>
+
+                <!-- China Card -->
+                <div class="flashcard" style="background: rgba(255, 136, 0, 0.08); border: 1px solid rgba(255, 136, 0, 0.4); border-radius: 12px; padding: 20px; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="font-size: 1.8em;">🇨🇳</span>
+                        <h4 style="color: #FF8800; font-size: 1.3em; margin: 0;">China</h4>
+                        <span style="background: rgba(255, 136, 0, 0.3); color: #FF8800; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin-left: auto;">DEFLATIONARY</span>
+                    </div>
+                    <div style="color: #b0b8c8; font-size: 0.95em; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>CPI (Dec 2025):</span><strong style="color: #FFD700;">0.8%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Youth Unemp:</span><strong style="color: #FF6B6B;">18.9%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>PBOC Stance:</span><strong style="color: #00ff88;">EASING</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span>GDP Forecast:</span><strong style="color: #FFD700;">4.6%</strong></div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 136, 0, 0.3); font-size: 0.85em; color: #888;"><strong>Key Risk:</strong> Debt Deflation Spiral</div>
+                </div>
+
+                <!-- Japan Card -->
+                <div class="flashcard" style="background: rgba(188, 19, 254, 0.08); border: 1px solid rgba(188, 19, 254, 0.4); border-radius: 12px; padding: 20px; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="font-size: 1.8em;">🇯🇵</span>
+                        <h4 style="color: #bc13fe; font-size: 1.3em; margin: 0;">Japan</h4>
+                        <span style="background: rgba(188, 19, 254, 0.3); color: #bc13fe; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin-left: auto;">NORMALIZING</span>
+                    </div>
+                    <div style="color: #b0b8c8; font-size: 0.95em; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Core CPI:</span><strong style="color: #FFD700;">2.5%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Real Wages:</span><strong style="color: #FF6B6B;">-2.8%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>BOJ Rate:</span><strong style="color: #ffffff;">0.75%</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span>GDP Forecast:</span><strong style="color: #FFD700;">1.0%</strong></div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(188, 19, 254, 0.3); font-size: 0.85em; color: #888;"><strong>Key Risk:</strong> Rapid Yen Appreciation / Bond Volatility</div>
+                </div>
+
+                <!-- India Card -->
+                <div class="flashcard" style="background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.4); border-radius: 12px; padding: 20px; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="font-size: 1.8em;">🇮🇳</span>
+                        <h4 style="color: #00ff88; font-size: 1.3em; margin: 0;">India</h4>
+                        <span style="background: rgba(0, 255, 136, 0.3); color: #00ff88; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin-left: auto;">GOLDILOCKS</span>
+                    </div>
+                    <div style="color: #b0b8c8; font-size: 0.95em; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>CPI (Nov 2025):</span><strong style="color: #00ff88;">0.71%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Food CPI:</span><strong style="color: #00ff88;">-5.02%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>RBI Repo:</span><strong style="color: #ffffff;">5.25%</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span>GDP Forecast:</span><strong style="color: #00ff88;">6.6-7.0%</strong></div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0, 255, 136, 0.3); font-size: 0.85em; color: #888;"><strong>Key Risk:</strong> Food Supply Shock / Climate Events</div>
+                </div>
+
+                <!-- UK Card -->
+                <div class="flashcard" style="background: rgba(255, 215, 0, 0.08); border: 1px solid rgba(255, 215, 0, 0.4); border-radius: 12px; padding: 20px; cursor: default;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="font-size: 1.8em;">🇬🇧</span>
+                        <h4 style="color: #FFD700; font-size: 1.3em; margin: 0;">United Kingdom</h4>
+                        <span style="background: rgba(255, 215, 0, 0.3); color: #FFD700; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin-left: auto;">STAGFLATION</span>
+                    </div>
+                    <div style="color: #b0b8c8; font-size: 0.95em; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>CPI (Late 2025):</span><strong style="color: #FF6B6B;">3.2-3.5%</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Services CPI:</span><strong style="color: #FF6B6B;">HIGH</strong></div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>BoE Rate:</span><strong style="color: #ffffff;">3.75%</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span>GDP Forecast:</span><strong style="color: #FF6B6B;">0.8-1.4%</strong></div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 215, 0, 0.3); font-size: 0.85em; color: #888;"><strong>Key Risk:</strong> Stagflation / Fiscal Drag</div>
+                </div>
+            </div>
+
+            <!-- CPI Mechanics Section -->
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer;" onclick="toggleAIAdviceSection('cpi-mechanics-content')">
+                    <h3 style="font-size: 1.4em; color: #FFD700; margin: 0;">📊 CPI Mechanics: Deconstructing the Measurement</h3>
+                    <span style="color: #FFD700; font-size: 1.2em;" id="cpi-mechanics-toggle">▼</span>
+                </div>
+                <div id="cpi-mechanics-content" style="display: block;">
+                    <div style="overflow-x: auto; margin-bottom: 20px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+                            <thead>
+                                <tr style="background: rgba(255, 215, 0, 0.15); border-bottom: 2px solid #FFD700;">
+                                    <th style="padding: 12px; text-align: left; color: #FFD700;">Metric</th>
+                                    <th style="padding: 12px; text-align: left; color: #FFD700;">Definition</th>
+                                    <th style="padding: 12px; text-align: left; color: #FFD700;">Primary Utility</th>
+                                    <th style="padding: 12px; text-align: left; color: #FFD700;">Current Status (Jan 2026)</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color: #b0b8c8;">
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);"><td style="padding: 10px;"><strong style="color: #fff;">Headline CPI</strong></td><td style="padding: 10px;">All items in the basket</td><td style="padding: 10px;">Cost of Living proxy</td><td style="padding: 10px;"><span style="color: #00ff88;">Suppressed by energy/goods deflation</span></td></tr>
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);"><td style="padding: 10px;"><strong style="color: #fff;">Core CPI</strong></td><td style="padding: 10px;">Excludes Food & Energy</td><td style="padding: 10px;">Monetary Policy signal</td><td style="padding: 10px;"><span style="color: #FF6B6B;">Elevated in US/UK; Moderating in EU</span></td></tr>
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);"><td style="padding: 10px;"><strong style="color: #fff;">Supercore</strong></td><td style="padding: 10px;">Services ex-Housing</td><td style="padding: 10px;">Wage pressure proxy</td><td style="padding: 10px;"><span style="color: #FF6B6B;">Sticky/High globally</span></td></tr>
+                                <tr><td style="padding: 10px;"><strong style="color: #fff;">PCE (US)</strong></td><td style="padding: 10px;">Chain-weighted consumption</td><td style="padding: 10px;">Fed's preferred target</td><td style="padding: 10px;"><span style="color: #FFD700;">Runs lower than CPI; slowly converging</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div style="background: rgba(255, 75, 75, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid #FF6B6B;">
+                            <h4 style="color: #FF6B6B; margin: 0 0 8px 0; font-size: 1em;">🏠 US Housing Lag (OER)</h4>
+                            <p style="color: #b0b8c8; margin: 0; font-size: 0.85em; line-height: 1.5;">US CPI is 34% weighted to shelter via Owner's Equivalent Rent (OER). Changes in market rents take 6-12 months to filter through, keeping inflation elevated.</p>
+                        </div>
+                        <div style="background: rgba(88, 166, 255, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid #58A6FF;">
+                            <h4 style="color: #58A6FF; margin: 0 0 8px 0; font-size: 1em;">🇪🇺 Eurozone HICP Gap</h4>
+                            <p style="color: #b0b8c8; margin: 0; font-size: 0.85em; line-height: 1.5;">The HICP excludes owner-occupied housing costs entirely, making it sensitive to goods prices but blind to property asset inflation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- US Tariff Shock Section -->
+            <div style="background: rgba(255, 75, 75, 0.08); border: 1px solid rgba(255, 75, 75, 0.3); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer;" onclick="toggleAIAdviceSection('us-tariff-content')">
+                    <h3 style="font-size: 1.4em; color: #FF6B6B; margin: 0;">🇺🇸 The Tariff Shock: Structural US Inflation</h3>
+                    <span style="color: #FF6B6B; font-size: 1.2em;" id="us-tariff-toggle">▼</span>
+                </div>
+                <div id="us-tariff-content" style="display: block;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <span style="font-size: 3em; color: #FF6B6B;">18.6%</span>
+                            <div style="color: #b0b8c8; font-size: 0.9em;">Effective US Tariff Rate — Highest Since Smoot-Hawley (1930s)</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
+                            <div style="text-align: center; padding: 15px; background: rgba(255, 75, 75, 0.15); border-radius: 8px;"><div style="color: #FF6B6B; font-size: 1.8em; font-weight: bold;">97%+</div><div style="color: #b0b8c8; font-size: 0.8em;">US Footwear Imported</div></div>
+                            <div style="text-align: center; padding: 15px; background: rgba(255, 75, 75, 0.15); border-radius: 8px;"><div style="color: #FF6B6B; font-size: 1.8em; font-weight: bold;">60%+</div><div style="color: #b0b8c8; font-size: 0.8em;">Appliances Imported</div></div>
+                            <div style="text-align: center; padding: 15px; background: rgba(255, 75, 75, 0.15); border-radius: 8px;"><div style="color: #FF6B6B; font-size: 1.8em; font-weight: bold;">50%+</div><div style="color: #b0b8c8; font-size: 0.8em;">Furniture Imported</div></div>
+                        </div>
+                    </div>
+                    <p style="color: #ffffff; line-height: 1.7; margin-bottom: 15px;"><strong style="color: #FF6B6B;">The Inflationary Floor:</strong> This tariff regime has established a "floor" for US inflation. The days of "lowflation" — where cheap imported goods kept CPI suppressed — are over. Inflation cannot settle comfortably below <strong>2.5%</strong>.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;"><div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">Used Autos</div><div style="color: #FF6B6B; font-size: 1.4em;">+4.8%</div></div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;"><div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">Medical Services</div><div style="color: #FF6B6B; font-size: 1.4em;">+4.3%</div></div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;"><div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">Housing</div><div style="color: #FF6B6B; font-size: 1.4em;">+3.7%</div></div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;"><div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">Real Wages</div><div style="color: #00ff88; font-size: 1.4em;">+0.8%</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commodities Section -->
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer;" onclick="toggleAIAdviceSection('commodities-content')">
+                    <h3 style="font-size: 1.4em; color: #00ff88; margin: 0;">🛢️ Commodities & Supply Chains</h3>
+                    <span style="color: #00ff88; font-size: 1.2em;" id="commodities-toggle">▼</span>
+                </div>
+                <div id="commodities-content" style="display: block;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div style="background: rgba(0, 255, 136, 0.08); padding: 20px; border-radius: 8px; border: 1px solid rgba(0, 255, 136, 0.3);">
+                            <h4 style="color: #00ff88; margin: 0 0 15px 0;">⛽ Energy: Supply Glut</h4>
+                            <div style="text-align: center; margin-bottom: 15px;"><span style="font-size: 2.5em; color: #00ff88;">$55/bbl</span><div style="color: #b0b8c8; font-size: 0.85em;">Brent Crude Forecast Q1 2026</div></div>
+                            <p style="color: #b0b8c8; font-size: 0.9em; line-height: 1.6; margin: 0;">Non-OPEC production (US shale, Brazil, Guyana) has surged. Demand weakening due to China's deceleration and EV adoption.</p>
+                        </div>
+                        <div style="background: rgba(255, 136, 0, 0.08); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 136, 0, 0.3);">
+                            <h4 style="color: #FF8800; margin: 0 0 15px 0;">🌾 Food: Climate Premium</h4>
+                            <div style="text-align: center; margin-bottom: 15px;"><span style="font-size: 2.5em; color: #FF8800;">+3.2%</span><div style="color: #b0b8c8; font-size: 0.85em;">Potential Food Inflation by 2035</div></div>
+                            <p style="color: #b0b8c8; font-size: 0.9em; line-height: 1.6; margin: 0;">"Climateflation" driving supply shocks for olive oil, cocoa, coffee. FAO Index at 124.3 (Dec 2025).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Human Cost Section -->
+            <div style="background: rgba(188, 19, 254, 0.08); border: 1px solid rgba(188, 19, 254, 0.3); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer;" onclick="toggleAIAdviceSection('human-cost-content')">
+                    <h3 style="font-size: 1.4em; color: #bc13fe; margin: 0;">👥 The Human Cost: K-Shaped Recovery</h3>
+                    <span style="color: #bc13fe; font-size: 1.2em;" id="human-cost-toggle">▼</span>
+                </div>
+                <div id="human-cost-content" style="display: block;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <p style="color: #ffffff; font-size: 1.1em; line-height: 1.7; margin: 0;">Even if inflation falls to 2%, <strong style="color: #bc13fe;">prices do not go back down</strong>. They remain <strong>20-30% higher</strong> than 2021. Consumer sentiment (UMich: <strong style="color: #FF6B6B;">54.0</strong>) sits at recessionary levels despite non-recessionary GDP — driven by <strong>"Inflation Fatigue"</strong>.</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="background: rgba(0, 255, 136, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid #00ff88;">
+                            <h4 style="color: #00ff88; margin: 0 0 10px 0;">📈 Asset Owners</h4>
+                            <ul style="color: #b0b8c8; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.6;"><li>Equity markets resilient</li><li>Housing values held up</li><li>High interest income</li><li>Robust luxury consumption</li></ul>
+                        </div>
+                        <div style="background: rgba(255, 75, 75, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid #FF6B6B;">
+                            <h4 style="color: #FF6B6B; margin: 0 0 10px 0;">📉 Wage Earners</h4>
+                            <ul style="color: #b0b8c8; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.6;"><li>Permanent price level shock</li><li>Rising rent & debt service</li><li>BNPL for groceries (distress)</li><li>Real wage erosion UK/Japan</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Implications -->
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer;" onclick="toggleAIAdviceSection('market-impl-content')">
+                    <h3 style="font-size: 1.4em; color: #58A6FF; margin: 0;">💼 Market Implications & Asset Allocation</h3>
+                    <span style="color: #58A6FF; font-size: 1.2em;" id="market-impl-toggle">▼</span>
+                </div>
+                <div id="market-impl-content" style="display: block;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div style="background: rgba(0, 255, 136, 0.08); padding: 20px; border-radius: 8px; border: 1px solid rgba(0, 255, 136, 0.3);">
+                            <h4 style="color: #00ff88; margin: 0 0 15px 0;">📊 Equities</h4>
+                            <ul style="color: #b0b8c8; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.7;"><li><strong style="color: #fff;">US Overweight:</strong> 2.6% GDP, AI productivity</li><li><strong style="color: #fff;">EM Value:</strong> India favored; LatAm early cuts</li><li><strong style="color: #fff;">AI Deflationary:</strong> 55% labor cost savings</li></ul>
+                        </div>
+                        <div style="background: rgba(88, 166, 255, 0.08); padding: 20px; border-radius: 8px; border: 1px solid rgba(88, 166, 255, 0.3);">
+                            <h4 style="color: #58A6FF; margin: 0 0 15px 0;">🏦 Fixed Income</h4>
+                            <ul style="color: #b0b8c8; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.7;"><li><strong style="color: #fff;">US 10Y:</strong> ~4.3% real returns</li><li><strong style="color: #fff;">Bunds:</strong> ~2.8% wide spread</li><li><strong style="color: #fff;">Strategy:</strong> Ladder before 2027 cuts</li></ul>
+                        </div>
+                        <div style="background: rgba(255, 215, 0, 0.08); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                            <h4 style="color: #FFD700; margin: 0 0 15px 0;">💱 Currencies</h4>
+                            <ul style="color: #b0b8c8; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.7;"><li><strong style="color: #fff;">USD:</strong> Resilient yield + safe haven</li><li><strong style="color: #fff;">JPY Risk:</strong> BOJ unwind carry trade</li><li><strong style="color: #fff;">EUR:</strong> Tethered to Fed policy</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conclusion -->
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05)); border: 2px solid #FFD700; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
+                <h3 style="color: #FFD700; font-size: 1.6em; margin: 0 0 20px 0; text-align: center;">⚖️ The Fragile Equilibrium</h3>
+                <p style="color: #ffffff; font-size: 1.1em; line-height: 1.8; text-align: center; margin: 0 0 20px 0;">The world has landed in a new reality defined by:</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; text-align: center;"><div style="font-size: 2em; margin-bottom: 10px;">🏗️</div><div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">Structural Inflation</div><div style="color: #b0b8c8; font-size: 0.9em;">Floor from tariffs, demographics, climate</div></div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; text-align: center;"><div style="font-size: 2em; margin-bottom: 10px;">🔀</div><div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">Structural Divergence</div><div style="color: #b0b8c8; font-size: 0.9em;">US, EU, China separate cycles</div></div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; text-align: center;"><div style="font-size: 2em; margin-bottom: 10px;">📊</div><div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">Structural Inequality</div><div style="color: #b0b8c8; font-size: 0.9em;">Asset owners vs wage earners</div></div>
+                </div>
+            </div>
+
+            <!-- Terminal Quote -->
+            <div style="margin-top: 20px; padding: 20px; background: rgba(0,0,0,0.4); border: 1px solid #333; border-radius: 8px; font-family: monospace; color: #FFD700; text-align: center;">
+                > STRATEGIC INSIGHT: "The acute phase of the post-pandemic inflation crisis is over, but adaptation is now permanent. Navigate the gaps between divergent paths — betting on Indian growth vs Chinese stagnation, US productivity vs European malaise."
+            </div>
+        </div>
     </div>
 
     <!-- 🎯 STEALTH MACRO INDICATOR -->
@@ -1138,12 +1860,12 @@
     </div>
 
     <!-- 🏆 BEST COMPOSITE INDICATOR HIGHLIGHT -->
-    <div style="background: linear-gradient(135deg, rgba(139, 0, 0, 0.15), rgba(178, 34, 34, 0.1));
-                border-top: 3px solid #8B0000;
-                border-bottom: 3px solid #8B0000;
+    <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(218, 165, 32, 0.1));
+                border-top: 3px solid #FFD700;
+                border-bottom: 3px solid #FFD700;
                 padding: 30px 40px;
                 margin: 0;
-                box-shadow: 0 8px 32px rgba(139, 0, 0, 0.3);">
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);">
         <div style="max-width: 1600px; margin: 0 auto;">
             <!-- Title -->
             <div style="text-align: center; margin-bottom: 25px;">
@@ -1216,7 +1938,7 @@
             <div style="margin-top: 25px;
                         text-align: center;
                         padding: 25px;
-                        background: linear-gradient(135deg, rgba(139, 0, 0, 0.2), rgba(178, 34, 34, 0.15));
+                        background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(218, 165, 32, 0.15));
                         border-radius: 10px;
                         border: 2px solid rgba(255, 215, 0, 0.4);
                         box-shadow: 0 6px 20px rgba(255, 215, 0, 0.25);">
@@ -1281,9 +2003,15 @@
                             border-radius: 10px;
                             padding: 20px;
                             box-shadow: 0 4px 15px rgba(247, 147, 26, 0.2);">
-                    <div style="font-size: 1.8em; margin-bottom: 10px;">₿</div>
-                    <h3 style="color: #F7931A; font-size: 1.3em; margin-bottom: 10px; font-weight: 700;">
-                        Bitcoin <span id="crypto-btc-arrow" style="font-size: 1.2em;">⟳</span>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="font-size: 1.8em;">₿</div>
+                        <div style="text-align: right;">
+                            <div id="crypto-btc-price" style="font-size: 1.4em; font-weight: 700; color: #F7931A;">--</div>
+                            <div id="crypto-btc-change" style="font-size: 0.85em; color: #b0b8c8;">--</div>
+                        </div>
+                    </div>
+                    <h3 style="color: #F7931A; font-size: 1.3em; margin-bottom: 10px; margin-top: 10px; font-weight: 700;">
+                        Bitcoin <span id="crypto-btc-arrow" style="font-size: 1.2em; color: #b0b8c8;" title="Loading...">↔</span>
                     </h3>
                     <p style="color: #b0b8c8; font-size: 0.95em; line-height: 1.5;">
                         <strong>Crypto Market Leader</strong><br>
@@ -1298,9 +2026,15 @@
                             border-radius: 10px;
                             padding: 20px;
                             box-shadow: 0 4px 15px rgba(98, 126, 234, 0.2);">
-                    <div style="font-size: 1.8em; margin-bottom: 10px;">⟠</div>
-                    <h3 style="color: #627EEA; font-size: 1.3em; margin-bottom: 10px; font-weight: 700;">
-                        Ethereum <span id="crypto-eth-arrow" style="font-size: 1.2em;">⟳</span>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="font-size: 1.8em;">⟠</div>
+                        <div style="text-align: right;">
+                            <div id="crypto-eth-price" style="font-size: 1.4em; font-weight: 700; color: #627EEA;">--</div>
+                            <div id="crypto-eth-change" style="font-size: 0.85em; color: #b0b8c8;">--</div>
+                        </div>
+                    </div>
+                    <h3 style="color: #627EEA; font-size: 1.3em; margin-bottom: 10px; margin-top: 10px; font-weight: 700;">
+                        Ethereum <span id="crypto-eth-arrow" style="font-size: 1.2em; color: #b0b8c8;" title="Loading...">↔</span>
                     </h3>
                     <p style="color: #b0b8c8; font-size: 0.95em; line-height: 1.5;">
                         <strong>Smart Contract Platform Health</strong><br>
@@ -1315,9 +2049,15 @@
                             border-radius: 10px;
                             padding: 20px;
                             box-shadow: 0 4px 15px rgba(20, 241, 149, 0.2);">
-                    <div style="font-size: 1.8em; margin-bottom: 10px;">◎</div>
-                    <h3 style="color: #14F195; font-size: 1.3em; margin-bottom: 10px; font-weight: 700;">
-                        Solana <span id="crypto-sol-arrow" style="font-size: 1.2em;">⟳</span>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="font-size: 1.8em;">◎</div>
+                        <div style="text-align: right;">
+                            <div id="crypto-sol-price" style="font-size: 1.4em; font-weight: 700; color: #14F195;">--</div>
+                            <div id="crypto-sol-change" style="font-size: 0.85em; color: #b0b8c8;">--</div>
+                        </div>
+                    </div>
+                    <h3 style="color: #14F195; font-size: 1.3em; margin-bottom: 10px; margin-top: 10px; font-weight: 700;">
+                        Solana <span id="crypto-sol-arrow" style="font-size: 1.2em; color: #b0b8c8;" title="Loading...">↔</span>
                     </h3>
                     <p style="color: #b0b8c8; font-size: 0.95em; line-height: 1.5;">
                         <strong>High-Beta Altcoin Sentiment</strong><br>
@@ -1373,7 +2113,7 @@
     </div>
 
     <!-- Probabilistic Recession Model Section -->
-    <div style="background: linear-gradient(135deg, rgba(139, 0, 0, 0.3), rgba(0, 0, 0, 0.95));
+    <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(0, 0, 0, 0.95));
                 padding: 50px 20px;
                 margin-top: 0;">
         <div style="max-width: 1200px; margin: 0 auto;">
@@ -1445,7 +2185,7 @@
             <div style="margin-top: 25px;
                         text-align: center;
                         padding: 25px;
-                        background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(139, 0, 0, 0.15));
+                        background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(218, 165, 32, 0.15));
                         border-radius: 10px;
                         border: 2px solid rgba(220, 20, 60, 0.4);
                         box-shadow: 0 6px 20px rgba(220, 20, 60, 0.25);">
@@ -1528,7 +2268,7 @@
                         <p style="color: var(--text-secondary); line-height: 1.8;">
                             <strong>Equity Futures</strong> remain strong, correlating with the risk-on sentiment, but <strong>Bonds</strong> are suffering as yields creep higher, signaling investors expect rates to stay elevated.
                         </p>
-                        <div style="background: rgba(139, 0, 0, 0.2); padding: 20px; border-radius: 8px; border: 1px solid rgba(139, 0, 0, 0.3); margin-top: 20px;">
+                        <div style="background: rgba(255, 215, 0, 0.2); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3); margin-top: 20px;">
                             <h4 style="color: var(--primary-color); font-weight: 700; margin-bottom: 5px;">Key Takeaway</h4>
                             <p style="font-size: 0.9em; color: var(--text-secondary);">Commodities are decoupling. Industrial metals are waiting for manufacturing data, while precious metals join the liquidity rally.</p>
                         </div>
@@ -1679,7 +2419,7 @@
             </div>
 
             <!-- Navigation Flashcard: Highlights -->
-            <div class="flashcard" data-id="nav-highlights" data-category="navigation" data-connections="nav-capital-flow,nav-tools,nav-elite-strategies,nav-daily-planet,nav-breakthrough,nav-daily-dose" onclick="window.location.href='highlights.html'" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.4); background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(211, 47, 47, 0.05));">
+            <div class="flashcard" data-id="nav-highlights" data-category="navigation" data-connections="nav-capital-flow,nav-tools,nav-elite-strategies,nav-daily-planet,nav-breakthrough,nav-daily-dose" onclick="window.location.href="/pages/highlights.html"" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.4); background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(211, 47, 47, 0.05));">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">⭐</span>
                     <h3 class="flashcard-title" style="color: #FFD700; font-size: 1.5em;">Highlights</h3>
@@ -1695,7 +2435,7 @@
             </div>
 
             <!-- Navigation Flashcard: Global Capital Flow -->
-            <div class="flashcard" data-id="nav-capital-flow" data-category="navigation" data-connections="nav-highlights,nav-gauges,nav-barometers,nav-market-intelligence,nav-historical,nav-tools" onclick="window.location.href='global_capital_flow_swing_trading.html'" style="cursor: pointer; border: 2px solid rgba(220, 20, 60, 0.6); background: linear-gradient(135deg, rgba(220, 20, 60, 0.08), rgba(139, 0, 0, 0.12)); box-shadow: 0 4px 25px rgba(220, 20, 60, 0.2); transform: translateY(-2px);">
+            <div class="flashcard" data-id="nav-capital-flow" data-category="navigation" data-connections="nav-highlights,nav-gauges,nav-barometers,nav-market-intelligence,nav-historical,nav-tools" onclick="window.location.href="/dashboards/global_capital_flow_swing_trading.html"" style="cursor: pointer; border: 2px solid rgba(220, 20, 60, 0.6); background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(218, 165, 32, 0.12)); box-shadow: 0 4px 25px rgba(220, 20, 60, 0.2); transform: translateY(-2px);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">🌐</span>
                     <h3 class="flashcard-title" style="color: #DC143C; font-size: 1.5em;">Global Capital Flow</h3>
@@ -1712,7 +2452,7 @@
             </div>
 
             <!-- Navigation Flashcard: Elite Research Tools -->
-            <div class="flashcard" data-id="nav-tools" data-category="navigation" data-connections="nav-highlights,nav-capital-flow,nav-screeners,nav-elite-strategies,nav-journal,nav-breakthrough" onclick="window.location.href='elite_tools.html'" style="cursor: pointer; border: 2px solid rgba(96, 165, 250, 0.4); background: linear-gradient(135deg, rgba(96, 165, 250, 0.05), rgba(59, 130, 246, 0.05));">
+            <div class="flashcard" data-id="nav-tools" data-category="navigation" data-connections="nav-highlights,nav-capital-flow,nav-screeners,nav-elite-strategies,nav-journal,nav-breakthrough" onclick="window.location.href="/pages/elite_tools.html"" style="cursor: pointer; border: 2px solid rgba(96, 165, 250, 0.4); background: linear-gradient(135deg, rgba(96, 165, 250, 0.05), rgba(59, 130, 246, 0.05));">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">🔬</span>
                     <h3 class="flashcard-title" style="color: #60A5FA; font-size: 1.5em;">Elite Research Tools</h3>
@@ -1729,7 +2469,7 @@
             </div>
 
             <!-- Navigation Flashcard: Trading Journal -->
-            <div class="flashcard" data-id="nav-journal" data-category="navigation" data-connections="nav-tools,nav-elite-strategies,nav-breakthrough,nav-screeners,nav-daily-planet" onclick="window.location.href='COMPREHENSIVE_TRADING_JOURNAL.html'" style="cursor: pointer; border: 2px solid rgba(147, 51, 234, 0.4); background: linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(168, 85, 247, 0.05));">
+            <div class="flashcard" data-id="nav-journal" data-category="navigation" data-connections="nav-tools,nav-elite-strategies,nav-breakthrough,nav-screeners,nav-daily-planet" onclick="window.location.href="/pages/COMPREHENSIVE_TRADING_JOURNAL.html"" style="cursor: pointer; border: 2px solid rgba(147, 51, 234, 0.4); background: linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(168, 85, 247, 0.05));">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">📔</span>
                     <h3 class="flashcard-title" style="color: #A855F7; font-size: 1.5em;">Trading Journal</h3>
@@ -1746,7 +2486,7 @@
             </div>
 
             <!-- Navigation Flashcard: Daily Planet (NEWS & INTELLIGENCE) - PRIORITY PLACEMENT -->
-            <div class="flashcard" data-id="nav-daily-planet" data-category="navigation" data-connections="nav-highlights,nav-daily-dose,nav-journal,nav-breakthrough" onclick="window.location.href='daily_planet.html'" style="cursor: pointer; border: 2px solid rgba(65, 105, 225, 0.5); background: linear-gradient(135deg, rgba(65, 105, 225, 0.08), rgba(30, 144, 255, 0.08)); box-shadow: 0 4px 20px rgba(65, 105, 225, 0.15);">
+            <div class="flashcard" data-id="nav-daily-planet" data-category="navigation" data-connections="nav-highlights,nav-daily-dose,nav-journal,nav-breakthrough" onclick="window.location.href="/dashboards/daily_planet.html"" style="cursor: pointer; border: 2px solid rgba(65, 105, 225, 0.5); background: linear-gradient(135deg, rgba(65, 105, 225, 0.08), rgba(30, 144, 255, 0.08)); box-shadow: 0 4px 20px rgba(65, 105, 225, 0.15);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">📰</span>
                     <h3 class="flashcard-title" style="color: #4169E1; font-size: 1.5em;">Daily Planet</h3>
@@ -1763,7 +2503,7 @@
             </div>
 
             <!-- Navigation Flashcard: Breakthrough Insights Arsenal -->
-            <div class="flashcard" data-id="nav-breakthrough" data-category="navigation" data-connections="nav-highlights,nav-tools,nav-journal,nav-elite-strategies,nav-daily-planet" onclick="window.location.href='breakthrough_insights.html'" style="cursor: pointer; border: 2px solid rgba(147, 51, 234, 0.5); background: linear-gradient(135deg, rgba(147, 51, 234, 0.08), rgba(168, 85, 247, 0.08)); box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15);">
+            <div class="flashcard" data-id="nav-breakthrough" data-category="navigation" data-connections="nav-highlights,nav-tools,nav-journal,nav-elite-strategies,nav-daily-planet" onclick="window.location.href="/pages/breakthrough_insights.html"" style="cursor: pointer; border: 2px solid rgba(147, 51, 234, 0.5); background: linear-gradient(135deg, rgba(147, 51, 234, 0.08), rgba(168, 85, 247, 0.08)); box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">🛡️</span>
                     <h3 class="flashcard-title" style="color: #9333EA; font-size: 1.5em;">Breakthrough Insights Arsenal</h3>
@@ -1780,7 +2520,7 @@
             </div>
 
             <!-- Navigation Flashcard: Market Gauges (NEW - CRITICAL) -->
-            <div class="flashcard" data-id="nav-gauges" data-category="navigation" data-connections="nav-capital-flow,nav-barometers,nav-market-intelligence,nav-historical" onclick="window.location.href='market_gauges.html'" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.5); background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(139, 0, 0, 0.08)); box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);">
+            <div class="flashcard" data-id="nav-gauges" data-category="navigation" data-connections="nav-capital-flow,nav-barometers,nav-market-intelligence,nav-historical" onclick="window.location.href="/pages/market_gauges.html"" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.5); background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(218, 165, 32, 0.08)); box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">⚡</span>
                     <h3 class="flashcard-title" style="color: #FFD700; font-size: 1.5em;">Market Gauges</h3>
@@ -1797,7 +2537,7 @@
             </div>
 
             <!-- Navigation Flashcard: Intermarket Barometers (NEW - CRITICAL) -->
-            <div class="flashcard" data-id="nav-barometers" data-category="navigation" data-connections="nav-capital-flow,nav-gauges,nav-market-intelligence" onclick="window.location.href='barometers.html'" style="cursor: pointer; border: 2px solid rgba(255, 107, 107, 0.5); background: linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(255, 165, 0, 0.08)); box-shadow: 0 4px 20px rgba(255, 107, 107, 0.15);">
+            <div class="flashcard" data-id="nav-barometers" data-category="navigation" data-connections="nav-capital-flow,nav-gauges,nav-market-intelligence" onclick="window.location.href="/pages/barometers.html"" style="cursor: pointer; border: 2px solid rgba(255, 107, 107, 0.5); background: linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(255, 165, 0, 0.08)); box-shadow: 0 4px 20px rgba(255, 107, 107, 0.15);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">📊</span>
                     <h3 class="flashcard-title" style="color: #FF6B6B; font-size: 1.5em;">Intermarket Barometers</h3>
@@ -1814,7 +2554,7 @@
             </div>
 
             <!-- Navigation Flashcard: Elite Trading Strategies -->
-            <div class="flashcard" data-id="nav-elite-strategies" data-category="navigation" data-connections="nav-highlights,nav-journal,nav-breakthrough,nav-screeners,nav-tools" onclick="window.location.href='elite_trading_strategies.html'" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.6); background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(139, 0, 0, 0.08)); box-shadow: 0 4px 25px rgba(255, 215, 0, 0.3);">
+            <div class="flashcard" data-id="nav-elite-strategies" data-category="navigation" data-connections="nav-highlights,nav-journal,nav-breakthrough,nav-screeners,nav-tools" onclick="window.location.href="/pages/elite_trading_strategies.html"" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.6); background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(218, 165, 32, 0.08)); box-shadow: 0 4px 25px rgba(255, 215, 0, 0.3);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">🏆</span>
                     <h3 class="flashcard-title" style="color: #FFD700; font-size: 1.6em; font-weight: bold;">Elite Trading Strategies</h3>
@@ -1831,24 +2571,24 @@
             </div>
 
             <!-- Navigation Flashcard: Screeners -->
-            <div class="flashcard" data-id="nav-screeners" data-category="navigation" data-connections="nav-tools,nav-elite-strategies,nav-journal,nav-breakthrough" onclick="window.location.href='screener/screeners_hub.html'" style="cursor: pointer; border: 2px solid rgba(139, 0, 0, 0.4); background: linear-gradient(135deg, rgba(139, 0, 0, 0.1), rgba(220, 20, 60, 0.05));">
+            <div class="flashcard" data-id="nav-screeners" data-category="navigation" data-connections="nav-tools,nav-elite-strategies,nav-journal,nav-breakthrough" onclick="window.location.href="/pages/screener/screeners_hub.html"" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.4); background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(218, 165, 32, 0.05));">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">🛡️</span>
                     <h3 class="flashcard-title" style="color: #DC143C; font-size: 1.5em;">Screener Hub</h3>
-                    <span class="flashcard-count" style="background: rgba(139, 0, 0, 0.3); color: #FFD700;">9 Screeners</span>
+                    <span class="flashcard-count" style="background: rgba(255, 215, 0, 0.3); color: #FFD700;">9 Screeners</span>
                 </div>
                 <div class="flashcard-description" style="font-size: 1.05em;">
                     Triple Timeframe Confluence Strategy using Commitment of Traders data. Follow the "smart money" across 3 timeframes (4-week, 13-week, 52-week) for high-probability setups. 76% win rate, 3.4 Sharpe ratio, only 14% max drawdown.
                 </div>
                 <div class="flashcard-tags">
-                    <span class="tag" style="background: rgba(139, 0, 0, 0.2); color: #DC143C;">76% Win Rate</span>
-                    <span class="tag" style="background: rgba(139, 0, 0, 0.2); color: #DC143C;">3.4 Sharpe Ratio</span>
-                    <span class="tag" style="background: rgba(139, 0, 0, 0.2); color: #DC143C;">Smart Money</span>
+                    <span class="tag" style="background: rgba(255, 215, 0, 0.2); color: #FFD700;">76% Win Rate</span>
+                    <span class="tag" style="background: rgba(255, 215, 0, 0.2); color: #FFD700;">3.4 Sharpe Ratio</span>
+                    <span class="tag" style="background: rgba(255, 215, 0, 0.2); color: #FFD700;">Smart Money</span>
                 </div>
             </div>
 
             <!-- Navigation Flashcard: Nano Banana Scanner (NEW) -->
-            <div class="flashcard" data-id="nav-nano-banana" data-category="navigation" data-connections="nav-screeners,nav-tools,nav-daily-dose,nav-breakthrough" onclick="window.location.href='nano_banana_scanner.html'" style="cursor: pointer; border: 2px solid rgba(250, 204, 21, 0.6); background: linear-gradient(135deg, rgba(250, 204, 21, 0.12), rgba(234, 179, 8, 0.08)); box-shadow: 0 4px 20px rgba(250, 204, 21, 0.25);">
+            <div class="flashcard" data-id="nav-nano-banana" data-category="navigation" data-connections="nav-screeners,nav-tools,nav-daily-dose,nav-breakthrough" onclick="window.location.href="/pages/nano_banana_scanner.html"" style="cursor: pointer; border: 2px solid rgba(250, 204, 21, 0.6); background: linear-gradient(135deg, rgba(250, 204, 21, 0.12), rgba(234, 179, 8, 0.08)); box-shadow: 0 4px 20px rgba(250, 204, 21, 0.25);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">🍌</span>
                     <h3 class="flashcard-title" style="color: #FACC15; font-size: 1.5em;">Nano Banana Scanner</h3>
@@ -1865,7 +2605,7 @@
             </div>
 
             <!-- Navigation Flashcard: Daily Dose (NEW) -->
-            <div class="flashcard" data-id="nav-daily-dose" data-category="navigation" data-connections="nav-highlights,nav-daily-planet,nav-breakthrough" onclick="window.location.href='daily_dose.html'" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.5); background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.05)); box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);">
+            <div class="flashcard" data-id="nav-daily-dose" data-category="navigation" data-connections="nav-highlights,nav-daily-planet,nav-breakthrough" onclick="window.location.href="/pages/daily_dose.html"" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.5); background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.05)); box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">⚡</span>
                     <h3 class="flashcard-title" style="color: #FFD700; font-size: 1.5em;">Daily Dose</h3>
@@ -1882,7 +2622,7 @@
             </div>
 
             <!-- Navigation Flashcard: Market Intelligence Reports (NEW) -->
-            <div class="flashcard" data-id="nav-market-intelligence" data-category="navigation" data-connections="nav-capital-flow,nav-gauges,nav-barometers,nav-historical" onclick="window.location.href='intelligence_reports.html'" style="cursor: pointer; border: 2px solid rgba(218, 165, 32, 0.5); background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(255, 215, 0, 0.05)); box-shadow: 0 4px 20px rgba(218, 165, 32, 0.2);">
+            <div class="flashcard" data-id="nav-market-intelligence" data-category="navigation" data-connections="nav-capital-flow,nav-gauges,nav-barometers,nav-historical" onclick="window.location.href="/pages/intelligence_reports.html"" style="cursor: pointer; border: 2px solid rgba(218, 165, 32, 0.5); background: linear-gradient(135deg, rgba(218, 165, 32, 0.1), rgba(255, 215, 0, 0.05)); box-shadow: 0 4px 20px rgba(218, 165, 32, 0.2);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">⚔️</span>
                     <h3 class="flashcard-title" style="color: #DAA520; font-size: 1.5em;">Market Intelligence Reports</h3>
@@ -1901,7 +2641,7 @@
             </div>
 
             <!-- Navigation Flashcard: Correlation Matrix (NEW) -->
-            <div class="flashcard" data-id="nav-correlation-matrix" data-category="tools" data-connections="nav-capital-flow,nav-market-intelligence,nav-gauges,nav-tools" onclick="window.location.href='correlation_matrix.html'" style="cursor: pointer; border: 2px solid rgba(0, 255, 136, 0.5); background: linear-gradient(135deg, rgba(0, 255, 136, 0.08), rgba(34, 197, 94, 0.08)); box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2);">
+            <div class="flashcard" data-id="nav-correlation-matrix" data-category="tools" data-connections="nav-capital-flow,nav-market-intelligence,nav-gauges,nav-tools" onclick="window.location.href="/dashboards/correlation_matrix.html"" style="cursor: pointer; border: 2px solid rgba(0, 255, 136, 0.5); background: linear-gradient(135deg, rgba(0, 255, 136, 0.08), rgba(34, 197, 94, 0.08)); box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">🔗</span>
                     <h3 class="flashcard-title" style="color: #00ff88; font-size: 1.5em;">Correlation Matrix</h3>
@@ -1919,7 +2659,7 @@
             </div>
 
             <!-- Navigation Flashcard: Bitcoin Correlations (NEW) -->
-            <div class="flashcard" data-id="nav-bitcoin-correlations" data-category="tools" data-connections="nav-correlation-matrix,nav-capital-flow,nav-market-intelligence" onclick="window.location.href='bitcoin_correlations.html'" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.5); background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 165, 0, 0.08)); box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);">
+            <div class="flashcard" data-id="nav-bitcoin-correlations" data-category="tools" data-connections="nav-correlation-matrix,nav-capital-flow,nav-market-intelligence" onclick="window.location.href="/pages/bitcoin_correlations.html"" style="cursor: pointer; border: 2px solid rgba(255, 215, 0, 0.5); background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 165, 0, 0.08)); box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">₿</span>
                     <h3 class="flashcard-title" style="color: #FFD700; font-size: 1.5em;">Bitcoin Futures Correlations</h3>
@@ -1937,7 +2677,7 @@
             </div>
 
             <!-- Navigation Flashcard: Historical Connections -->
-            <div class="flashcard" data-id="nav-historical" data-category="navigation" data-connections="nav-capital-flow,nav-gauges,nav-market-intelligence,nav-tools,nav-correlation-matrix" onclick="window.location.href='historical_connections.html'" style="cursor: pointer; border: 2px solid rgba(220, 20, 60, 0.4); background: linear-gradient(135deg, rgba(220, 20, 60, 0.05), rgba(139, 0, 0, 0.05));">
+            <div class="flashcard" data-id="nav-historical" data-category="navigation" data-connections="nav-capital-flow,nav-gauges,nav-market-intelligence,nav-tools,nav-correlation-matrix" onclick="window.location.href="/pages/historical_connections.html"" style="cursor: pointer; border: 2px solid rgba(220, 20, 60, 0.4); background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(218, 165, 32, 0.05));">
                 <div class="flashcard-header">
                     <span class="flashcard-icon" style="font-size: 2.5em;">📊</span>
                     <h3 class="flashcard-title" style="color: #DC143C; font-size: 1.5em;">Historical Connections</h3>
@@ -1952,6 +2692,8 @@
                     <span class="tag" style="background: rgba(220, 20, 60, 0.2); color: #DC143C;">Risk/Reward</span>
                 </div>
             </div>
+
+            <!-- Navigation Flashcard: Global Barometer (NEW) -->
 
             <!-- Navigation Flashcard: News -->
             <div class="flashcard" data-id="nav-news" data-category="news" style="display: none;">
@@ -2077,7 +2819,7 @@
 
             moveCompositeIndicatorToSummary() {
                 // Move the Best Composite Indicator section into the Summary tab
-                const compositeSection = document.querySelector('div[style*="background: linear-gradient(135deg, rgba(139, 0, 0, 0.15)"]');
+                const compositeSection = document.querySelector('div[style*="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15)"]');
                 const targetContainer = document.getElementById('best-composite-section');
 
                 if (compositeSection && targetContainer) {
@@ -2086,22 +2828,24 @@
             }
 
             setupEventListeners() {
-                // Search
-                this.searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+                // Search (only if element exists)
+                if (this.searchInput) {
+                    this.searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
 
-                // Enter key handler for search
-                this.searchInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.keyCode === 13) {
-                        e.preventDefault();
-                        // Navigate to first visible flashcard
-                        const firstVisible = Array.from(this.flashcards).find(
-                            card => card.style.display !== 'none'
-                        );
-                        if (firstVisible) {
-                            this.handleCardClick(firstVisible);
+                    // Enter key handler for search
+                    this.searchInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.keyCode === 13) {
+                            e.preventDefault();
+                            // Navigate to first visible flashcard
+                            const firstVisible = Array.from(this.flashcards).find(
+                                card => card.style.display !== 'none'
+                            );
+                            if (firstVisible) {
+                                this.handleCardClick(firstVisible);
+                            }
                         }
-                    }
-                });
+                    });
+                }
 
                 // Navigation tabs
                 this.navTabs.forEach(tab => {
@@ -2352,68 +3096,68 @@
                 const cardId = card.dataset.id;
                 const pages = {
                     // Navigation Cards
-                    'nav-highlights': 'highlights.html',
-                    'nav-capital-flow': 'global_capital_flow_swing_trading.html',
-                    'nav-tools': 'elite_tools.html',
-                    'nav-journal': 'COMPREHENSIVE_TRADING_JOURNAL.html',
-                    'nav-daily-planet': 'daily_planet.html',
-                    'nav-breakthrough': 'breakthrough_insights.html',
-                    'nav-gauges': 'market_gauges.html',
-                    'nav-barometers': 'barometers.html',
-                    'nav-elite-strategies': 'elite_trading_strategies.html',
-                    'nav-screeners': 'screener/screeners_hub.html',
-                    'nav-nano-banana': 'nano_banana_scanner.html',
-                    'nav-daily-dose': 'daily_dose.html',
-                    'nav-market-intelligence': 'intelligence_reports.html',
-                    'nav-correlation-matrix': 'correlation_matrix.html',
-                    'nav-bitcoin-correlations': 'bitcoin_correlations.html',
-                    'nav-historical': 'historical_connections.html',
+                    'nav-highlights': '/pages/highlights.html',
+                    'nav-capital-flow': '/dashboards/global_capital_flow_swing_trading.html',
+                    'nav-tools': '/pages/elite_tools.html',
+                    'nav-journal': '/pages/COMPREHENSIVE_TRADING_JOURNAL.html',
+                    'nav-daily-planet': '/dashboards/daily_planet.html',
+                    'nav-breakthrough': '/pages/breakthrough_insights.html',
+                    'nav-gauges': '/pages/market_gauges.html',
+                    'nav-barometers': '/pages/barometers.html',
+                    'nav-elite-strategies': '/pages/elite_trading_strategies.html',
+                    'nav-screeners': '/pages/screener/screeners_hub.html',
+                    'nav-nano-banana': '/pages/nano_banana_scanner.html',
+                    'nav-daily-dose': '/pages/daily_dose.html',
+                    'nav-market-intelligence': '/pages/intelligence_reports.html',
+                    'nav-correlation-matrix': '/dashboards/correlation_matrix.html',
+                    'nav-bitcoin-correlations': '/pages/bitcoin_correlations.html',
+                    'nav-historical': '/pages/historical_connections.html',
 
                     // Core Research Tools
-                    'symbol-research': 'symbol_research.html',
-                    'vix-analysis': 'symbol_search_connections.html',
-                    'seasonality': 'seasonality_research.html',
-                    'intermarket': 'intermarket_relationships.html',
-                    'garp': 'garp.html',
-                    'fundamental': 'fundamental_analysis.html',
-                    'roce': 'roce_research.html',
-                    'cycles': 'market_cycles.html',
-                    'harmonic-cycles': 'harmonic_cycles.html',
-                    'market-hub': 'unified_market_dashboard.html',
-                    'chart-analytics': 'flashcard_dashboard.html',
-                    'trading-journal': 'COMPREHENSIVE_TRADING_JOURNAL.html',
-                    'pattern-finders': 'pattern_finder_hub.html',
-                    'pattern-discovery': 'pattern_discovery_terminal.html',
+                    'symbol-research': '/pages/symbol_research.html',
+                    'vix-analysis': '/pages/symbol_search_connections.html',
+                    'seasonality': '/pages/seasonality_research.html',
+                    'intermarket': '/pages/intermarket_relationships.html',
+                    'garp': '/dashboards/garp.html',
+                    'fundamental': '/pages/fundamental_analysis.html',
+                    'roce': '/pages/roce_research.html',
+                    'cycles': '/pages/market_cycles.html',
+                    'harmonic-cycles': '/pages/harmonic_cycles.html',
+                    'market-hub': '/pages/unified_market_dashboard.html',
+                    'chart-analytics': '/pages/flashcard_dashboard.html',
+                    'trading-journal': '/pages/COMPREHENSIVE_TRADING_JOURNAL.html',
+                    'pattern-finders': '/pages/pattern_finder_hub.html',
+                    'pattern-discovery': '/pages/pattern_discovery_terminal.html',
 
                     // Intelligence Tools
-                    'econometrics': 'econometrics.html',
-                    'daily-planet': 'daily_planet.html',
-                    'breakthrough-insights': 'breakthrough_insights.html',
-                    'fred-economic': 'fred_global_complete.html',
-                    'cot-intelligence': 'complete_cftc_cot_terminal.html',
-                    'deal-hunters': 'deal_hunters.html',
-                    'boom-bust': 'boom_or_bust.html',
-                    'inflation-dashboard': 'inflation_dashboard.html',
+                    'econometrics': '/dashboards/econometrics.html',
+                    'daily-planet': '/dashboards/daily_planet.html',
+                    'breakthrough-insights': '/pages/breakthrough_insights.html',
+                    'fred-economic': '/dashboards/fred_global_complete.html',
+                    'cot-intelligence': '/pages/complete_cftc_cot_terminal.html',
+                    'deal-hunters': '/pages/deal_hunters.html',
+                    'boom-bust': '/dashboards/boom_or_bust.html',
+                    'inflation-dashboard': '/pages/inflation_dashboard.html',
 
                     // Country-Specific Market Overviews (all redirect to symbol research)
-                    'usa-stocks': 'symbol_research.html',
-                    'india-stocks': 'symbol_research.html',
-                    'japan-stocks': 'symbol_research.html',
-                    'china-stocks': 'symbol_research.html',
-                    'hongkong-stocks': 'symbol_research.html',
-                    'australia-stocks': 'symbol_research.html',
-                    'uk-stocks': 'symbol_research.html',
-                    'germany-stocks': 'symbol_research.html',
-                    'france-stocks': 'symbol_research.html',
-                    'netherlands-stocks': 'symbol_research.html',
-                    'switzerland-stocks': 'symbol_research.html',
-                    'spain-stocks': 'symbol_research.html',
-                    'italy-stocks': 'symbol_research.html',
-                    'sweden-stocks': 'symbol_research.html',
-                    'canada-stocks': 'symbol_research.html',
+                    'usa-stocks': '/pages/symbol_research.html',
+                    'india-stocks': '/pages/symbol_research.html',
+                    'japan-stocks': '/pages/symbol_research.html',
+                    'china-stocks': '/pages/symbol_research.html',
+                    'hongkong-stocks': '/pages/symbol_research.html',
+                    'australia-stocks': '/pages/symbol_research.html',
+                    'uk-stocks': '/pages/symbol_research.html',
+                    'germany-stocks': '/pages/symbol_research.html',
+                    'france-stocks': '/pages/symbol_research.html',
+                    'netherlands-stocks': '/pages/symbol_research.html',
+                    'switzerland-stocks': '/pages/symbol_research.html',
+                    'spain-stocks': '/pages/symbol_research.html',
+                    'italy-stocks': '/pages/symbol_research.html',
+                    'sweden-stocks': '/pages/symbol_research.html',
+                    'canada-stocks': '/pages/symbol_research.html',
 
                     // Emerging Sectors
-                    'emerging-sectors': 'deal_hunters.html'
+                    'emerging-sectors': '/pages/deal_hunters.html'
                 };
 
                 if (pages[cardId]) {
@@ -2450,8 +3194,11 @@
                     }
                 });
 
-                document.getElementById('totalInsightsCount').textContent = totalInsights;
-                document.getElementById('highImpactCount').textContent = highImpact;
+                const totalInsightsEl = document.getElementById('totalInsightsCount');
+                const highImpactEl = document.getElementById('highImpactCount');
+
+                if (totalInsightsEl) totalInsightsEl.textContent = totalInsights;
+                if (highImpactEl) highImpactEl.textContent = highImpact;
             } catch (error) {
                 console.error('Error updating breakthrough stats:', error);
             }
@@ -2464,8 +3211,11 @@
                 const dealsCount = deals.length;
                 const topDeal = deals.length > 0 ? Math.max(...deals.map(d => d.potentialGain || 0)) : 0;
 
-                document.getElementById('dealsFoundCount').textContent = dealsCount;
-                document.getElementById('topDealPercent').textContent = topDeal.toFixed(2);
+                const dealsFoundEl = document.getElementById('dealsFoundCount');
+                const topDealEl = document.getElementById('topDealPercent');
+
+                if (dealsFoundEl) dealsFoundEl.textContent = dealsCount;
+                if (topDealEl) topDealEl.textContent = topDeal.toFixed(2);
             } catch (error) {
                 console.error('Error updating deal hunters stats:', error);
             }
@@ -2477,24 +3227,27 @@
                 const data = JSON.parse(localStorage.getItem('boom_bust_data') || '{"composite": 50, "status": "Neutral"}');
                 const score = data.composite || 50;
 
-                document.getElementById('boomBustScore').textContent = score;
+                const scoreEl = document.getElementById('boomBustScore');
+                if (scoreEl) scoreEl.textContent = score;
 
                 const statusEl = document.getElementById('boomBustStatus');
-                if (score >= 85) {
-                    statusEl.textContent = '🚨 EXTREME BOOM';
-                    statusEl.style.color = '#DC143C';
-                } else if (score <= 15) {
-                    statusEl.textContent = '🚨 EXTREME BUST';
-                    statusEl.style.color = '#DC143C';
-                } else if (score >= 70) {
-                    statusEl.textContent = '⚠️ Boom Warning';
-                    statusEl.style.color = '#FFD700';
-                } else if (score <= 30) {
-                    statusEl.textContent = '⚠️ Bust Warning';
-                    statusEl.style.color = '#FFD700';
-                } else {
-                    statusEl.textContent = '⚖️ Neutral';
-                    statusEl.style.color = '#228B22';
+                if (statusEl) {
+                    if (score >= 85) {
+                        statusEl.textContent = '🚨 EXTREME BOOM';
+                        statusEl.style.color = '#DC143C';
+                    } else if (score <= 15) {
+                        statusEl.textContent = '🚨 EXTREME BUST';
+                        statusEl.style.color = '#DC143C';
+                    } else if (score >= 70) {
+                        statusEl.textContent = '⚠️ Boom Warning';
+                        statusEl.style.color = '#FFD700';
+                    } else if (score <= 30) {
+                        statusEl.textContent = '⚠️ Bust Warning';
+                        statusEl.style.color = '#FFD700';
+                    } else {
+                        statusEl.textContent = '⚖️ Neutral';
+                        statusEl.style.color = '#228B22';
+                    }
                 }
             } catch (error) {
                 console.error('Error updating boom/bust stats:', error);
@@ -2505,12 +3258,15 @@
         function updateInflationStats() {
             try {
                 const data = JSON.parse(localStorage.getItem('inflation_data') || '{}');
+                const cpiEl = document.getElementById('inflationCPI');
+                const rateEl = document.getElementById('inflationRate');
+
                 if (data.latestCPI) {
-                    document.getElementById('inflationCPI').textContent = data.latestCPI.toFixed(1);
-                    document.getElementById('inflationRate').textContent = data.latestInflation.toFixed(2) + '%';
+                    if (cpiEl) cpiEl.textContent = data.latestCPI.toFixed(1);
+                    if (rateEl) rateEl.textContent = data.latestInflation.toFixed(2) + '%';
                 } else {
-                    document.getElementById('inflationCPI').textContent = 'N/A';
-                    document.getElementById('inflationRate').textContent = 'N/A';
+                    if (cpiEl) cpiEl.textContent = 'N/A';
+                    if (rateEl) rateEl.textContent = 'N/A';
                 }
             } catch (error) {
                 console.error('Error updating inflation stats:', error);
@@ -2522,7 +3278,7 @@
         async function updateSymbolDatabaseStatus() {
             try {
                 // Fetch database stats from PostgreSQL
-                const response = await fetch('/api/db/stats');
+                const response = await fetch('http://localhost:8888/api/db/stats');
                 const data = await response.json();
 
                 if (data.total_symbols) {
@@ -2567,6 +3323,187 @@
             }
         }
 
+        // ===== LIVE AI ADVICE TOGGLE SYSTEM =====
+        function toggleAIAdviceSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            const arrow = header.querySelector('span:last-child');
+
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                if (arrow) arrow.textContent = '▲';
+                // Add smooth fade-in effect
+                content.style.opacity = '0';
+                content.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => content.style.opacity = '1', 10);
+            } else {
+                content.style.opacity = '0';
+                setTimeout(() => {
+                    content.style.display = 'none';
+                    if (arrow) arrow.textContent = '▼';
+                }, 300);
+            }
+        }
+
+        // ===== AI ADVICE CHARTS INITIALIZATION =====
+        function initAIAdviceCharts() {
+            // Global CPI Comparison Chart
+            const cpiCtx = document.getElementById('aiAdviceCpiChart');
+            if (cpiCtx) {
+                new Chart(cpiCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['🇺🇸 US', '🇪🇺 Eurozone', '🇨🇳 China', '🇯🇵 Japan', '🇮🇳 India', '🇬🇧 UK'],
+                        datasets: [{
+                            label: 'Headline CPI %',
+                            data: [2.7, 2.0, 0.8, 2.5, 4.5, 2.4],
+                            backgroundColor: [
+                                'rgba(255, 75, 75, 0.7)',
+                                'rgba(88, 166, 255, 0.7)',
+                                'rgba(255, 136, 0, 0.7)',
+                                'rgba(188, 19, 254, 0.7)',
+                                'rgba(0, 255, 136, 0.7)',
+                                'rgba(0, 212, 255, 0.7)'
+                            ],
+                            borderColor: [
+                                '#FF4B4B',
+                                '#58A6FF',
+                                '#FF8800',
+                                '#bc13fe',
+                                '#00ff88',
+                                '#00D4FF'
+                            ],
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }, {
+                            label: 'Core CPI %',
+                            data: [2.6, 2.3, 0.5, 2.5, 3.8, 3.4],
+                            backgroundColor: 'rgba(255, 215, 0, 0.4)',
+                            borderColor: '#FFD700',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#b0b8c8', font: { size: 11 } }
+                            },
+                            annotation: {
+                                annotations: {
+                                    target: {
+                                        type: 'line',
+                                        yMin: 2,
+                                        yMax: 2,
+                                        borderColor: '#FFD700',
+                                        borderWidth: 2,
+                                        borderDash: [5, 5],
+                                        label: {
+                                            content: '2% Target',
+                                            enabled: true,
+                                            position: 'end'
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#b0b8c8', font: { size: 10 } },
+                                grid: { color: 'rgba(255,255,255,0.05)' }
+                            },
+                            y: {
+                                ticks: { color: '#b0b8c8', callback: v => v + '%' },
+                                grid: { color: 'rgba(255,255,255,0.08)' },
+                                beginAtZero: true,
+                                max: 6
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Central Bank Rates Chart
+            const ratesCtx = document.getElementById('aiAdviceRatesChart');
+            if (ratesCtx) {
+                new Chart(ratesCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['🇺🇸 Fed', '🇪🇺 ECB', '🇨🇳 PBOC', '🇯🇵 BOJ', '🇮🇳 RBI', '🇬🇧 BOE'],
+                        datasets: [{
+                            label: 'Current Rate %',
+                            data: [3.625, 2.75, 3.1, 0.75, 6.25, 4.5],
+                            backgroundColor: [
+                                'rgba(255, 75, 75, 0.8)',
+                                'rgba(88, 166, 255, 0.8)',
+                                'rgba(255, 136, 0, 0.8)',
+                                'rgba(188, 19, 254, 0.8)',
+                                'rgba(0, 255, 136, 0.8)',
+                                'rgba(0, 212, 255, 0.8)'
+                            ],
+                            borderColor: [
+                                '#FF4B4B',
+                                '#58A6FF',
+                                '#FF8800',
+                                '#bc13fe',
+                                '#00ff88',
+                                '#00D4FF'
+                            ],
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const policies = {
+                                            '🇺🇸 Fed': 'Paused / Data-dependent',
+                                            '🇪🇺 ECB': 'On hold',
+                                            '🇨🇳 PBOC': 'Easing bias',
+                                            '🇯🇵 BOJ': 'Gradual normalization',
+                                            '🇮🇳 RBI': 'Neutral / Inflation watch',
+                                            '🇬🇧 BOE': 'Cautious cuts'
+                                        };
+                                        return [
+                                            `Rate: ${context.raw}%`,
+                                            `Stance: ${policies[context.label] || ''}`
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#b0b8c8', callback: v => v + '%' },
+                                grid: { color: 'rgba(255,255,255,0.08)' },
+                                beginAtZero: true,
+                                max: 8
+                            },
+                            y: {
+                                ticks: { color: '#b0b8c8', font: { size: 11 } },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize AI Advice charts when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initAIAdviceCharts, 500);
+        });
+
         // ===== DRAG AND DROP SYSTEM =====
         let editMode = false;
         let draggedElement = null;
@@ -2608,9 +3545,13 @@
                     card.removeAttribute('draggable');
                 });
 
-                // Save layout
-                saveLayout();
-                alert('✅ Layout saved successfully!');
+                // Save layout and show toast notification when closing edit mode
+                const success = saveLayout(true);  // showToast = true
+
+                // Also export to CSV
+                if (success) {
+                    exportLayoutToCSV();
+                }
             }
         }
 
@@ -2678,17 +3619,54 @@
                 } else {
                     container.insertBefore(draggedElement, this);
                 }
+
+                // CRITICAL FIX: Auto-save layout after drag-drop
+                saveLayout();
             }
 
             this.classList.remove('drag-over');
             return false;
         }
 
-        function saveLayout() {
-            const flashcards = document.querySelectorAll('.flashcard');
-            const layout = Array.from(flashcards).map(card => card.dataset.id);
-            localStorage.setItem('spartan_flashcard_layout', JSON.stringify(layout));
-            console.log('✅ Layout saved:', layout);
+        function saveLayout(showToast = false) {
+            try {
+                const flashcards = document.querySelectorAll('.flashcard');
+                const layout = Array.from(flashcards).map(card => card.dataset.id);
+
+                // Validate that we have flashcards and data-id attributes
+                if (layout.length === 0) {
+                    console.warn('⚠️ No flashcards found to save');
+                    return false;
+                }
+
+                if (layout.some(id => !id)) {
+                    console.error('❌ Some flashcards missing data-id attribute');
+                    return false;
+                }
+
+                localStorage.setItem('spartan_flashcard_layout', JSON.stringify(layout));
+                console.log('✅ Layout saved:', layout);
+
+                // Verify save succeeded
+                const savedData = localStorage.getItem('spartan_flashcard_layout');
+                if (!savedData) {
+                    console.error('❌ Failed to save layout to localStorage');
+                    if (showToast) {
+                        showLayoutToast('Failed to save window layout', 'error');
+                    }
+                    return false;
+                }
+
+                // Show success notification only when explicitly requested (when app closes)
+                if (showToast) {
+                    showLayoutToast(`Window layout saved (${layout.length} items)`, 'success');
+                }
+
+                return true;
+            } catch (error) {
+                console.error('❌ Error saving layout:', error);
+                return false;
+            }
         }
 
         function setRecommendedLayout() {
@@ -2712,20 +3690,259 @@
             alert('✅ Recommended layout applied! Daily Planet, Daily Dose, and Breakthrough Insights are now grouped together.');
         }
 
+        function clearLayout() {
+            // Utility function to reset layout to default
+            try {
+                localStorage.removeItem('spartan_flashcard_layout');
+                console.log('✅ Layout cleared - page will reload with default order');
+                location.reload();
+            } catch (error) {
+                console.error('❌ Error clearing layout:', error);
+            }
+        }
+
+        // Make clearLayout available globally for debugging
+        window.clearSpartanLayout = clearLayout;
+
+        // ===== CSV EXPORT/IMPORT SYSTEM =====
+
+        function exportLayoutToCSV() {
+            try {
+                const flashcards = document.querySelectorAll('.flashcard');
+                const layoutData = [];
+
+                // Header row
+                layoutData.push(['Position', 'ID', 'Category', 'Title', 'Connections', 'Timestamp']);
+
+                // Data rows
+                flashcards.forEach((card, index) => {
+                    const title = card.querySelector('h3')?.textContent?.trim() || 'Unknown';
+                    const category = card.dataset.category || 'unknown';
+                    const connections = card.dataset.connections || '';
+
+                    layoutData.push([
+                        index + 1,
+                        card.dataset.id || '',
+                        category,
+                        title,
+                        connections,
+                        new Date().toISOString()
+                    ]);
+                });
+
+                // Convert to CSV format
+                const csvContent = layoutData.map(row =>
+                    row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+                ).join('\n');
+
+                // Create blob and download
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `spartan_layout_${timestamp}.csv`);
+                link.style.visibility = 'hidden';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                console.log('✅ Layout exported to CSV:', layoutData.length - 1, 'flashcards');
+                return true;
+            } catch (error) {
+                console.error('❌ Error exporting layout to CSV:', error);
+                return false;
+            }
+        }
+
+        function importLayoutFromCSV(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    try {
+                        const csv = e.target.result;
+                        const lines = csv.split('\n');
+
+                        // Skip header row
+                        const dataLines = lines.slice(1).filter(line => line.trim());
+
+                        // Extract IDs in order
+                        const layout = dataLines.map(line => {
+                            // Simple CSV parser (handles quoted fields)
+                            const match = line.match(/^"?\d+"?,"?([^"]+)"?/);
+                            return match ? match[1] : null;
+                        }).filter(id => id);
+
+                        if (layout.length === 0) {
+                            throw new Error('No valid flashcard IDs found in CSV');
+                        }
+
+                        // Save layout to localStorage
+                        localStorage.setItem('spartan_flashcard_layout', JSON.stringify(layout));
+
+                        // Apply layout
+                        loadLayout();
+
+                        console.log('✅ Layout imported from CSV:', layout.length, 'flashcards');
+                        showLayoutToast(`Layout imported from CSV (${layout.length} items)`, 'success');
+
+                        resolve(layout);
+                    } catch (error) {
+                        console.error('❌ Error importing layout from CSV:', error);
+                        showLayoutToast('Failed to import layout from CSV', 'error');
+                        reject(error);
+                    }
+                };
+
+                reader.onerror = function() {
+                    reject(new Error('Failed to read CSV file'));
+                };
+
+                reader.readAsText(file);
+            });
+        }
+
+        // Make CSV functions available globally
+        window.exportSpartanLayoutCSV = exportLayoutToCSV;
+        window.importSpartanLayoutCSV = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    importLayoutFromCSV(file);
+                }
+            };
+            input.click();
+        };
+
+        // Toast notification system for layout saves
+        function showLayoutToast(message, type = 'success') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95))' : 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95))'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                font-weight: 600;
+                font-size: 14px;
+                z-index: 999999;
+                animation: slideInRight 0.3s ease-out;
+                backdrop-filter: blur(10px);
+                border: 1px solid ${type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+            `;
+
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 20px;">${type === 'success' ? '✅' : '❌'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // Add animation keyframes if not already present
+            if (!document.getElementById('toastAnimations')) {
+                const style = document.createElement('style');
+                style.id = 'toastAnimations';
+                style.textContent = `
+                    @keyframes slideInRight {
+                        from {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                    }
+                    @keyframes slideOutRight {
+                        from {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                        to {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            document.body.appendChild(toast);
+
+            // Auto-remove after 3 seconds with slide-out animation
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
         function loadLayout() {
             const savedLayout = localStorage.getItem('spartan_flashcard_layout');
-            if (!savedLayout) return;
+            if (!savedLayout) {
+                console.log('ℹ️ No saved layout found - using default order');
+                return;
+            }
 
             try {
                 const layout = JSON.parse(savedLayout);
+
+                // Validate layout data
+                if (!Array.isArray(layout) || layout.length === 0) {
+                    console.warn('⚠️ Invalid layout data - clearing localStorage');
+                    localStorage.removeItem('spartan_flashcard_layout');
+                    return;
+                }
+
                 const container = document.getElementById('flashcardNetwork');
+                if (!container) {
+                    console.error('❌ Flashcard container not found');
+                    return;
+                }
+
                 const flashcards = Array.from(container.querySelectorAll('.flashcard'));
+
+                if (flashcards.length === 0) {
+                    console.warn('⚠️ No flashcards found in DOM - deferring load');
+                    // Retry after DOM is fully ready
+                    setTimeout(loadLayout, 100);
+                    return;
+                }
 
                 // Create a map of flashcards by ID
                 const cardMap = {};
                 flashcards.forEach(card => {
-                    cardMap[card.dataset.id] = card;
+                    if (card.dataset.id) {
+                        cardMap[card.dataset.id] = card;
+                    }
                 });
+
+                // Validate that saved IDs match actual flashcards
+                let validCount = 0;
+                layout.forEach(id => {
+                    if (cardMap[id]) {
+                        validCount++;
+                    }
+                });
+
+                if (validCount === 0) {
+                    console.warn('⚠️ No matching flashcards found - clearing invalid layout');
+                    localStorage.removeItem('spartan_flashcard_layout');
+                    return;
+                }
 
                 // Reorder flashcards according to saved layout
                 layout.forEach(id => {
@@ -2734,9 +3951,13 @@
                     }
                 });
 
-                console.log('✅ Layout loaded:', layout);
+                console.log(`✅ Layout loaded: ${validCount}/${layout.length} flashcards positioned`);
+
+                // Don't show toast on page load - only show when user manually closes edit mode
             } catch (error) {
-                console.error('Error loading layout:', error);
+                console.error('❌ Error loading layout:', error);
+                // Clear corrupted data
+                localStorage.removeItem('spartan_flashcard_layout');
             }
         }
 
@@ -2748,8 +3969,12 @@
             updateInflationStats();
             updateSymbolDatabaseStatus(); // Check symbol database on load
 
-            // Load saved layout
-            loadLayout();
+            // Load saved layout after a brief delay to ensure DOM is fully rendered
+            // This prevents race conditions where flashcards aren't fully initialized
+            setTimeout(() => {
+                loadLayout();
+                console.log('🎯 Window state manager initialized');
+            }, 50);
 
             // Update stats every 10 seconds
             setInterval(updateBreakthroughStats, 10000);
@@ -2786,7 +4011,7 @@
             const badge = document.getElementById(badgeId);
 
             if (!terminal) {
-                console.error(`Terminal not found: ${terminalId}`);
+                // Terminal is optional - skip silently if not present
                 return;
             }
 
@@ -2997,10 +4222,10 @@ ${sep}
     </script>
 
     <!-- Global Keyboard Controls -->
-    <script src="global_keyboard_controls.js?v=1766988597"></script>
+    <script src="/js/global_keyboard_controls.js"></script>
 
     <!-- Spartan Ticker System -->
-    <script src="js/spartan_ticker.js?v=1766988597"></script>
+    <script src="/js/spartan_ticker.js"></script>
     <script>
         // Initialize ticker with ordered symbols: Indices → Futures → Stocks → Forex → Crypto → CFDs
         document.addEventListener('DOMContentLoaded', () => {
@@ -3015,44 +4240,139 @@ ${sep}
     <!-- Initialize Market Regime Component -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize market regime indicator (pinned at top)
-            const regime = new MarketRegimeComponent('market-regime-indicator', {
-                pinned: true,
-                showMetrics: true,
-                showConfidence: true
-            });
+            // Initialize market regime indicator (pinned at top) - only if component exists
+            if (typeof MarketRegimeComponent !== 'undefined') {
+                const regime = new MarketRegimeComponent('market-regime-indicator', {
+                    pinned: true,
+                    showMetrics: true,
+                    showConfidence: true
+                });
 
-            // Auto-refresh every 5 minutes
-            setInterval(() => regime.refresh(), 300000);
+                // Auto-refresh every 5 minutes
+                setInterval(() => regime.refresh(), 300000);
+            } else {
+                console.warn('MarketRegimeComponent not loaded - skipping initialization');
+            }
         });
     </script>
 
     <!-- Flashcard Manager - Drag & Drop, Editable, Pinned Sections -->
-    <script src="flashcard_manager.js?v=1766988597"></script>
+    <script src="/js/flashcard_manager.js"></script>
 
     <!-- Emerging Sectors Scanner - 95% Overbought/Oversold Detection -->
-    <script src="emerging_sectors.js?v=1766988597"></script>
+    <script src="/js/emerging_sectors.js"></script>
 
 <!-- SPARTAN KEYBOARD NAVIGATION -->
-<script src="spartan_dropdown_keyboard_nav.js?v=1766988597"></script>
+<script src="/js/spartan_dropdown_keyboard_nav.js"></script>
 <!-- Market Validation Module -->
-<script src="market_validation.js?v=1766988597"></script>
-<script src="spartan_keyboard_navigation.js?v=1766988597"></script>
+<script src="/js/market_validation.js"></script>
+<script src="/js/spartan_keyboard_navigation.js"></script>
     <!-- Intermarket Barometer Ticker -->
-    <script src="intermarket_ticker.js?v=1766988597"></script>
+    <script src="/js/intermarket_ticker.js"></script>
 
     <!-- Composite Indicator UP/DOWN Arrows -->
     <script>
+        // Update COT Hunter Pro Summary (Visually Enhanced)
+        async function updateWhaleHunterSummary() {
+            try {
+                const statusEl = document.getElementById('whale-status');
+                
+                const response = await fetch('http://localhost:8888/api/whale-hunter/summary');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.status === 'waiting') {
+                        statusEl.textContent = 'INITIALIZING...';
+                        statusEl.style.color = '#FFD700';
+                        return;
+                    }
+
+                    document.getElementById('whale-total').textContent = data.total_markets || 0;
+                    document.getElementById('whale-bullish').textContent = data.bullish_count || 0;
+                    document.getElementById('whale-bearish').textContent = data.bearish_count || 0;
+                    
+                    // Update Timestamp if available
+                    if (data.timestamp) {
+                        const date = new Date(data.timestamp);
+                        const timeStr = date.toLocaleTimeString();
+                        const timeEl = document.getElementById('whale-timestamp');
+                        if(timeEl) timeEl.textContent = timeStr;
+                    }
+
+                    const signalsContainer = document.getElementById('whale-top-signals');
+                    signalsContainer.innerHTML = ''; // Clear
+
+                    if (data.top_signals && data.top_signals.length > 0) {
+                        data.top_signals.forEach((signal, index) => {
+                            const signalDiv = document.createElement('div');
+                            signalDiv.style.borderBottom = '1px solid #222';
+                            signalDiv.style.padding = '12px 15px';
+                            signalDiv.style.display = 'flex';
+                            signalDiv.style.flexDirection = 'column';
+                            signalDiv.style.gap = '5px';
+                            signalDiv.style.background = index % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent';
+                            
+                            const isBullish = signal.Sentiment === 'Bullish';
+                            const badgeColor = isBullish ? '#00FF00' : '#FF4B4B';
+                            const badgeBg = isBullish ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 75, 75, 0.1)';
+                            const arrow = isBullish ? '▲' : '▼';
+                            
+                            signalDiv.innerHTML = `
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #FFF; font-weight: bold; font-family: 'Inter', sans-serif;">${signal.Market}</span>
+                                    <span style="
+                                        color: ${badgeColor}; 
+                                        background: ${badgeBg}; 
+                                        padding: 2px 8px; 
+                                        border-radius: 4px; 
+                                        font-size: 0.8em; 
+                                        border: 1px solid ${badgeColor};
+                                        font-weight: bold;">
+                                        ${arrow} ${signal.Sentiment.toUpperCase()}
+                                    </span>
+                                </div>
+                                <div style="color: #888; font-size: 0.85em;">> ${signal.Analysis}</div>
+                            `;
+                            signalsContainer.appendChild(signalDiv);
+                        });
+                    } else {
+                        signalsContainer.innerHTML = '<div style="color: #666; padding: 20px; text-align: center; font-style: italic;">No high-conviction signals detected in this scan.</div>';
+                    }
+
+                    statusEl.textContent = 'SYSTEM ACTIVE';
+                    statusEl.style.color = '#00FF00';
+                } else {
+                    throw new Error('API Error');
+                }
+            } catch (error) {
+                console.error('Error updating COT Hunter:', error);
+                const statusEl = document.getElementById('whale-status');
+                if(statusEl) {
+                    if (window.location.protocol === 'file:') {
+                        statusEl.textContent = 'ERROR: OPEN VIA SERVER';
+                        statusEl.title = 'You are opening this file directly. Please use a local web server (e.g., python -m http.server)';
+                    } else {
+                        statusEl.textContent = 'CONNECTION LOST';
+                    }
+                    statusEl.style.color = '#FF4B4B';
+                }
+            }
+        }
+
+        // Update Composite Indicators (New Dashboard)
         async function updateCompositeIndicators() {
             try {
                 // Fetch real-time price data using yfinance via a simple backend
                 const symbols = {
                     'audjpy': 'AUDJPY=X',
+                    'usdkrw': 'USDKRW=X',
                     'hyg': 'HYG',
                     'yield': '^TNX'  // 10-Year Treasury Yield
                 };
 
                 const percentChanges = {};
+                let currentAudJpy = 0;
+                let currentUsdKrw = 0;
 
                 for (const [key, symbol] of Object.entries(symbols)) {
                     try {
@@ -3071,13 +4391,22 @@ ${sep}
                                 const change = currentPrice - previousPrice;
                                 const percentChange = (change / previousPrice) * 100;
 
+                                if (key === 'audjpy') {
+                                    currentAudJpy = currentPrice;
+                                    window.audjpyData = { prices: closes, timestamps: result.timestamp };
+                                }
+                                if (key === 'usdkrw') {
+                                    currentUsdKrw = currentPrice;
+                                    window.usdkrwData = { prices: closes, timestamps: result.timestamp };
+                                }
+
                                 // Store percent change for composite calculation
                                 percentChanges[key] = percentChange;
 
-                                // Update value display
+                                // Update value display (if elements exist for krw in future, currently they don't have dedicated IDs outside section)
                                 const valueElement = document.getElementById(`${key}-value`);
                                 if (valueElement) {
-                                    valueElement.textContent = currentPrice.toFixed(2);
+                                    valueElement.textContent = currentPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
                                 }
 
                                 // Update arrow based on direction
@@ -3111,13 +4440,63 @@ ${sep}
                     }
                 }
 
+                // Update AI Swing Trader Advice based on AUD/JPY price
+                const adviceEl = document.getElementById('ai-dynamic-message');
+                if (adviceEl && currentAudJpy > 0) {
+                    if (currentAudJpy > 105.50) {
+                        adviceEl.innerHTML = `<span style="color: #FF4B4B;">⚠️ CRITICAL RESISTANCE:</span> Price is in the Kill Zone (${currentAudJpy.toFixed(2)}). EXECUTE SELL LIMITS. Tight stops above 106.10.`;
+                    } else if (currentAudJpy > 104.50) {
+                        adviceEl.innerHTML = `<span style="color: #FFD700;">🔔 ALERT:</span> Price approaching resistance (${currentAudJpy.toFixed(2)}). Prepare short entries. Watch for H1 candle rejection.`;
+                    } else if (currentAudJpy < 102.50) {
+                        adviceEl.innerHTML = `<span style="color: #00ff88;">💰 TAKE PROFIT:</span> Price near 50-day MA support (${currentAudJpy.toFixed(2)}). Cover shorts or wait for bounce to reload.`;
+                    } else {
+                        adviceEl.innerHTML = `<span style="color: #b0b8c8;">⏳ WAIT:</span> Price in neutral range (${currentAudJpy.toFixed(2)}). Patience. Let price come to 105.00 resistance before acting.`;
+                    }
+                }
+
+                // Update KRW AI Advice
+                const krwAdviceEl = document.getElementById('krw-ai-dynamic-message');
+                if (krwAdviceEl && currentUsdKrw > 0) {
+                    if (currentUsdKrw > 1455) {
+                        krwAdviceEl.innerHTML = `<span style="color: #00ff88;">🏹 OPPORTUNITY:</span> USD/KRW near structural peak (${currentUsdKrw.toFixed(0)}). WGBI flows starting April provide massive headwind for USD. Start scaling into tactical KRW shorts (Sell USD).`;
+                    } else if (currentUsdKrw < 1380) {
+                        krwAdviceEl.innerHTML = `<span style="color: #FF4B4B;">🛑 DANGER:</span> Price near support zone (${currentUsdKrw.toFixed(0)}). Tactical appreciation may be exhausted. Do not short here; wait for 1,450+ bounce.`;
+                    } else {
+                        krwAdviceEl.innerHTML = `<span style="color: #58A6FF;">📡 MONITOR:</span> USD/KRW in digestion phase (${currentUsdKrw.toFixed(0)}). Watching for US Tech/SOX breakout to confirm next leg of KRW strength.`;
+                    }
+                } else if (krwAdviceEl) {
+                    krwAdviceEl.innerHTML = `Monitoring trade data releases...`;
+                }
+
+                // Render Mini Charts
+                // AUD/JPY Chart
+                if (window.audjpyData) {
+                    renderMiniChart('audjpyChart', window.audjpyData.prices, window.audjpyData.timestamps, '#FF4B4B');
+                }
+                
+                // USD/KRW Chart
+                if (window.usdkrwData) {
+                    renderMiniChart('usdkrwChart', window.usdkrwData.prices, window.usdkrwData.timestamps, '#00ff88');
+                }
+
+                // Render Mini Charts
+                // AUD/JPY Chart
+                if (window.audjpyData) {
+                    renderMiniChart('audjpyChart', window.audjpyData.prices, window.audjpyData.timestamps, '#FF4B4B');
+                }
+                
+                // USD/KRW Chart
+                if (window.usdkrwData) {
+                    renderMiniChart('usdkrwChart', window.usdkrwData.prices, window.usdkrwData.timestamps, '#00ff88');
+                }
+
                 // Calculate Composite Risk Score (0-100)
                 // Base = 50 (neutral)
                 // Each indicator contributes based on % change (amplified for visibility)
                 const baseScore = 50;
-                const audjpyScore = (percentChanges.audjpy || 0) * 10;  // 1% change = 10 points
-                const hygScore = (percentChanges.hyg || 0) * 15;        // 1% change = 15 points
-                const yieldScore = (percentChanges.yield || 0) * 8;     // 1% change = 8 points
+                const audjpyScore = (percentChanges.audjpy || 0) * 10;
+                const hygScore = (percentChanges.hyg || 0) * 15;
+                const yieldScore = (percentChanges.yield || 0) * 8;
 
                 let compositeScore = baseScore + audjpyScore + hygScore + yieldScore;
 
@@ -3129,15 +4508,9 @@ ${sep}
                 const labelElement = document.getElementById('composite-label');
                 const barElement = document.getElementById('composite-bar');
 
-                if (scoreElement) {
-                    scoreElement.textContent = Math.round(compositeScore);
-                }
+                if (scoreElement) scoreElement.textContent = Math.round(compositeScore);
+                if (barElement) barElement.style.width = compositeScore + '%';
 
-                if (barElement) {
-                    barElement.style.width = compositeScore + '%';
-                }
-
-                // Update label and color based on score
                 if (labelElement && scoreElement) {
                     if (compositeScore >= 70) {
                         labelElement.textContent = 'EXTREME RISK-ON 🔥';
@@ -3167,65 +4540,232 @@ ${sep}
             }
         }
 
+        // Helper: Render Mini Chart using Chart.js
+        let miniCharts = {}; // Store chart instances to destroy/update
+
+        function renderMiniChart(canvasId, prices, timestamps, color) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) {
+                // If canvas not found, it might be in a hidden tab or not yet rendered.
+                // We'll try to find it, but if not, we can't render.
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (miniCharts[canvasId]) {
+                miniCharts[canvasId].destroy();
+            }
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 120);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, 'rgba(0,0,0,0)'); // Transparent at bottom
+
+            miniCharts[canvasId] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps.map(t => new Date(t * 1000).toLocaleDateString()), // Simple date
+                    datasets: [{
+                        data: prices,
+                        borderColor: color,
+                        borderWidth: 2,
+                        backgroundColor: gradient,
+                        fill: true,
+                        pointRadius: 0, // Hide points for clean look
+                        pointHoverRadius: 4,
+                        tension: 0.2 // Smooth curve
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: color,
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { display: false }, // Hide X axis
+                        y: {
+                            display: false, // Hide Y axis
+                            // Dynamic scaling
+                            min: Math.min(...prices) * 0.999,
+                            max: Math.max(...prices) * 1.001
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    },
+                    animation: {
+                        duration: 0 // Disable animation for performance/instant update
+                    }
+                }
+            });
+        }
+
+
+
         // Crypto Best Composite Indicator Update Function
         async function updateCryptoCompositeIndicators() {
             try {
-                // Fetch real-time crypto price data
-                const cryptoSymbols = {
-                    'btc': 'BTC-USD',
-                    'eth': 'ETH-USD',
-                    'sol': 'SOL-USD'
+                // Crypto symbols for different APIs
+                const cryptoConfig = {
+                    'btc': { yahoo: 'BTC-USD', coingecko: 'bitcoin' },
+                    'eth': { yahoo: 'ETH-USD', coingecko: 'ethereum' },
+                    'sol': { yahoo: 'SOL-USD', coingecko: 'solana' }
                 };
 
                 const percentChanges = {};
 
-                for (const [key, symbol] of Object.entries(cryptoSymbols)) {
+                // Helper: Fetch with timeout
+                async function fetchWithTimeout(url, timeout = 5000) {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), timeout);
                     try {
-                        // Use the same endpoint with 3-tier fallback (Yahoo → Polygon → yfinance)
-                        const response = await fetch(`http://localhost:5002/api/yahoo/chart/${symbol}?interval=1d&range=5d`);
-                        const data = await response.json();
+                        const response = await fetch(url, { signal: controller.signal });
+                        clearTimeout(timeoutId);
+                        return response;
+                    } catch (error) {
+                        clearTimeout(timeoutId);
+                        throw error;
+                    }
+                }
 
-                        if (data.chart && data.chart.result && data.chart.result[0]) {
-                            const result = data.chart.result[0];
-                            const quotes = result.indicators.quote[0];
-                            const closes = quotes.close.filter(c => c !== null);
+                // Helper: Try CoinGecko API as fallback
+                async function fetchFromCoinGecko(coinId) {
+                    const response = await fetchWithTimeout(
+                        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=5&interval=daily`,
+                        8000
+                    );
+                    const data = await response.json();
+                    if (data.prices && data.prices.length >= 2) {
+                        const prices = data.prices;
+                        const currentPrice = prices[prices.length - 1][1];
+                        const fiveDaysAgoPrice = prices[0][1];
+                        return {
+                            current: currentPrice,
+                            fiveDaysAgo: fiveDaysAgoPrice,
+                            change: currentPrice - fiveDaysAgoPrice,
+                            percentChange: ((currentPrice - fiveDaysAgoPrice) / fiveDaysAgoPrice) * 100
+                        };
+                    }
+                    return null;
+                }
 
-                            if (closes.length >= 2) {
-                                // Use 5-day performance for more accurate trend analysis
-                                const currentPrice = closes[closes.length - 1];
-                                const fiveDaysAgoPrice = closes[0];  // First price in 5-day range
-                                const change = currentPrice - fiveDaysAgoPrice;
-                                const percentChange = (change / fiveDaysAgoPrice) * 100;
+                for (const [key, config] of Object.entries(cryptoConfig)) {
+                    const arrowElement = document.getElementById(`crypto-${key}-arrow`);
 
-                                // Store percent change for composite calculation
-                                percentChanges[key] = percentChange;
+                    try {
+                        let priceData = null;
 
-                                // Update arrow based on 5-day trend direction
-                                const arrowElement = document.getElementById(`crypto-${key}-arrow`);
-                                if (arrowElement) {
-                                    if (change > 0) {
-                                        arrowElement.innerHTML = '▲';
-                                        arrowElement.style.color = '#00ff88';  // Green
-                                        arrowElement.title = `UP $${change.toFixed(2)} (${percentChange.toFixed(2)}% over 5 days)`;
-                                    } else if (change < 0) {
-                                        arrowElement.innerHTML = '▼';
-                                        arrowElement.style.color = '#FF5252';  // Red
-                                        arrowElement.title = `DOWN $${Math.abs(change).toFixed(2)} (${percentChange.toFixed(2)}% over 5 days)`;
-                                    } else {
-                                        arrowElement.innerHTML = '↔';
-                                        arrowElement.style.color = '#FFD700';  // Gold
-                                        arrowElement.title = 'Unchanged (Sideways)';
-                                    }
+                        // Try local Yahoo API first (faster if server is running)
+                        try {
+                            const response = await fetchWithTimeout(
+                                `http://localhost:8888/api/yahoo/chart/${config.yahoo}?interval=1d&range=5d`,
+                                5000
+                            );
+                            const data = await response.json();
+
+                            if (data.chart && data.chart.result && data.chart.result[0]) {
+                                const result = data.chart.result[0];
+                                const quotes = result.indicators.quote[0];
+                                const closes = quotes.close.filter(c => c !== null);
+
+                                if (closes.length >= 2) {
+                                    const currentPrice = closes[closes.length - 1];
+                                    const fiveDaysAgoPrice = closes[0];
+                                    priceData = {
+                                        current: currentPrice,
+                                        fiveDaysAgo: fiveDaysAgoPrice,
+                                        change: currentPrice - fiveDaysAgoPrice,
+                                        percentChange: ((currentPrice - fiveDaysAgoPrice) / fiveDaysAgoPrice) * 100
+                                    };
                                 }
                             }
+                        } catch (yahooError) {
+                            console.warn(`Yahoo API failed for ${key}, trying CoinGecko...`);
                         }
+
+                        // Fallback to CoinGecko if Yahoo fails
+                        if (!priceData) {
+                            priceData = await fetchFromCoinGecko(config.coingecko);
+                        }
+
+                        // Update UI with price data
+                        if (priceData) {
+                            percentChanges[key] = priceData.percentChange;
+
+                            // Update price display
+                            const priceElement = document.getElementById(`crypto-${key}-price`);
+                            const changeElement = document.getElementById(`crypto-${key}-change`);
+
+                            if (priceElement) {
+                                // Format price based on value (BTC needs no decimals, others need 2)
+                                const formattedPrice = priceData.current >= 1000
+                                    ? '$' + priceData.current.toLocaleString('en-US', { maximumFractionDigits: 0 })
+                                    : '$' + priceData.current.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                priceElement.textContent = formattedPrice;
+                            }
+
+                            if (changeElement) {
+                                const changeSign = priceData.percentChange >= 0 ? '+' : '';
+                                changeElement.textContent = `${changeSign}${priceData.percentChange.toFixed(2)}% (5d)`;
+                                changeElement.style.color = priceData.percentChange >= 0 ? '#00ff88' : '#FF5252';
+                            }
+
+                            if (arrowElement) {
+                                if (priceData.change > 0) {
+                                    arrowElement.innerHTML = '▲';
+                                    arrowElement.style.color = '#00ff88';
+                                    arrowElement.title = `UP $${priceData.change.toFixed(2)} (${priceData.percentChange.toFixed(2)}% over 5 days)`;
+                                } else if (priceData.change < 0) {
+                                    arrowElement.innerHTML = '▼';
+                                    arrowElement.style.color = '#FF5252';
+                                    arrowElement.title = `DOWN $${Math.abs(priceData.change).toFixed(2)} (${priceData.percentChange.toFixed(2)}% over 5 days)`;
+                                } else {
+                                    arrowElement.innerHTML = '↔';
+                                    arrowElement.style.color = '#FFD700';
+                                    arrowElement.title = 'Unchanged (Sideways)';
+                                }
+                            }
+                        } else {
+                            throw new Error('No data from any source');
+                        }
+
                     } catch (error) {
-                        console.error(`Error fetching crypto ${symbol}:`, error);
-                        const arrowElement = document.getElementById(`crypto-${key}-arrow`);
+                        console.error(`Error fetching crypto ${key}:`, error);
+                        // Update error states for all elements
+                        const priceElement = document.getElementById(`crypto-${key}-price`);
+                        const changeElement = document.getElementById(`crypto-${key}-change`);
+
                         if (arrowElement) {
                             arrowElement.innerHTML = '↔';
                             arrowElement.style.color = '#b0b8c8';
-                            arrowElement.title = 'Data unavailable';
+                            arrowElement.title = 'Data unavailable - check connection';
+                        }
+                        if (priceElement) {
+                            priceElement.textContent = 'N/A';
+                            priceElement.style.opacity = '0.5';
+                        }
+                        if (changeElement) {
+                            changeElement.textContent = 'No data';
+                            changeElement.style.color = '#b0b8c8';
                         }
                         percentChanges[key] = 0;
                     }
@@ -3300,7 +4840,7 @@ ${sep}
         // Probabilistic Recession Model - Fetch and Display
         async function updateRecessionIndicator() {
             try {
-                const response = await fetch('http://localhost:5002/api/recession-probability');
+                const response = await fetch('http://localhost:8888/api/recession-probability');
                 const data = await response.json();
 
                 if (data.error) {
@@ -3719,6 +5259,24 @@ ${sep}
                         vixChangeElement.innerHTML = `<span style="color: ${changeColor};">${changeSymbol}${change5d.toFixed(2)}%</span>`;
                     }
 
+                    // Update VIX daily and 5-day change in volatility composite section
+                    const vixDailyChangeEl = document.getElementById('vix-daily-change');
+                    const vix5dayChangeEl = document.getElementById('vix-5day-change');
+
+                    if (vixDailyChangeEl && vixData.changePercent !== undefined) {
+                        const dailyChange = vixData.changePercent || 0;
+                        const dailyColor = dailyChange >= 0 ? '#DC143C' : '#00ff88';
+                        const dailySymbol = dailyChange >= 0 ? '+' : '';
+                        vixDailyChangeEl.innerHTML = `<span style="color: ${dailyColor};">${dailySymbol}${dailyChange.toFixed(2)}%</span>`;
+                    }
+
+                    if (vix5dayChangeEl && vixData.changePercent5d !== undefined) {
+                        const change5d = vixData.changePercent5d || 0;
+                        const change5dColor = change5d >= 0 ? '#DC143C' : '#00ff88';
+                        const change5dSymbol = change5d >= 0 ? '+' : '';
+                        vix5dayChangeEl.innerHTML = `<span style="color: ${change5dColor};">${change5dSymbol}${change5d.toFixed(2)}%</span>`;
+                    }
+
                     if (vixStatusElement) {
                         if (vix < 15) {
                             vixStatusElement.textContent = '🟢 COMPLACENT';
@@ -3772,6 +5330,18 @@ ${sep}
 
                     if (cryptoChangeElement) {
                         cryptoChangeElement.textContent = `BTC: ${btcVol.toFixed(1)}% | ETH: ${ethVol.toFixed(1)}%`;
+                    }
+
+                    // Update BTC and ETH volatility separately in volatility composite section
+                    const btcVolatilityEl = document.getElementById('btc-volatility');
+                    const ethVolatilityEl = document.getElementById('eth-volatility');
+
+                    if (btcVolatilityEl) {
+                        btcVolatilityEl.textContent = btcVol.toFixed(2) + '%';
+                    }
+
+                    if (ethVolatilityEl) {
+                        ethVolatilityEl.textContent = ethVol.toFixed(2) + '%';
                     }
 
                     if (cryptoStatusElement) {
@@ -3855,21 +5425,148 @@ ${sep}
             }
         }
 
+        // Update Market Indicators (AUD/JPY, HYG, 10Y Yield)
+        async function updateMarketIndicators() {
+            try {
+                // Update AUD/JPY
+                const audjpyResponse = await fetch('http://localhost:8888/api/market/symbol/AUDJPY=X');
+                if (audjpyResponse.ok) {
+                    const audjpyData = await audjpyResponse.json();
+                    const data = audjpyData.data || audjpyData;
+
+                    const audjpyValueEl = document.getElementById('audjpy-value');
+                    const audjpyArrowEl = document.getElementById('audjpy-arrow');
+
+                    if (audjpyValueEl && data.price) {
+                        audjpyValueEl.textContent = data.price.toFixed(2);
+
+                        // Update arrow based on change
+                        if (audjpyArrowEl && data.change_percent !== undefined) {
+                            if (data.change_percent > 0) {
+                                audjpyArrowEl.textContent = '↑';
+                                audjpyArrowEl.style.color = '#00ff88';
+                            } else if (data.change_percent < 0) {
+                                audjpyArrowEl.textContent = '↓';
+                                audjpyArrowEl.style.color = '#DC143C';
+                            } else {
+                                audjpyArrowEl.textContent = '→';
+                                audjpyArrowEl.style.color = '#FFD700';
+                            }
+                        }
+                    }
+                }
+
+                // Update HYG (High Yield Bond ETF)
+                const hygResponse = await fetch('http://localhost:8888/api/market/symbol/HYG');
+                if (hygResponse.ok) {
+                    const hygData = await hygResponse.json();
+                    const data = hygData.data || hygData;
+
+                    const hygValueEl = document.getElementById('hyg-value');
+                    const hygArrowEl = document.getElementById('hyg-arrow');
+
+                    if (hygValueEl && data.price) {
+                        hygValueEl.textContent = '$' + data.price.toFixed(2);
+
+                        // Update arrow based on change
+                        if (hygArrowEl && data.change_percent !== undefined) {
+                            if (data.change_percent > 0) {
+                                hygArrowEl.textContent = '↑';
+                                hygArrowEl.style.color = '#00ff88';
+                            } else if (data.change_percent < 0) {
+                                hygArrowEl.textContent = '↓';
+                                hygArrowEl.style.color = '#DC143C';
+                            } else {
+                                hygArrowEl.textContent = '→';
+                                hygArrowEl.style.color = '#FFD700';
+                            }
+                        }
+                    }
+                }
+
+                // Update 10-Year Treasury Yield
+                const yieldResponse = await fetch('http://localhost:8888/api/market/symbol/^TNX');
+                if (yieldResponse.ok) {
+                    const yieldData = await yieldResponse.json();
+                    const data = yieldData.data || yieldData;
+
+                    const yieldValueEl = document.getElementById('yield-value');
+                    const yieldArrowEl = document.getElementById('yield-arrow');
+
+                    // Treasury yields are in metadata.yield, not data.price
+                    const yieldValue = data.price || (data.metadata && data.metadata.yield);
+
+                    if (yieldValueEl && yieldValue) {
+                        yieldValueEl.textContent = yieldValue.toFixed(2) + '%';
+
+                        // Update arrow based on change
+                        if (yieldArrowEl && data.change_percent !== undefined) {
+                            if (data.change_percent > 0) {
+                                yieldArrowEl.textContent = '↑';
+                                yieldArrowEl.style.color = '#DC143C';  // Rising yields = bearish for bonds
+                            } else if (data.change_percent < 0) {
+                                yieldArrowEl.textContent = '↓';
+                                yieldArrowEl.style.color = '#00ff88';  // Falling yields = bullish for bonds
+                            } else {
+                                yieldArrowEl.textContent = '→';
+                                yieldArrowEl.style.color = '#FFD700';
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating market indicators:', error);
+            }
+        }
+
         // Update on page load
         document.addEventListener('DOMContentLoaded', () => {
+            updateWhaleHunterSummary();
             updateCompositeIndicators();
             updateCryptoCompositeIndicators();
             updateRecessionIndicator();
             updateStealthMacroIndicator();
             updateVixCompositeIndicator();
+            updateMarketIndicators();
 
             // Refresh every 5 minutes
+            setInterval(updateWhaleHunterSummary, 300000);
             setInterval(updateCompositeIndicators, 300000);
             setInterval(updateCryptoCompositeIndicators, 300000);
             setInterval(updateRecessionIndicator, 300000);
             setInterval(updateStealthMacroIndicator, 300000);
             setInterval(updateVixCompositeIndicator, 300000);
+            setInterval(updateMarketIndicators, 300000);
         });
+    </script>
+    <script>
+        // 🚀 SPARTAN CACHE ENFORCER
+        (function() {
+            const CURRENT_VERSION = '2026.01.10.08'; // Update this to force refresh
+            const lastVersion = localStorage.getItem('spartan_app_version');
+
+            if (lastVersion !== CURRENT_VERSION) {
+                console.warn('⚠️ New version detected (' + CURRENT_VERSION + '). Purging cache...');
+                
+                // 1. Clear critical local storage
+                const keysToPurge = ['whale_hunter_data', 'market_data', 'composite_indices'];
+                keysToPurge.forEach(key => localStorage.removeItem(key));
+                
+                // 2. Update version
+                localStorage.setItem('spartan_app_version', CURRENT_VERSION);
+                
+                // 3. Force reload css
+                const links = document.getElementsByTagName('link');
+                for (let i = 0; i < links.length; i++) {
+                    if (links[i].rel === 'stylesheet') {
+                        let href = links[i].href.split('?')[0];
+                        links[i].href = href + '?v=' + new Date().getTime();
+                    }
+                }
+                
+                console.log('✅ Cache purged. Assets refreshed.');
+            }
+        })();
     </script>
 </body>
 </html>

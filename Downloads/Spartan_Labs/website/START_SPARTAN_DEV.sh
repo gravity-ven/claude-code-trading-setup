@@ -154,7 +154,7 @@ echo "========================================================================"
 echo ""
 
 # Kill any existing processes on our ports
-for port in 8888 5000 5002 5003 5004; do
+for port in 8888 5000 5002 5003 5004 5009 5010; do
     pid=$(lsof -ti:$port 2>/dev/null || true)
     if [ ! -z "$pid" ]; then
         echo "Killing existing process on port $port (PID: $pid)"
@@ -192,6 +192,16 @@ echo -n "Starting GARP API (port 5003)... "
 python garp_api.py > logs/garp_api.log 2>&1 &
 echo $! > .pids/garp.pid
 echo -e "${GREEN}✓ PID $(cat .pids/garp.pid)${NC}"
+
+echo -n "Starting COT Scanner API (port 5009)... "
+python api/cot_scanner_api.py > logs/cot_scanner_api.log 2>&1 &
+echo $! > .pids/cot_scanner.pid
+echo -e "${GREEN}✓ PID $(cat .pids/cot_scanner.pid)${NC}"
+
+echo -n "Starting OI Scanner API (port 5010)... "
+python api/oi_scanner_api.py > logs/oi_scanner_api.log 2>&1 &
+echo $! > .pids/oi_scanner.pid
+echo -e "${GREEN}✓ PID $(cat .pids/oi_scanner.pid)${NC}"
 
 # Wait for all services to be ready
 echo ""
@@ -236,6 +246,7 @@ echo "    Correlation:      http://localhost:5004/health"
 echo "    Daily Planet:     http://localhost:5000/health"
 echo "    Swing Dashboard:  http://localhost:5002/api/swing-dashboard/health"
 echo "    GARP Screener:    http://localhost:5003/api/health"
+echo "    COT Scanner:      http://localhost:5009/health"
 echo ""
 echo "  Logs:"
 echo "    Main Server:      tail -f logs/main_server.log"
@@ -247,6 +258,74 @@ echo "    Restart All:      ./RESTART_SPARTAN_DEV.sh"
 echo "    Restart One:      kill -9 \$(cat .pids/main.pid) && python start_server.py &"
 echo ""
 echo "========================================================================"
+echo ""
+
+# Wait for all services to be healthy before opening browser
+echo "Verifying all services are healthy..."
+echo ""
+
+ALL_HEALTHY=true
+RETRY_COUNT=0
+MAX_RETRIES=30
+
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    ALL_HEALTHY=true
+
+    # Check each service
+    for endpoint in "8888:Main Server" "5004:Correlation" "5000:Daily Planet" "5002:Swing Dashboard" "5003:GARP" "5009:COT Scanner" "5010:OI Scanner"; do
+        port="${endpoint%%:*}"
+        name="${endpoint#*:}"
+
+        if [ "$port" = "5002" ]; then
+            health_url="http://localhost:$port/api/swing-dashboard/health"
+        elif [ "$port" = "5003" ]; then
+            health_url="http://localhost:$port/api/health"
+        else
+            health_url="http://localhost:$port/health"
+        fi
+
+        if ! curl -s --max-time 2 "$health_url" > /dev/null 2>&1; then
+            ALL_HEALTHY=false
+            break
+        fi
+    done
+
+    if [ "$ALL_HEALTHY" = true ]; then
+        break
+    fi
+
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    echo -n "."
+    sleep 1
+done
+
+echo ""
+
+if [ "$ALL_HEALTHY" = true ]; then
+    echo -e "${GREEN}✅ All 7 services are healthy!${NC}"
+    echo ""
+
+    # Open browser
+    echo "Opening browser..."
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            # WSL - use Windows browser
+            cmd.exe /c start http://localhost:8888/nano_banana_scanner.html 2>/dev/null || xdg-open http://localhost:8888/nano_banana_scanner.html 2>/dev/null &
+        else
+            xdg-open http://localhost:8888/nano_banana_scanner.html 2>/dev/null &
+        fi
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        open http://localhost:8888/nano_banana_scanner.html
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
+        start http://localhost:8888/nano_banana_scanner.html
+    else
+        echo "Please open: http://localhost:8888/nano_banana_scanner.html"
+    fi
+else
+    echo -e "${YELLOW}⚠ Some services may still be starting. Browser not auto-opened.${NC}"
+    echo "Open manually: http://localhost:8888/nano_banana_scanner.html"
+fi
+
 echo ""
 echo -e "${GREEN}✓ Development mode active - changes take effect immediately!${NC}"
 echo -e "${YELLOW}⚠ Press Ctrl+C will NOT stop services (use ./STOP_SPARTAN_DEV.sh)${NC}"

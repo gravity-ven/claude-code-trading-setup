@@ -1,63 +1,39 @@
 {
   "mcpServers": {
-    "memory-bank": {
-      "command": "node",
-      "args": ["~/.mcp-servers/memory-bank/node_modules/@modelcontextprotocol/server-memory/dist/index.js"],
-      "env": {}
-    },
     "github": {
       "command": "node",
-      "args": ["~/.mcp-servers/github/node_modules/@modelcontextprotocol/server-github/dist/index.js"],
+      "args": ["/home/spartan/.mcp-servers/github/node_modules/@modelcontextprotocol/server-github/dist/index.js"],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
     "filesystem": {
       "command": "node",
-      "args": ["~/.mcp-servers/filesystem/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js"],
+      "args": [
+        "/home/spartan/.mcp-servers/filesystem/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js",
+        "/home/spartan",
+        "/mnt/c/Users/Quantum",
+        "/mnt/c/Users/Quantum/Downloads",
+        "/mnt/c/Users/Quantum/Documents"
+      ],
       "env": {}
     },
-    "sqlite": {
+    "memory": {
       "command": "node",
-      "args": ["~/.mcp-servers/sqlite/node_modules/@modelcontextprotocol/server-sqlite/dist/index.js"],
-      "env": {}
-    },
-    "postgres": {
-      "command": "node",
-      "args": ["~/.mcp-servers/postgres/node_modules/@modelcontextprotocol/server-postgres/dist/index.js"],
-      "env": {
-        "POSTGRES_CONNECTION_STRING": ""
-      }
-    },
-    "fetch": {
-      "command": "node",
-      "args": ["~/.mcp-servers/fetch/node_modules/@modelcontextprotocol/server-fetch/dist/index.js"],
-      "env": {}
-    },
-    "time": {
-      "command": "node",
-      "args": ["~/.mcp-servers/time/node_modules/@modelcontextprotocol/server-time/dist/index.js"],
-      "env": {}
-    },
-    "codemcp": {
-      "command": "python",
-      "args": ["~/.mcp-servers/codemcp/main.py"],
-      "env": {}
-    },
-    "mcp-memory-keeper": {
-      "command": "python",
-      "args": ["~/.mcp-servers/mcp-memory-keeper/src/mcp_memory_keeper/server.py"],
+      "args": ["/home/spartan/.mcp-servers/memory-bank/node_modules/@modelcontextprotocol/server-memory/dist/index.js"],
       "env": {}
     },
     "sequential-thinking": {
       "command": "node",
-      "args": ["~/.mcp-servers/sequential-thinking/dist/index.js"],
+      "args": ["/home/spartan/.mcp-servers/sequential-thinking/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"],
       "env": {}
     },
-    "cli-mcp": {
-      "command": "node",
-      "args": ["~/.mcp-servers/cli-mcp/dist/index.js"],
-      "env": {}
+    "filesystem-indexer": {
+      "command": "python3",
+      "args": ["/mnt/c/Users/Quantum/Downloads/Spartan_Labs/website/filesystem_indexer_mcp_server.py"],
+      "env": {
+        "FILESYSTEM_INDEX_PATH": "/home/spartan/.claude/filesystem-index.json"
+      }
     }
   }
 }

@@ -15,7 +15,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="spartan_theme.css">
+    <link rel="stylesheet" href="/css/spartan_theme.css">
 
     <style>
         :root {
@@ -397,14 +397,14 @@
     <nav class="spartan-nav">
         <div class="nav-container">
             <div class="nav-left">
-                <img src="spartan_logo.png" alt="Spartan Research Station" class="nav-logo">
-                <a href="index.html" class="nav-title">Spartan Research Station</a>
+                <img src="/images/spartan_logo.png" alt="Spartan Research Station" class="nav-logo">
+                <a href="/dashboards/index.html" class="nav-title">Spartan Research Station</a>
             </div>
             <div class="nav-center">
                 <div class="nav-item">Market Gauges</div>
             </div>
             <div class="nav-right">
-                <a href="index.html" class="nav-link">← Back</a>
+                <a href="/dashboards/index.html" class="nav-link">← Back</a>
             </div>
         </div>
     </nav>
@@ -667,7 +667,7 @@
                     // Fallback to API if cache miss
                     if (!current) {
                         console.log('📡 Fetching VIX from API...');
-                        const response = await fetch('http://localhost:5002/api/yahoo/chart/%5EVIX?interval=1d&range=5d');
+                        const response = await fetch('http://localhost:8888/api/yahoo/chart/%5EVIX?interval=1d&range=5d');
                         const data = await response.json();
 
                         const quote = data.chart.result[0];
@@ -759,7 +759,7 @@
                     // Fallback to API if cache miss
                     if (!current) {
                         console.log('📡 Fetching S&P 500 from API...');
-                        const response = await fetch('http://localhost:5002/api/yahoo/chart/%5EGSPC?interval=1d&range=5d');
+                        const response = await fetch('http://localhost:8888/api/yahoo/chart/%5EGSPC?interval=1d&range=5d');
                         const data = await response.json();
 
                         const quote = data.chart.result[0];
@@ -831,7 +831,7 @@
 
             async fetchSP500Distance() {
                 try {
-                    const response = await fetch('http://localhost:5002/api/yahoo/chart/%5EGSPC?interval=1d&range=1y');
+                    const response = await fetch('http://localhost:8888/api/yahoo/chart/%5EGSPC?interval=1d&range=1y');
                     const data = await response.json();
 
                     const quotes = data.chart.result[0].indicators.quote[0];

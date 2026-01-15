@@ -458,14 +458,14 @@
     <nav class="spartan-nav">
         <div class="nav-container">
             <div class="nav-left">
-                <img src="spartan_logo.png" alt="Spartan Research Station" class="nav-logo">
-                <a href="index.html" class="nav-title">Spartan Research Station</a>
+                <img src="/images/spartan_logo.png" alt="Spartan Research Station" class="nav-logo">
+                <a href="/dashboards/index.html" class="nav-title">Spartan Research Station</a>
             </div>
             <div class="nav-center">
                 <div class="nav-item">FRED Economic Data</div>
             </div>
             <div class="nav-right">
-                <a href="index.html" class="nav-link">← Back</a>
+                <a href="/dashboards/index.html" class="nav-link">← Back</a>
             </div>
         </div>
     </nav>
@@ -599,7 +599,7 @@
     <script>
         // FRED API Configuration
         const FRED_API_KEY = '0a08e7a69f8dbd1b02e19e7af5a82b61';
-        const FRED_BASE_URL = 'http://localhost:5002/api/fred';
+        const FRED_BASE_URL = 'http://localhost:8888/api/economic/indicators';
 
         // Economic Indicators Configuration
         const FRED_SERIES = {

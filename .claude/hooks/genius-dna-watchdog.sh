@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
-# Genius DNA Watchdog - Auto-restart daemon if data is stale
-# Monitors metrics freshness and restarts learning daemon automatically
+# Genius DNA Watchdog - Continuous monitoring daemon with infinite loop
+# Monitors metrics freshness, restarts learning daemon, and sources bashrc on changes
 
 # Configuration
 GENIUS_DNA_PATH="/mnt/c/Users/Quantum/genius-dna"
 METRICS_FILE="/mnt/d/genius-dna-files/latest_metrics.json"
 WATCHDOG_LOG="/tmp/genius_dna_watchdog.log"
 MAX_AGE_MINUTES=60  # Consider stale if older than 1 hour
+CHECK_INTERVAL=30   # Check every 30 seconds
+BASHRC_FILES=(
+    "/mnt/c/Users/Quantum/.bashrc"
+    "/mnt/c/Users/Quantum/.bashrc.d/genius-dna-gemini.sh"
+    "/home/spartan/.bashrc"
+)
+
+# Track last modification times for bashrc files
+declare -A BASHRC_MTIMES
 
 # Function to log with timestamp
 log() {
@@ -34,6 +43,55 @@ get_file_age_minutes() {
     echo "$age_minutes"
 }
 
+# Function to get file modification time
+get_mtime() {
+    local file="$1"
+    [ -f "$file" ] && stat -c %Y "$file" 2>/dev/null || echo "0"
+}
+
+# Function to check and source bashrc changes
+check_bashrc_changes() {
+    local changes_detected=false
+
+    for bashrc_file in "${BASHRC_FILES[@]}"; do
+        if [ ! -f "$bashrc_file" ]; then
+            continue
+        fi
+
+        local current_mtime=$(get_mtime "$bashrc_file")
+        local stored_mtime="${BASHRC_MTIMES[$bashrc_file]:-0}"
+
+        if [ "$current_mtime" != "$stored_mtime" ]; then
+            log "🔄 Detected change in: $bashrc_file"
+
+            # Source the file
+            if source "$bashrc_file" 2>/dev/null; then
+                log "✅ Sourced: $bashrc_file"
+                changes_detected=true
+            else
+                log "⚠️  Failed to source: $bashrc_file"
+            fi
+
+            # Update stored mtime
+            BASHRC_MTIMES[$bashrc_file]="$current_mtime"
+        fi
+    done
+
+    if [ "$changes_detected" = true ]; then
+        log "📋 Bashrc changes applied - environment refreshed"
+    fi
+}
+
+# Function to initialize bashrc tracking
+init_bashrc_tracking() {
+    for bashrc_file in "${BASHRC_FILES[@]}"; do
+        if [ -f "$bashrc_file" ]; then
+            BASHRC_MTIMES[$bashrc_file]=$(get_mtime "$bashrc_file")
+        fi
+    done
+    log "✅ Initialized bashrc tracking for ${#BASHRC_MTIMES[@]} files"
+}
+
 # Function to restart daemon
 restart_daemon() {
     log "🔄 Restarting learning daemon (data was stale)"
@@ -59,12 +117,12 @@ restart_daemon() {
     fi
 }
 
-# Main watchdog logic
-main() {
+# Main watchdog check
+check_watchdog() {
     # Check if genius-dna exists
     if [ ! -d "$GENIUS_DNA_PATH" ]; then
         log "⚠️  Genius DNA path not found: $GENIUS_DNA_PATH"
-        exit 0
+        return
     fi
 
     # Check metrics file age
@@ -90,7 +148,38 @@ main() {
     fi
 }
 
-# Run main logic
-main
+# Main infinite loop
+main_loop() {
+    log "🚀 Genius DNA Watchdog started (infinite loop mode)"
+    log "📊 Check interval: ${CHECK_INTERVAL}s"
+    log "⏰ Staleness threshold: ${MAX_AGE_MINUTES} minutes"
 
-exit 0
+    # Initialize bashrc tracking
+    init_bashrc_tracking
+
+    # Infinite loop
+    while true; do
+        # Check for bashrc changes
+        check_bashrc_changes
+
+        # Check watchdog conditions
+        check_watchdog
+
+        # Sleep before next check
+        sleep "$CHECK_INTERVAL"
+    done
+}
+
+# Trap signals for graceful shutdown
+trap 'log "🛑 Watchdog received shutdown signal"; exit 0' SIGINT SIGTERM
+
+# Check if running in daemon mode or one-shot mode
+if [ "${GENIUS_WATCHDOG_MODE:-oneshot}" = "daemon" ]; then
+    # Daemon mode - infinite loop
+    main_loop
+else
+    # One-shot mode (for hooks)
+    check_bashrc_changes
+    check_watchdog
+    exit 0
+fi

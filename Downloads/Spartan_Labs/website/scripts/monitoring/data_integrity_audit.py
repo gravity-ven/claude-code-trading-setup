@@ -146,11 +146,11 @@ class DataIntegrityAuditor:
         print("🔍 Auditing Python API files...")
 
         python_files = [
-            'cot_api.py',
-            'correlation_api.py',
-            'daily_planet_api.py',
-            'swing_dashboard_api.py',
-            'garp_api.py',
+            'api/cot_api.py',
+            'api/correlation_api.py',
+            'api/daily_planet_api.py',
+            'api/swing_dashboard_api.py',
+            'api/garp_api.py',
             'start_server.py',
             'src/data_preloader.py'
         ]
@@ -195,9 +195,9 @@ class DataIntegrityAuditor:
         print("🔍 Auditing live API endpoints...")
 
         endpoints = [
-            ('http://localhost:5005/health', 'COT API Health'),
-            ('http://localhost:5005/api/cot/market/NG=F', 'COT API - Natural Gas'),
-            ('http://localhost:5005/api/cot/market/GC=F', 'COT API - Gold'),
+            ('http://127.0.0.1:5005/health', 'COT API Health'),
+            ('http://127.0.0.1:5005/api/cot/market/NG=F', 'COT API - Natural Gas'),
+            ('http://127.0.0.1:5005/api/cot/market/GC=F', 'COT API - Gold'),
         ]
 
         for url, name in endpoints:
@@ -234,7 +234,7 @@ class DataIntegrityAuditor:
         print("🔍 Auditing CFTC data source...")
 
         try:
-            with open('cot_api.py', 'r') as f:
+            with open('api/cot_api.py', 'r') as f:
                 content = f.read()
 
                 # Check for official CFTC URL

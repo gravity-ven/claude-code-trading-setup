@@ -135,13 +135,26 @@ if [ ! -d "venv" ]; then
     log "⚠ Virtual environment not found - creating"
     python3 -m venv venv
     source venv/bin/activate
-    pip install -q -r requirements.txt
+    pip install -q -r requirements.txt 2>/dev/null || pip install -q flask pandas numpy yfinance psycopg2-binary redis requests aiohttp python-dotenv
     echo -e "${GREEN}   ✓ Created and dependencies installed${NC}"
     log "✓ Virtual environment created"
 else
     source venv/bin/activate
     echo -e "${GREEN}✓ Activated${NC}"
     log "✓ Virtual environment activated"
+fi
+
+# Ensure critical dependencies are installed (permanent fix)
+echo -n "   Python Dependencies... "
+python3 -c "import pandas; import flask; import yfinance" 2>/dev/null
+if [ $? -ne 0 ]; then
+    echo -e "${YELLOW}⚠ Installing missing dependencies${NC}"
+    pip install -q pandas flask yfinance psycopg2-binary redis numpy requests aiohttp python-dotenv 2>/dev/null
+    echo -e "${GREEN}   ✓ Dependencies installed${NC}"
+    log "✓ Missing Python dependencies installed"
+else
+    echo -e "${GREEN}✓ All installed${NC}"
+    log "✓ Python dependencies verified"
 fi
 
 # Load environment variables
@@ -188,7 +201,7 @@ log "🚀 Phase 2: Starting Services"
 echo ""
 
 # Kill any existing processes on our ports
-for port in 8888 5000 5002 5003 5004; do
+for port in 8888 5000 5002 5003 5004 5009 5010; do
     pid=$(lsof -ti:$port 2>/dev/null || true)
     if [ ! -z "$pid" ]; then
         echo "   Clearing port $port (killing PID $pid)"
@@ -230,6 +243,18 @@ python garp_api.py > logs/garp_api.log 2>&1 &
 echo $! > .pids/garp.pid
 echo -e "${GREEN}✓ PID $(cat .pids/garp.pid)${NC}"
 log "✓ GARP API started: PID $(cat .pids/garp.pid)"
+
+echo -n "   COT Scanner API (port 5009)... "
+python api/cot_scanner_api.py > logs/cot_scanner_api.log 2>&1 &
+echo $! > .pids/cot_scanner.pid
+echo -e "${GREEN}✓ PID $(cat .pids/cot_scanner.pid)${NC}"
+log "✓ COT Scanner API started: PID $(cat .pids/cot_scanner.pid)"
+
+echo -n "   OI Scanner API (port 5010)... "
+python api/oi_scanner_api.py > logs/oi_scanner_api.log 2>&1 &
+echo $! > .pids/oi_scanner.pid
+echo -e "${GREEN}✓ PID $(cat .pids/oi_scanner.pid)${NC}"
+log "✓ OI Scanner API started: PID $(cat .pids/oi_scanner.pid)"
 
 echo ""
 echo "   Waiting for services to be ready..."
@@ -340,6 +365,12 @@ restart_service() {
         "garp")
             python garp_api.py > logs/garp_api.log 2>&1 &
             ;;
+        "cot_scanner")
+            python api/cot_scanner_api.py > logs/cot_scanner_api.log 2>&1 &
+            ;;
+        "oi_scanner")
+            python api/oi_scanner_api.py > logs/oi_scanner_api.log 2>&1 &
+            ;;
     esac
 
     echo $! > "$pid_file"
@@ -385,7 +416,7 @@ while true; do
     fi
 
     # Check API services
-    for api in "correlation:5004" "daily_planet:5000" "swing:5002" "garp:5003"; do
+    for api in "correlation:5004" "daily_planet:5000" "swing:5002" "garp:5003" "cot_scanner:5009" "oi_scanner:5010"; do
         IFS=':' read -r name port <<< "$api"
 
         if ! check_endpoint "http://localhost:$port/health" "$name API"; then
@@ -536,6 +567,8 @@ echo -e "   Correlation:      curl http://localhost:5004/health"
 echo -e "   Daily Planet:     curl http://localhost:5000/health"
 echo -e "   Swing Dashboard:  curl http://localhost:5002/api/swing-dashboard/health"
 echo -e "   GARP Screener:    curl http://localhost:5003/api/health"
+echo -e "   COT Scanner:      curl http://localhost:5009/health"
+echo -e "   OI Scanner:       curl http://localhost:5010/health"
 echo ""
 
 echo -e "${CYAN}📝 Monitoring Logs:${NC}"
@@ -547,9 +580,79 @@ echo ""
 echo -e "${CYAN}🛠️  Control Commands:${NC}"
 echo -e "   Stop System:      ./STOP_SPARTAN_DEV.sh"
 echo -e "   Restart System:   ./RESTART_SPARTAN_DEV.sh"
-echo -e "   View Processes:   ps aux | grep -E 'start_server|correlation|daily_planet|swing|garp'"
+echo -e "   View Processes:   ps aux | grep -E 'start_server|correlation|daily_planet|swing|garp|cot_scanner|oi_scanner'"
 echo ""
 
+echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+
+# Wait for all services to be healthy before opening browser
+echo "Verifying all services are healthy..."
+echo ""
+
+ALL_HEALTHY=true
+RETRY_COUNT=0
+MAX_RETRIES=30
+
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    ALL_HEALTHY=true
+
+    # Check each service
+    for endpoint in "8888:Main Server" "5004:Correlation" "5000:Daily Planet" "5002:Swing Dashboard" "5003:GARP" "5009:COT Scanner" "5010:OI Scanner"; do
+        port="${endpoint%%:*}"
+        name="${endpoint#*:}"
+
+        if [ "$port" = "5002" ]; then
+            health_url="http://localhost:$port/api/swing-dashboard/health"
+        elif [ "$port" = "5003" ]; then
+            health_url="http://localhost:$port/api/health"
+        else
+            health_url="http://localhost:$port/health"
+        fi
+
+        if ! curl -s --max-time 2 "$health_url" > /dev/null 2>&1; then
+            ALL_HEALTHY=false
+            break
+        fi
+    done
+
+    if [ "$ALL_HEALTHY" = true ]; then
+        break
+    fi
+
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    echo -n "."
+    sleep 1
+done
+
+echo ""
+
+if [ "$ALL_HEALTHY" = true ]; then
+    echo -e "${GREEN}✅ All 7 services are healthy!${NC}"
+    echo ""
+
+    # Open browser
+    echo "Opening browser..."
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            # WSL - use Windows browser
+            cmd.exe /c start http://localhost:8888/nano_banana_scanner.html 2>/dev/null || xdg-open http://localhost:8888/nano_banana_scanner.html 2>/dev/null &
+        else
+            xdg-open http://localhost:8888/nano_banana_scanner.html 2>/dev/null &
+        fi
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        open http://localhost:8888/nano_banana_scanner.html
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
+        start http://localhost:8888/nano_banana_scanner.html
+    else
+        echo "Please open: http://localhost:8888/nano_banana_scanner.html"
+    fi
+else
+    echo -e "${YELLOW}⚠ Some services may still be starting. Browser not auto-opened.${NC}"
+    echo "Open manually: http://localhost:8888/nano_banana_scanner.html"
+fi
+
+echo ""
 echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
